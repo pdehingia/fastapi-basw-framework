@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # Backend API Service
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: monorepo_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Database
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_db
+      # Redis
+      - REDIS_URL=redis://redis:6379/0
+      # App settings
+      - ENVIRONMENT=development
+      - DEBUG=True
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - API_V1_PREFIX=/api/v1
+      # CORS
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:3002
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend/app:/app/app:delegated
+      - ./backend/alembic:/app/alembic:delegated
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
+  db:
+    image: postgres:15-alpine
+    container_name: monorepo_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=app_db
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Redis Cache
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: monorepo_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Admin Dashboard (Frontend)
+  # ==========================================
+  # Uncomment when admin app is ready
+  # admin:
+  #   build:
+  #     context: ./admin
+  #     dockerfile: Dockerfile
+  #   container_name: monorepo_admin
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - REACT_APP_API_URL=http://localhost:8000
+  #     - NODE_ENV=development
+  #   volumes:
+  #     - ./admin:/app:delegated
+  #     - /app/node_modules
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     - backend
+
+  # ==========================================
+  # Provider Application (Frontend)
+  # ==========================================
+  # Uncomment when provider app is ready
+  # provider:
+  #   build:
+  #     context: ./provider
+  #     dockerfile: Dockerfile
+  #   container_name: monorepo_provider
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     - REACT_APP_API_URL=http://localhost:8000
+  #     - NODE_ENV=development
+  #   volumes:
+  #     - ./provider:/app:delegated
+  #     - /app/node_modules
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     - backend
+
+  # ==========================================
+  # Web Application (Frontend)
+  # ==========================================
+  # Uncomment when web app is ready
+  # web:
+  #   build:
+  #     context: ./web
+  #     dockerfile: Dockerfile
+  #   container_name: monorepo_web
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3002:3000"
+  #   environment:
+  #     - REACT_APP_API_URL=http://localhost:8000
+  #     - NODE_ENV=development
+  #   volumes:
+  #     - ./web:/app:delegated
+  #     - /app/node_modules
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     - backend
+
+# ==========================================
+# Volumes
+# ==========================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  app_network:
+    driver: bridge
+    name: monorepo_network

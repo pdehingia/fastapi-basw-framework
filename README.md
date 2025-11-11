@@ -61,7 +61,33 @@ Public-facing web application.
 
 ## 🛠️ Quick Start
 
-### Backend Setup
+### Option 1: Docker (Recommended) 🐳
+
+The fastest way to get started:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd fastapi-framework
+
+# Start all services with Docker
+make up
+
+# View logs
+make logs
+
+# Check health
+make health
+```
+
+**Access the services:**
+- Backend API: http://localhost:8000
+- API Documentation: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+### Option 2: Local Development
+
+#### Backend Setup
 
 ```bash
 cd backend
@@ -86,7 +112,7 @@ make run
 
 Visit http://localhost:8000/docs for API documentation.
 
-### Frontend Applications Setup
+#### Frontend Applications Setup
 
 ```bash
 # Admin
@@ -102,19 +128,64 @@ cd web
 # Setup instructions in web/README.md
 ```
 
-## 🐳 Docker
+## 🐳 Docker (Recommended)
 
-Run all services with Docker Compose:
+### Quick Start with Docker
+
+The entire monorepo is fully Dockerized for easy development:
 
 ```bash
-cd backend
+# Start all services
+make up
+
+# Or manually
 docker-compose up -d
 ```
 
 This will start:
-- Backend API (port 8000)
-- PostgreSQL database (port 5432)
-- Redis cache (port 6379)
+- **Backend API** (port 8000) - FastAPI application
+- **PostgreSQL** (port 5432) - Database
+- **Redis** (port 6379) - Cache
+
+### Docker Commands (via Makefile)
+
+```bash
+make help              # Show all available commands
+make up                # Start all services
+make down              # Stop all services
+make logs              # View logs from all services
+make logs-backend      # View backend logs only
+make shell-backend     # Open shell in backend container
+make shell-db          # Open PostgreSQL shell
+make test              # Run tests
+make db-migrate        # Run database migrations
+make health            # Check health of all services
+make urls              # Display all service URLs
+```
+
+### Docker Compose Commands
+
+```bash
+# Build and start
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f backend
+
+# Stop services
+docker-compose down
+
+# Reset everything (⚠️ deletes data)
+docker-compose down -v
+```
+
+### Production Deployment
+
+The backend uses a multi-stage Dockerfile for optimized production builds:
+- Smaller image size (build dependencies removed)
+- Non-root user for security
+- Health checks included
+- Optimized layer caching
 
 ## 📖 Documentation
 
@@ -150,23 +221,35 @@ backend/app/
 
 ### Prerequisites
 
-- **Backend**: Python 3.9+, PostgreSQL (optional), Redis (optional)
+**With Docker (Recommended):**
+- Docker 20.10+
+- Docker Compose 2.0+
+
+**Without Docker:**
+- **Backend**: Python 3.9+, PostgreSQL 15+, Redis 7+
 - **Frontend**: Node.js 18+ (versions may vary per frontend)
 
 ### Common Commands
 
+**With Docker (from root directory):**
 ```bash
-# Backend
+make up              # Start all services
+make down            # Stop all services
+make logs-backend    # View backend logs
+make test            # Run tests
+make db-migrate      # Run migrations
+make shell-backend   # Access backend container
+make help            # See all commands
+```
+
+**Backend (local development):**
+```bash
 cd backend
 make install      # Install dependencies
 make test         # Run tests
 make lint         # Run linters
 make format       # Format code
 make migrate      # Run database migrations
-
-# Docker
-make docker-up    # Start all services
-make docker-down  # Stop all services
 ```
 
 ## 🧪 Testing
