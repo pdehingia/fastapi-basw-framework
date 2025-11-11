@@ -1,1 +1,1 @@
-"""Tests for BASW framework."""
+"""Tests package."""
