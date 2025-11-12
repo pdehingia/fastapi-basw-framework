@@ -19,36 +19,8 @@ depends_on = None
 def upgrade() -> None:
     """Create booking and financial tables with proper ENUMs and constraints."""
     
-    # Create ENUMs
-    booking_status_enum = postgresql.ENUM(
-        'pending', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show', 'refunded',
-        name='booking_status'
-    )
-    booking_status_enum.create(op.get_bind())
-    
-    payment_status_enum = postgresql.ENUM(
-        'pending', 'processing', 'paid', 'failed', 'refunded', 'partially_refunded',
-        name='payment_status'
-    )
-    payment_status_enum.create(op.get_bind())
-    
-    transaction_type_enum = postgresql.ENUM(
-        'payment', 'payout', 'refund', 'wallet_credit', 'wallet_debit', 'subscription_payment', 'commission',
-        name='transaction_type'
-    )
-    transaction_type_enum.create(op.get_bind())
-    
-    transaction_status_enum = postgresql.ENUM(
-        'pending', 'processing', 'completed', 'failed', 'cancelled',
-        name='transaction_status'
-    )
-    transaction_status_enum.create(op.get_bind())
-    
-    wallet_transaction_type_enum = postgresql.ENUM(
-        'credit', 'debit', 'refund', 'bonus', 'penalty', 'withdrawal',
-        name='wallet_transaction_type'
-    )
-    wallet_transaction_type_enum.create(op.get_bind())
+    # Create extensions first
+    op.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
     
     # Create bank_accounts table first (referenced by transactions)
     op.create_table('bank_accounts',
@@ -79,11 +51,10 @@ def upgrade() -> None:
     op.create_index('idx_bank_user', 'bank_accounts', ['user_id', 'is_primary'], unique=False)
     op.create_index('idx_bank_verified', 'bank_accounts', ['is_verified', 'is_active'], unique=False)
     
-    # Add constraint for single primary account per user
+    # Add partial unique index for single primary account per user
     op.execute("""
-        ALTER TABLE bank_accounts 
-        ADD CONSTRAINT uq_bank_user_primary 
-        UNIQUE (user_id, is_primary) 
+        CREATE UNIQUE INDEX uq_bank_user_primary 
+        ON bank_accounts (user_id) 
         WHERE is_primary = TRUE
     """)
     
@@ -93,7 +64,7 @@ def upgrade() -> None:
         sa.Column('transaction_number', sa.VARCHAR(length=50), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('booking_id', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column('transaction_type', transaction_type_enum, nullable=False),
+        sa.Column('transaction_type', sa.Enum('payment', 'payout', 'refund', 'wallet_credit', 'wallet_debit', 'subscription_payment', 'commission', name='transaction_type'), nullable=False),
         sa.Column('amount', sa.NUMERIC(precision=10, scale=2), nullable=False),
         sa.Column('currency', sa.VARCHAR(length=3), server_default='INR', nullable=False),
         sa.Column('gateway', sa.VARCHAR(length=50), server_default='razorpay', nullable=False),
@@ -103,7 +74,7 @@ def upgrade() -> None:
         sa.Column('gateway_payout_id', sa.VARCHAR(length=255), nullable=True),
         sa.Column('payment_method', sa.VARCHAR(length=50), nullable=True),
         sa.Column('payment_details', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
-        sa.Column('status', transaction_status_enum, server_default='pending', nullable=False),
+        sa.Column('status', sa.Enum('pending', 'processing', 'completed', 'failed', 'cancelled', name='transaction_status'), server_default='pending', nullable=False),
         sa.Column('refund_amount', sa.NUMERIC(precision=10, scale=2), nullable=True),
         sa.Column('refund_reason', sa.Text(), nullable=True),
         sa.Column('parent_transaction_id', postgresql.UUID(as_uuid=True), nullable=True),
@@ -162,7 +133,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('wallet_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('transaction_type', wallet_transaction_type_enum, nullable=False),
+        sa.Column('transaction_type', sa.Enum('credit', 'debit', 'refund', 'bonus', 'penalty', 'withdrawal', name='wallet_transaction_type'), nullable=False),
         sa.Column('amount', sa.NUMERIC(precision=10, scale=2), nullable=False),
         sa.Column('balance_before', sa.NUMERIC(precision=10, scale=2), nullable=False),
         sa.Column('balance_after', sa.NUMERIC(precision=10, scale=2), nullable=False),
@@ -200,8 +171,8 @@ def upgrade() -> None:
         sa.Column('location_type', sa.VARCHAR(length=20), nullable=False),
         sa.Column('address_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('special_requests', sa.Text(), nullable=True),
-        sa.Column('status', booking_status_enum, server_default='pending', nullable=False),
-        sa.Column('payment_status', payment_status_enum, server_default='pending', nullable=False),
+        sa.Column('status', sa.Enum('pending', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show', 'refunded', name='booking_status'), server_default='pending', nullable=False),
+        sa.Column('payment_status', sa.Enum('pending', 'processing', 'paid', 'failed', 'refunded', 'partially_refunded', name='payment_status'), server_default='pending', nullable=False),
         sa.Column('confirmed_at', sa.TIMESTAMP(timezone=True), nullable=True),
         sa.Column('started_at', sa.TIMESTAMP(timezone=True), nullable=True),
         sa.Column('completed_at', sa.TIMESTAMP(timezone=True), nullable=True),

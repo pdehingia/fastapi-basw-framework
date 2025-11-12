@@ -19,30 +19,11 @@ depends_on = None
 def upgrade() -> None:
     """Create advanced feature tables: subscriptions, referrals, promos, ads, activity logs."""
     
-    # Create additional ENUMs
-    subscription_plan_enum = postgresql.ENUM(
-        'premium', 'elite',
-        name='subscription_plan'
-    )
-    subscription_plan_enum.create(op.get_bind())
-    
-    subscription_status_enum = postgresql.ENUM(
-        'active', 'cancelled', 'expired', 'paused', 'payment_failed',
-        name='subscription_status'
-    )
-    subscription_status_enum.create(op.get_bind())
-    
-    referral_status_enum = postgresql.ENUM(
-        'pending', 'qualified', 'rewarded', 'expired',
-        name='referral_status'
-    )
-    referral_status_enum.create(op.get_bind())
-    
     # Create subscriptions table
     op.create_table('subscriptions',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('artist_user_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('plan_type', subscription_plan_enum, nullable=False),
+        sa.Column('plan_type', sa.Enum('premium', 'elite', name='subscription_plan'), nullable=False),
         sa.Column('plan_name', sa.VARCHAR(length=100), nullable=False),
         sa.Column('plan_price', sa.NUMERIC(precision=10, scale=2), nullable=False),
         sa.Column('billing_cycle', sa.VARCHAR(length=20), nullable=False),
@@ -53,7 +34,7 @@ def upgrade() -> None:
         sa.Column('current_period_start', sa.Date(), nullable=False),
         sa.Column('current_period_end', sa.Date(), nullable=False),
         sa.Column('razorpay_subscription_id', sa.VARCHAR(length=255), nullable=True),
-        sa.Column('status', subscription_status_enum, server_default='active', nullable=False),
+        sa.Column('status', sa.Enum('active', 'cancelled', 'expired', 'paused', 'payment_failed', name='subscription_status'), server_default='active', nullable=False),
         sa.Column('auto_renew', sa.Boolean(), server_default='true', nullable=True),
         sa.Column('cancel_at_period_end', sa.Boolean(), server_default='false', nullable=True),
         sa.Column('cancelled_at', sa.TIMESTAMP(timezone=True), nullable=True),
@@ -105,7 +86,7 @@ def upgrade() -> None:
         sa.Column('referral_code', sa.VARCHAR(length=50), nullable=False),
         sa.Column('referee_user_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('referee_phone', sa.VARCHAR(length=20), nullable=True),
-        sa.Column('status', referral_status_enum, server_default='pending', nullable=True),
+        sa.Column('status', sa.Enum('pending', 'qualified', 'rewarded', 'expired', name='referral_status'), server_default='pending', nullable=True),
         sa.Column('referee_first_booking_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('qualified_at', sa.TIMESTAMP(timezone=True), nullable=True),
         sa.Column('referrer_reward_amount', sa.NUMERIC(precision=10, scale=2), server_default='100.00', nullable=True),

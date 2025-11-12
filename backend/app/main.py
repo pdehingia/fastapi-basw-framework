@@ -32,8 +32,8 @@ def create_application() -> FastAPI:
     # Create FastAPI app
     app = FastAPI(
         title=settings.PROJECT_NAME,
-        version=settings.VERSION,
-        description=settings.DESCRIPTION,
+        version=settings.PROJECT_VERSION,
+        description="Maya Platform - Advanced Business Management System",
         docs_url="/docs" if settings.ENABLE_DOCS else None,
         redoc_url="/redoc" if settings.ENABLE_DOCS else None,
         openapi_url="/openapi.json" if settings.ENABLE_DOCS else None,
@@ -60,7 +60,7 @@ def create_application() -> FastAPI:
     add_exception_handlers(app)
 
     # Include API router
-    app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+    app.include_router(api_router, prefix=settings.API_V1_STR)
 
     # Root endpoint
     @app.get("/", include_in_schema=False)
@@ -78,18 +78,19 @@ def create_application() -> FastAPI:
     @app.on_event("startup")
     async def startup_event():
         """Run on application startup."""
-        logger.info(f"Starting {settings.PROJECT_NAME} v{settings.VERSION}")
+        logger.info(f"Starting {settings.PROJECT_NAME} v{settings.PROJECT_VERSION}")
         logger.info(f"Environment: {settings.ENVIRONMENT}")
         logger.info(f"Debug mode: {settings.DEBUG}")
 
         # Initialize database (in development only)
         # In production, use Alembic migrations
-        if settings.is_development:
-            try:
-                init_db()
-                logger.info("Database initialized")
-            except Exception as e:
-                logger.error(f"Database initialization failed: {e}")
+        # Temporarily disabled to use Alembic migrations instead
+        # if settings.is_development:
+        #     try:
+        #         init_db()
+        #         logger.info("Database initialized")
+        #     except Exception as e:
+        #         logger.error(f"Database initialization failed: {e}")
 
     # Shutdown event
     @app.on_event("shutdown")

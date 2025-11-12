@@ -22,6 +22,7 @@ def upgrade() -> None:
     # Enable PostgreSQL extensions
     op.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
     op.execute('CREATE EXTENSION IF NOT EXISTS "pgcrypto"')
+    op.execute('CREATE EXTENSION IF NOT EXISTS "citext"')
     op.execute('CREATE EXTENSION IF NOT EXISTS "postgis"')
     op.execute('CREATE EXTENSION IF NOT EXISTS "pg_trgm"')
     
@@ -151,11 +152,10 @@ def upgrade() -> None:
     op.create_index('idx_otp_expires_at', 'otp_verifications', ['expires_at'], unique=False)
     op.create_index('idx_otp_user_id', 'otp_verifications', ['user_id'], unique=False)
     
-    # Add unique constraint for unverified OTPs
+    # Add partial unique index for unverified OTPs
     op.execute("""
-        ALTER TABLE otp_verifications 
-        ADD CONSTRAINT uq_otp_phone_purpose_unverified 
-        UNIQUE (phone_number, purpose) 
+        CREATE UNIQUE INDEX uq_otp_phone_purpose_unverified 
+        ON otp_verifications (phone_number, purpose) 
         WHERE is_verified = FALSE
     """)
 

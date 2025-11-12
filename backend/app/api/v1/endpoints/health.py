@@ -26,7 +26,7 @@ async def health_check():
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
         "service": settings.PROJECT_NAME,
-        "version": settings.VERSION
+        "version": settings.PROJECT_VERSION
     }
 
 
@@ -45,7 +45,7 @@ async def detailed_health_check(db: Session = Depends(get_db)):
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
         "service": settings.PROJECT_NAME,
-        "version": settings.VERSION,
+        "version": settings.PROJECT_VERSION,
         "environment": settings.ENVIRONMENT,
         "checks": {}
     }

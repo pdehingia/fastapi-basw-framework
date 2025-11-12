@@ -12,31 +12,24 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
-    environment:
-      # Database
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_db
-      # Redis
-      - REDIS_URL=redis://redis:6379/0
-      # App settings
-      - ENVIRONMENT=development
-      - DEBUG=True
-      - SECRET_KEY=dev-secret-key-change-in-production
-      - API_V1_PREFIX=/api/v1
-      # CORS
-      - CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:3002
+    env_file:
+      - ./backend/.env
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mongodb:
+        condition: service_healthy
     volumes:
       - ./backend/app:/app/app:delegated
       - ./backend/alembic:/app/alembic:delegated
+      - ./backend/alembic.ini:/app/alembic.ini:delegated
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
       - app_network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -46,22 +39,50 @@ services:
   # PostgreSQL Database
   # ==========================================
   db:
-    image: postgres:15-alpine
+    image: postgis/postgis:15-3.3-alpine
     container_name: monorepo_postgres
     restart: unless-stopped
+    env_file:
+      - ./backend/.env
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=app_db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # MongoDB Database
+  # ==========================================
+  mongodb:
+    image: mongo:7-jammy
+    container_name: monorepo_mongodb
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./backend/scripts/init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -73,18 +94,56 @@ services:
     image: redis:7-alpine
     container_name: monorepo_redis
     restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD:-}"
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes
     networks:
       - app_network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "--no-auth-warning", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # ==========================================
+  # Adminer Database Management (PostgreSQL)
+  # ==========================================
+  adminer:
+    image: adminer:4.8.1
+    container_name: monorepo_adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  # ==========================================
+  # MongoDB Express (MongoDB Management)
+  # ==========================================
+  mongo_express:
+    image: mongo-express:1.0.2
+    container_name: monorepo_mongo_express
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGODB_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGODB_PASSWORD}
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      - mongodb
+    networks:
+      - app_network
 
   # ==========================================
   # Admin Dashboard (Frontend)
@@ -162,6 +221,8 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  mongodb_data:
     driver: local
 
 # ==========================================

@@ -1,7 +1,7 @@
 # ==========================================
 # Stage 1: Builder
 # ==========================================
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 # Set working directory
 WORKDIR /app
@@ -20,9 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
-COPY requirements.txt .
+COPY requirements-minimal.txt .
 RUN pip install --upgrade pip && \
-    pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+    pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements-minimal.txt
 
 # ==========================================
 # Stage 2: Runtime
@@ -46,8 +46,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
     gnupg \
-    && wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add - \
-    && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list \
+    ca-certificates \
+    lsb-release \
+    && wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | gpg --dearmor | tee /usr/share/keyrings/mongodb-server-6.0.gpg >/dev/null \
+    && echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends mongodb-mongosh \
     && rm -rf /var/lib/apt/lists/*
@@ -58,7 +60,7 @@ RUN useradd -m -u 1000 appuser && \
 
 # Copy wheels from builder and install
 COPY --from=builder /app/wheels /wheels
-COPY --from=builder /app/requirements.txt .
+COPY --from=builder /app/requirements-minimal.txt .
 RUN pip install --upgrade pip && \
     pip install --no-cache /wheels/* && \
     rm -rf /wheels
