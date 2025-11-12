@@ -42,7 +42,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
+    redis-tools \
     curl \
+    wget \
+    gnupg \
+    && wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add - \
+    && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends mongodb-mongosh \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -62,12 +69,15 @@ USER appuser
 # Copy application code with proper ownership
 COPY --chown=appuser:appuser . .
 
+# Make startup script executable
+RUN chmod +x /app/scripts/docker-startup.sh
+
 # Expose port
 EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8000/api/v1/health || exit 1
 
-# Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run application with startup script
+CMD ["/app/scripts/docker-startup.sh"]

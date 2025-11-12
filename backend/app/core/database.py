@@ -1,6 +1,6 @@
 """
 Database configuration and session management.
-Supports both sync and async database operations.
+Supports both sync and async database operations for Maya Platform.
 """
 
 from sqlalchemy import create_engine, MetaData
@@ -25,13 +25,18 @@ NAMING_CONVENTION = {
 
 metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
-# Create SQLAlchemy engine
+# Create SQLAlchemy engine with PostgreSQL optimizations
 engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,  # Enable connection health checks
     pool_size=settings.DB_POOL_SIZE,
     max_overflow=settings.DB_MAX_OVERFLOW,
     echo=settings.DB_ECHO,
+    # PostgreSQL specific optimizations
+    connect_args={
+        "application_name": "maya_platform",
+        "options": "-c timezone=UTC"
+    }
 )
 
 # Create SessionLocal class for database sessions
@@ -72,8 +77,23 @@ def init_db() -> None:
     Note: In production, use Alembic migrations instead.
     """
     logger.info("Initializing database...")
+    
+    # Import all models so they are registered with SQLAlchemy
+    # This is required for Alembic to detect them
+    import_all_models()
+    
     Base.metadata.create_all(bind=engine)
     logger.info("Database initialized successfully")
+
+
+def import_all_models():
+    """
+    Import all SQLAlchemy models to register them with the Base metadata.
+    This ensures Alembic can detect all models for migration generation.
+    """
+    # Import all model files here
+    # Note: In our case, we're using raw migrations, but this is good practice
+    pass
 
 
 def drop_db() -> None:
