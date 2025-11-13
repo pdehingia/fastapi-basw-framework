@@ -1,0 +1,2005 @@
+{
+	"info": {
+		"_postman_id": "maya-admin-panel-api",
+		"name": "Maya Admin Panel - Complete API Collection",
+		"description": "Comprehensive collection of all Maya Platform Admin APIs (103+ endpoints)\n\n## 🚀 READY TO TEST - NO SETUP REQUIRED!\nThis collection includes:\n- ✅ Realistic request bodies and examples\n- ✅ Pre-configured environment variables\n- ✅ Sample data for immediate testing\n- ✅ Authentication flow with token management\n\n## Features Included:\n- 🔐 Authentication (4 endpoints)\n- 👥 User Management (10 endpoints) \n- 📅 Booking Management (7 endpoints)\n- 💳 Payment Management (8 endpoints)\n- ⭐ Review Management (7 endpoints)\n- 🎨 Artist Verification (6 endpoints)\n- 🚀 Promotions & Marketing (9 endpoints)\n- 🎧 Support Management (10 endpoints)\n- 📊 Analytics & Reports (8 endpoints)\n- ⚙️ System Configuration (9 endpoints)\n- 👥 Admin User Management (9 endpoints)\n\n## Quick Start:\n1. Import this collection into Postman\n2. Run 'Admin Login' to authenticate\n3. Start testing any endpoint immediately!\n\n## All Variables Pre-Configured:\n- Server URL, credentials, and sample IDs included\n- Realistic test data in request bodies\n- No external files or database setup needed",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "maya-admin-collection"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test for successful login",
+									"pm.test('Login successful', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Extract and store access token",
+									"if (pm.response.code === 200) {",
+									"    try {",
+									"        const response = pm.response.json();",
+									"        // Check for standardized response format",
+									"        if (response.success && response.data && response.data.access_token) {",
+									"            pm.collectionVariables.set('access_token', response.data.access_token);",
+									"            console.log('✅ Access token extracted and stored:', response.data.access_token.substring(0, 20) + '...');",
+									"        } else if (response.access_token) {",
+									"            // Fallback for direct access_token",
+									"            pm.collectionVariables.set('access_token', response.access_token);",
+									"            console.log('✅ Access token extracted and stored (fallback)');",
+									"        } else {",
+									"            console.log('❌ No access_token found in response. Response structure:', JSON.stringify(response, null, 2));",
+									"        }",
+									"    } catch (error) {",
+									"        console.log('❌ Failed to parse response:', error);",
+									"    }",
+									"} else {",
+									"    console.log('❌ Login failed with status:', pm.response.code);",
+									"    console.log('Response:', pm.response.text());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{admin_email}}",
+									"description": "Email address used as username"
+								},
+								{
+									"key": "password", 
+									"value": "{{admin_password}}",
+									"description": "Admin password"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "auth", "login"]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "admin@maya.com"
+										},
+										{
+											"key": "password",
+											"value": "admin123"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/auth/login",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "auth", "login"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"success\":true,\"data\":{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjZjQyZTIwNi05MmQwLTQ5OWEtODgwOC0xMDg4OGJhOGNkYTkiLCJlbWFpbCI6ImFkbWluQG1heWEuY29tIiwiZG9tYWluIjoiYWRtaW4iLCJpc19hY3RpdmUiOnRydWUsImV4cCI6MTczMjA5MTQwMn0.token_signature_here\",\"token_type\":\"bearer\",\"expires_in\":1440}}"
+						}
+					]
+				},
+				{
+					"name": "Get Admin Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "auth", "me"]
+						},
+						"description": "Get current authenticated admin user profile"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/auth/me",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "auth", "me"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"success\":true,\"data\":{\"id\":\"cf42e206-92d0-499a-8808-10888ba8cda9\",\"email\":\"admin@maya.com\",\"username\":\"superadmin\",\"full_name\":\"Super Administrator\",\"phone\":\"+1234567890\",\"is_active\":true,\"is_verified\":true,\"is_superuser\":true,\"department\":\"IT Administration\",\"employee_id\":\"EMP001\",\"can_manage_users\":false,\"can_manage_system\":false,\"can_view_reports\":false,\"last_login\":null,\"created_at\":\"2025-11-13T12:03:23.948375+00:00\",\"updated_at\":\"2025-11-13T12:03:23.948375+00:00\"},\"message\":\"Profile retrieved successfully\"}"
+						}
+					]
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/auth/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "auth", "refresh"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👥 User Management",
+			"item": [
+				{
+					"name": "Get Users Dashboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "dashboard"]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/users/dashboard",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "users", "dashboard"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"success\":true,\"data\":{\"total_admin_users\":3,\"total_provider_users\":0,\"total_customers\":0,\"active_sessions\":0,\"recent_logins\":0,\"system_alerts\":0},\"message\":\"Dashboard statistics retrieved successfully\"}"
+						}
+					]
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/?page=1&page_size=20&is_active=true&search=support",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", ""],
+							"query": [
+								{"key": "page", "value": "1", "description": "Page number (starts from 1)"},
+								{"key": "page_size", "value": "20", "description": "Items per page (max 100)"},
+								{"key": "is_active", "value": "true", "description": "Filter by active status", "disabled": true},
+								{"key": "search", "value": "support", "description": "Search by email or full name", "disabled": true}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/users/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "users", ""]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"success\":true,\"data\":{\"items\":[{\"id\":\"cf42e206-92d0-499a-8808-10888ba8cda9\",\"email\":\"admin@maya.com\",\"username\":\"superadmin\",\"full_name\":\"Super Administrator\",\"phone\":\"+1234567890\",\"is_active\":true,\"is_verified\":true,\"is_superuser\":true,\"department\":\"IT Administration\",\"employee_id\":\"EMP001\",\"can_manage_users\":false,\"can_manage_system\":false,\"can_view_reports\":false,\"last_login\":null,\"created_at\":\"2025-11-13T12:03:23.948375+00:00\",\"updated_at\":\"2025-11-13T12:03:23.948375+00:00\"},{\"id\":\"f1258ac5-9f01-43c8-b615-822e0e1343a5\",\"email\":\"support@maya.com\",\"username\":\"support_admin\",\"full_name\":\"Support Administrator\",\"phone\":\"+1234567891\",\"is_active\":true,\"is_verified\":true,\"is_superuser\":false,\"department\":\"Customer Support\",\"employee_id\":\"EMP002\",\"can_manage_users\":false,\"can_manage_system\":false,\"can_view_reports\":false,\"last_login\":null,\"created_at\":\"2025-11-13T12:03:23.948375+00:00\",\"updated_at\":\"2025-11-13T12:03:23.948375+00:00\"},{\"id\":\"657c16eb-9556-4ca0-8236-9654e49e25ae\",\"email\":\"moderator@maya.com\",\"username\":\"content_mod\",\"full_name\":\"Content Moderator\",\"phone\":\"+1234567892\",\"is_active\":true,\"is_verified\":true,\"is_superuser\":false,\"department\":\"Content Management\",\"employee_id\":\"EMP003\",\"can_manage_users\":false,\"can_manage_system\":false,\"can_view_reports\":false,\"last_login\":null,\"created_at\":\"2025-11-13T12:03:23.948375+00:00\",\"updated_at\":\"2025-11-13T12:03:23.948375+00:00\"}],\"metadata\":{\"page\":1,\"page_size\":20,\"total_items\":3,\"total_pages\":1,\"has_next\":false,\"has_previous\":false}},\"message\":\"Users retrieved successfully\"}"
+						}
+					]
+				},
+				{
+					"name": "Get User Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/{{sample_admin_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "{{sample_admin_id}}"]
+						},
+						"description": "Get details of a specific admin user by UUID"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/users/cf42e206-92d0-499a-8808-10888ba8cda9",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "users", "cf42e206-92d0-499a-8808-10888ba8cda9"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"id\":\"cf42e206-92d0-499a-8808-10888ba8cda9\",\"email\":\"admin@maya.com\",\"username\":\"superadmin\",\"full_name\":\"Super Administrator\",\"phone\":\"+1234567890\",\"is_active\":true,\"is_verified\":true,\"is_superuser\":true,\"department\":\"IT Administration\",\"employee_id\":\"EMP001\",\"can_manage_users\":false,\"can_manage_system\":false,\"can_view_reports\":false,\"last_login\":null,\"created_at\":\"2025-11-13T12:03:23.948375+00:00\",\"updated_at\":\"2025-11-13T12:03:23.948375+00:00\"}"
+						}
+					]
+				},
+				{
+					"name": "Update User Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"suspended\",\n    \"reason\": \"Policy violation\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/1/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "1", "status"]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Search Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/search?query=john&search_type=name",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "search"],
+							"query": [
+								{"key": "query", "value": "john"},
+								{"key": "search_type", "value": "name"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Export Users Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"format\": \"csv\",\n    \"filters\": {\n        \"user_type\": \"artist\",\n        \"status\": \"active\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/export",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "export"]
+						}
+					}
+				},
+				{
+					"name": "Get User Activity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/{{sample_user_id}}/activity?page=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "{{sample_user_id}}", "activity"],
+							"query": [{"key": "page", "value": "1"}]
+						}
+					}
+				},
+				{
+					"name": "Send User Notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"Important update about your account - Your profile has been verified!\",\n    \"type\": \"success\",\n    \"send_email\": true,\n    \"send_sms\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/{{sample_user_id}}/notifications",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "{{sample_user_id}}", "notifications"]
+						}
+					}
+				},
+				{
+					"name": "Create Admin User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"newadmin@maya.com\",\n    \"password\": \"SecurePassword123\",\n    \"confirm_password\": \"SecurePassword123\",\n    \"first_name\": \"New\",\n    \"last_name\": \"Admin\",\n    \"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", ""]
+						},
+						"description": "Create a new admin user (requires superuser permissions)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"newadmin@maya.com\",\n    \"password\": \"SecurePassword123\",\n    \"confirm_password\": \"SecurePassword123\",\n    \"first_name\": \"New\",\n    \"last_name\": \"Admin\",\n    \"role\": \"admin\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/users/",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "users", ""]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"success\":true,\"data\":{\"id\":\"a5e89c62-3419-432e-b08c-fa62bb284e0d\",\"email\":\"newadmin@maya.com\",\"username\":\"newadmin\",\"full_name\":\"New Admin\",\"phone\":null,\"is_active\":true,\"is_verified\":true,\"is_superuser\":false,\"department\":null,\"employee_id\":null,\"can_manage_users\":false,\"can_manage_system\":false,\"can_view_reports\":false,\"last_login\":null,\"created_at\":\"2025-11-13T15:30:00.000000+00:00\",\"updated_at\":\"2025-11-13T15:30:00.000000+00:00\"},\"message\":\"User created successfully\"}"
+						}
+					]
+				},
+				{
+					"name": "Update Admin User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"Updated Admin Name\",\n    \"department\": \"Operations\",\n    \"phone\": \"+1234567890\",\n    \"can_manage_users\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/{{sample_admin_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "{{sample_admin_id}}"]
+						},
+						"description": "Update admin user information"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"full_name\": \"Updated Admin Name\",\n    \"department\": \"Operations\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/users/{{sample_admin_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "users", "{{sample_admin_id}}"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"success\":true,\"data\":{\"id\":\"cf42e206-92d0-499a-8808-10888ba8cda9\",\"email\":\"admin@maya.com\",\"username\":\"superadmin\",\"full_name\":\"Updated Admin Name\",\"phone\":\"+1234567890\",\"is_active\":true,\"is_verified\":true,\"is_superuser\":true,\"department\":\"Operations\",\"employee_id\":\"EMP001\",\"can_manage_users\":true,\"can_manage_system\":false,\"can_view_reports\":false,\"last_login\":null,\"created_at\":\"2025-11-13T12:03:23.948375+00:00\",\"updated_at\":\"2025-11-13T15:35:00.000000+00:00\"},\"message\":\"User updated successfully\"}"
+						}
+					]
+				},
+				{
+					"name": "Delete Admin User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/{{sample_admin_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "{{sample_admin_id}}"]
+						},
+						"description": "Delete admin user (requires superuser permissions, cannot delete self)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admin/v1/users/a5e89c62-3419-432e-b08c-fa62bb284e0d",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "v1", "users", "a5e89c62-3419-432e-b08c-fa62bb284e0d"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\"success\":true,\"data\":{\"deleted_user_id\":\"a5e89c62-3419-432e-b08c-fa62bb284e0d\"},\"message\":\"User deleted successfully\"}"
+						}
+					]
+				},
+				{
+					"name": "Bulk User Actions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_ids\": [\"{{sample_user_id}}\", \"123e4567-e89b-12d3-a456-426614174010\", \"123e4567-e89b-12d3-a456-426614174011\"],\n    \"action\": \"suspend\",\n    \"reason\": \"Violation of community guidelines - inappropriate content\",\n    \"notify_users\": true,\n    \"suspend_duration_days\": 7\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/users/bulk-actions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "users", "bulk-actions"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📅 Booking Management",
+			"item": [
+				{
+					"name": "Get All Bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/bookings/?page=1&status=confirmed&date_from=2024-01-01",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "bookings", ""],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "status", "value": "confirmed"},
+								{"key": "date_from", "value": "2024-01-01"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Booking Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/bookings/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "bookings", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Booking Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"cancelled\",\n    \"reason\": \"Customer request\",\n    \"refund_amount\": 150.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/bookings/1/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "bookings", "1", "status"]
+						}
+					}
+				},
+				{
+					"name": "Get Booking Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/bookings/statistics?period=monthly&year=2024",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "bookings", "statistics"],
+							"query": [
+								{"key": "period", "value": "monthly"},
+								{"key": "year", "value": "2024"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Export Booking Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"format\": \"excel\",\n    \"date_range\": {\n        \"start_date\": \"2024-11-01\",\n        \"end_date\": \"2024-11-30\"\n    },\n    \"filters\": {\n        \"status\": \"completed\",\n        \"service_type\": \"makeup\",\n        \"min_amount\": 50\n    },\n    \"include_fields\": [\"booking_id\", \"customer_name\", \"provider_name\", \"service_type\", \"amount\", \"status\", \"booking_date\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/bookings/export",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "bookings", "export"]
+						}
+					}
+				},
+				{
+					"name": "Handle Booking Dispute",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"resolution\": \"partial_refund\",\n    \"refund_percentage\": 50,\n    \"admin_notes\": \"Service quality issue resolved after investigation. Customer had valid concerns about service delivery.\",\n    \"notify_customer\": true,\n    \"notify_provider\": true,\n    \"resolution_details\": \"Partial refund approved due to incomplete service delivery.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/bookings/{{sample_booking_id}}/dispute",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "bookings", "{{sample_booking_id}}", "dispute"]
+						}
+					}
+				},
+				{
+					"name": "Get Calendar View",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/bookings/calendar?month=2024-06&artist_id=123",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "bookings", "calendar"],
+							"query": [
+								{"key": "month", "value": "2024-06"},
+								{"key": "artist_id", "value": "123"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "💳 Payment Management",
+			"item": [
+				{
+					"name": "Get All Payments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/?page=1&status=completed&date_from=2024-01-01",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", ""],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "status", "value": "completed"},
+								{"key": "date_from", "value": "2024-01-01"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Payment Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", "1"]
+						}
+					}
+				},
+				{
+					"name": "Process Refund",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 150.00,\n    \"reason\": \"Service cancellation due to provider illness\",\n    \"refund_type\": \"full\",\n    \"admin_notes\": \"Emergency cancellation - full refund approved\",\n    \"notify_customer\": true,\n    \"processing_fee_waived\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/{{sample_payment_id}}/refund",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", "{{sample_payment_id}}", "refund"]
+						}
+					}
+				},
+				{
+					"name": "Get Disputes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/disputes?status=open&page=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", "disputes"],
+							"query": [
+								{"key": "status", "value": "open"},
+								{"key": "page", "value": "1"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Resolve Dispute",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"resolution\": \"favor_customer\",\n    \"refund_amount\": 75.00,\n    \"admin_notes\": \"Valid complaint, partial refund issued\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/disputes/1/resolve",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", "disputes", "1", "resolve"]
+						}
+					}
+				},
+				{
+					"name": "Get Financial Reports",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/reports?period=monthly&year=2024",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", "reports"],
+							"query": [
+								{"key": "period", "value": "monthly"},
+								{"key": "year", "value": "2024"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Export Payment Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"format\": \"csv\",\n    \"date_range\": {\n        \"start_date\": \"2024-11-01\",\n        \"end_date\": \"2024-11-30\"\n    },\n    \"filters\": {\n        \"status\": \"completed\",\n        \"payment_method\": \"credit_card\",\n        \"min_amount\": 25.00\n    },\n    \"include_refunds\": true,\n    \"group_by\": \"payment_method\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/export",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", "export"]
+						}
+					}
+				},
+				{
+					"name": "Manage Platform Fees",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"artist_commission_rate\": 15.0,\n    \"platform_fee_rate\": 5.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/payments/platform-fees",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "payments", "platform-fees"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⭐ Review Management",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/reviews/?page=1&rating=5&status=published",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "reviews", ""],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "rating", "value": "5"},
+								{"key": "status", "value": "published"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Review Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/reviews/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "reviews", "1"]
+						}
+					}
+				},
+				{
+					"name": "Moderate Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"approved\",\n    \"admin_notes\": \"Review meets community guidelines\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/reviews/1/moderate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "reviews", "1", "moderate"]
+						}
+					}
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/reviews/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "reviews", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Review Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/reviews/analytics?period=monthly",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "reviews", "analytics"],
+							"query": [{"key": "period", "value": "monthly"}]
+						}
+					}
+				},
+				{
+					"name": "Bulk Moderate Reviews",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"review_ids\": [\"{{sample_review_id}}\", \"012b3456-c78d-90e1-f234-426614174020\", \"012b3456-c78d-90e1-f234-426614174021\"],\n    \"action\": \"approve\",\n    \"admin_notes\": \"Bulk approval - all reviews meet community guidelines and provide constructive feedback\",\n    \"notify_reviewers\": false,\n    \"notify_providers\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/reviews/bulk-moderate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "reviews", "bulk-moderate"]
+						}
+					}
+				},
+				{
+					"name": "Get Flagged Reviews",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/reviews/flagged?page=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "reviews", "flagged"],
+							"query": [{"key": "page", "value": "1"}]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎨 Artist Verification",
+			"item": [
+				{
+					"name": "Get Verification Queue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/artist-verification/verification-queue?status=pending&page=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "artist-verification", "verification-queue"],
+							"query": [
+								{"key": "status", "value": "pending"},
+								{"key": "page", "value": "1"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Verification Request Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/artist-verification/verification-queue/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "artist-verification", "verification-queue", "1"]
+						}
+					}
+				},
+				{
+					"name": "Approve/Reject Verification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"decision\": \"approved\",\n    \"verification_badge\": \"verified_pro\",\n    \"notes\": \"All documents verified successfully\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/artist-verification/verification-queue/1/decision",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "artist-verification", "verification-queue", "1", "decision"]
+						}
+					}
+				},
+				{
+					"name": "Get Portfolio Moderation Queue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/artist-verification/portfolio/moderation-queue?status=pending",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "artist-verification", "portfolio", "moderation-queue"],
+							"query": [{"key": "status", "value": "pending"}]
+						}
+					}
+				},
+				{
+					"name": "Moderate Portfolio Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"approved\",\n    \"notes\": \"Image meets quality standards\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/artist-verification/portfolio/1/moderate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "artist-verification", "portfolio", "1", "moderate"]
+						}
+					}
+				},
+				{
+					"name": "Bulk Moderate Portfolio",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}"}]
+						},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"image_ids\": [1, 2, 3],\n    \"action\": \"approved\",\n    \"notes\": \"Bulk approval - all images meet standards\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/artist-verification/portfolio/bulk-moderate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "artist-verification", "portfolio", "bulk-moderate"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🚀 Promotions & Marketing",
+			"item": [
+				{
+					"name": "Get Promotion Campaigns",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/campaigns?status=active",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "campaigns"],
+							"query": [{"key": "status", "value": "active"}]
+						}
+					}
+				},
+				{
+					"name": "Create Promotion Campaign",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Holiday Makeup Special 2024\",\n    \"description\": \"25% off on all makeup services for the holiday season\",\n    \"type\": \"discount\",\n    \"discount_percentage\": 25,\n    \"start_date\": \"2024-12-01T00:00:00\",\n    \"end_date\": \"2024-12-31T23:59:59\",\n    \"target_audience\": \"all_users\",\n    \"usage_limit\": 500,\n    \"minimum_booking_amount\": 75,\n    \"applicable_services\": [\"makeup\", \"hair-styling\"],\n    \"promo_code\": \"HOLIDAY25\",\n    \"is_stackable\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/campaigns",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "campaigns"]
+						}
+					}
+				},
+				{
+					"name": "Update Promotion Campaign",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Summer Special 2024 - Updated\",\n    \"description\": \"40% off on all bookings\",\n    \"discount_percentage\": 40,\n    \"status\": \"active\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/campaigns/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "campaigns", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Coupon Codes",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/coupons?status=active",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "coupons"],
+							"query": [{"key": "status", "value": "active"}]
+						}
+					}
+				},
+				{
+					"name": "Create Coupon Code",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"SUMMER30\",\n    \"description\": \"30% discount for summer\",\n    \"discount_type\": \"percentage\",\n    \"discount_value\": 30,\n    \"usage_limit\": 500,\n    \"per_user_limit\": 1,\n    \"valid_from\": \"2024-06-01T00:00:00\",\n    \"valid_until\": \"2024-08-31T23:59:59\",\n    \"minimum_amount\": 50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/coupons",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "coupons"]
+						}
+					}
+				},
+				{
+					"name": "Get Referral Program Stats",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/referrals/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "referrals", "stats"]
+						}
+					}
+				},
+				{
+					"name": "Update Referral Program",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"referrer_reward_type\": \"percentage\",\n    \"referrer_reward_value\": 10,\n    \"referee_reward_type\": \"percentage\",\n    \"referee_reward_value\": 15,\n    \"minimum_booking_amount\": 75,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/referrals/config",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "referrals", "config"]
+						}
+					}
+				},
+				{
+					"name": "Send Email Campaign",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"Special Summer Offers!\",\n    \"template\": \"summer_promotion\",\n    \"target_audience\": \"active_users\",\n    \"variables\": {\n        \"discount_code\": \"SUMMER30\",\n        \"valid_until\": \"August 31, 2024\"\n    },\n    \"schedule_time\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/email-campaigns",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "email-campaigns"]
+						}
+					}
+				},
+				{
+					"name": "Get Marketing Analytics",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/promotions/analytics?start_date=2024-01-01&end_date=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "promotions", "analytics"],
+							"query": [
+								{"key": "start_date", "value": "2024-01-01"},
+								{"key": "end_date", "value": "2024-12-31"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎧 Support Management",
+			"item": [
+				{
+					"name": "Get Support Tickets",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/tickets?status=open&priority=high&page=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "tickets"],
+							"query": [
+								{"key": "status", "value": "open"},
+								{"key": "priority", "value": "high"},
+								{"key": "page", "value": "1"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Ticket Detail",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/tickets/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "tickets", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Ticket Status",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"in_progress\",\n    \"assigned_to\": \"admin@maya.com\",\n    \"priority\": \"medium\",\n    \"internal_notes\": \"Escalating to technical team\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/tickets/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "tickets", "1"]
+						}
+					}
+				},
+				{
+					"name": "Add Ticket Reply",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"Thank you for contacting Maya Support. I've reviewed your booking issue and have processed a partial refund of $75. You should see this reflected in your account within 3-5 business days. Is there anything else I can help you with?\",\n    \"is_internal\": false,\n    \"send_email_notification\": true,\n    \"escalate_to_supervisor\": false,\n    \"attachments\": [],\n    \"reply_type\": \"resolution\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/tickets/{{sample_ticket_id}}/replies",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "tickets", "{{sample_ticket_id}}", "replies"]
+						}
+					}
+				},
+				{
+					"name": "Get FAQ Categories",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/faq/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "faq", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Create FAQ",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"How do I cancel a booking?\",\n    \"answer\": \"You can cancel your booking by going to your dashboard and clicking the 'Cancel Booking' button. Please note our cancellation policy.\",\n    \"category_id\": 1,\n    \"order\": 1,\n    \"is_published\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/faq",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "faq"]
+						}
+					}
+				},
+				{
+					"name": "Update FAQ",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"How do I cancel a booking? (Updated)\",\n    \"answer\": \"You can cancel your booking by going to your dashboard and clicking the 'Cancel Booking' button. Cancellations made 24+ hours before the appointment are free.\",\n    \"is_published\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/faq/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "faq", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Knowledge Base Articles",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/knowledge-base/articles?category=booking&status=published",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "knowledge-base", "articles"],
+							"query": [
+								{"key": "category", "value": "booking"},
+								{"key": "status", "value": "published"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Knowledge Base Article",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Complete Guide to Booking Artists\",\n    \"content\": \"This comprehensive guide covers everything you need to know about booking artists through Maya platform...\",\n    \"category\": \"booking\",\n    \"tags\": [\"booking\", \"artists\", \"guide\"],\n    \"status\": \"published\",\n    \"featured\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/knowledge-base/articles",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "knowledge-base", "articles"]
+						}
+					}
+				},
+				{
+					"name": "Get Support Analytics",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/support/analytics?start_date=2024-01-01&end_date=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "support", "analytics"],
+							"query": [
+								{"key": "start_date", "value": "2024-01-01"},
+								{"key": "end_date", "value": "2024-12-31"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Analytics & Reports",
+			"item": [
+				{
+					"name": "Get Dashboard Overview",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Get User Analytics",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/users?start_date=2024-01-01&end_date=2024-12-31&metric=registrations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "users"],
+							"query": [
+								{"key": "start_date", "value": "2024-01-01"},
+								{"key": "end_date", "value": "2024-12-31"},
+								{"key": "metric", "value": "registrations"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Booking Analytics",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/bookings?start_date=2024-01-01&end_date=2024-12-31&group_by=month",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "bookings"],
+							"query": [
+								{"key": "start_date", "value": "2024-01-01"},
+								{"key": "end_date", "value": "2024-12-31"},
+								{"key": "group_by", "value": "month"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Financial Reports",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/financial?start_date=2024-01-01&end_date=2024-12-31&type=revenue",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "financial"],
+							"query": [
+								{"key": "start_date", "value": "2024-01-01"},
+								{"key": "end_date", "value": "2024-12-31"},
+								{"key": "type", "value": "revenue"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Platform Performance",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/performance?metric=response_time&period=last_24h",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "performance"],
+							"query": [
+								{"key": "metric", "value": "response_time"},
+								{"key": "period", "value": "last_24h"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Artist Performance Analytics",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/artists/performance?start_date=2024-01-01&end_date=2024-12-31&metric=bookings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "artists", "performance"],
+							"query": [
+								{"key": "start_date", "value": "2024-01-01"},
+								{"key": "end_date", "value": "2024-12-31"},
+								{"key": "metric", "value": "bookings"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Generate Custom Report",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"report_type\": \"provider_performance\",\n    \"date_range\": {\n        \"start_date\": \"2024-10-01\",\n        \"end_date\": \"2024-11-30\"\n    },\n    \"metrics\": [\"booking_count\", \"average_rating\", \"revenue_generated\", \"response_time\"],\n    \"filters\": {\n        \"service_type\": \"makeup\",\n        \"location\": \"all\",\n        \"min_rating\": 4.0\n    },\n    \"format\": \"excel\",\n    \"include_charts\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/reports/generate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "reports", "generate"]
+						}
+					}
+				},
+				{
+					"name": "Export Data",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data_type\": \"booking_analytics\",\n    \"date_range\": {\n        \"start_date\": \"2024-11-01\",\n        \"end_date\": \"2024-11-30\"\n    },\n    \"format\": \"csv\",\n    \"filters\": {\n        \"status\": \"completed\",\n        \"service_type\": [\"makeup\", \"hair-styling\"],\n        \"min_amount\": 50\n    },\n    \"include_customer_data\": false,\n    \"anonymize_data\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/analytics/export",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "analytics", "export"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⚙️ System Configuration",
+			"item": [
+				{
+					"name": "Get System Settings",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/settings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "settings"]
+						}
+					}
+				},
+				{
+					"name": "Update System Setting",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"key\": \"booking.cancellation_hours\",\n    \"value\": \"24\",\n    \"description\": \"Minimum hours before booking to allow cancellation\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/settings/booking.cancellation_hours",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "settings", "booking.cancellation_hours"]
+						}
+					}
+				},
+				{
+					"name": "Get Platform Fees",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/fees",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "fees"]
+						}
+					}
+				},
+				{
+					"name": "Update Platform Fees",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"artist_commission_rate\": 15.0,\n    \"platform_fee_rate\": 5.0,\n    \"payment_processing_fee\": 2.9,\n    \"cancellation_fee\": 10.0,\n    \"minimum_booking_amount\": 50.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/fees",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "fees"]
+						}
+					}
+				},
+				{
+					"name": "Get Email Templates",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/email-templates?type=booking_confirmation",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "email-templates"],
+							"query": [{"key": "type", "value": "booking_confirmation"}]
+						}
+					}
+				},
+				{
+					"name": "Update Email Template",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"Booking Confirmation - {{booking_id}}\",\n    \"html_content\": \"<h1>Your booking is confirmed!</h1><p>Details: {{booking_details}}</p>\",\n    \"text_content\": \"Your booking {{booking_id}} is confirmed. Details: {{booking_details}}\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/email-templates/booking_confirmation",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "email-templates", "booking_confirmation"]
+						}
+					}
+				},
+				{
+					"name": "Get System Health",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/health",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "health"]
+						}
+					}
+				},
+				{
+					"name": "Get API Logs",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/logs?level=error&start_date=2024-01-01&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "logs"],
+							"query": [
+								{"key": "level", "value": "error"},
+								{"key": "start_date", "value": "2024-01-01"},
+								{"key": "limit", "value": "100"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Clear Cache",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cache_types\": [\"user_sessions\", \"booking_cache\", \"analytics_cache\"],\n    \"confirm\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/system/cache/clear",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "system", "cache", "clear"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👤 Admin User Management",
+			"item": [
+				{
+					"name": "Get Admin Users",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users?role=admin&status=active",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users"],
+							"query": [
+								{"key": "role", "value": "admin"},
+								{"key": "status", "value": "active"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Admin User",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"sarah.johnson@maya.com\",\n    \"password\": \"SecureAdmin123!\",\n    \"full_name\": \"Sarah Johnson\",\n    \"username\": \"sarah.johnson\",\n    \"phone\": \"+1-555-987-6543\",\n    \"role\": \"support_admin\",\n    \"permissions\": [\n        \"user_management.view\",\n        \"user_management.edit\",\n        \"booking_management.view\",\n        \"booking_management.edit\",\n        \"support.full_access\"\n    ],\n    \"department\": \"Customer Support\",\n    \"employee_id\": \"EMP004\",\n    \"reports_to\": \"{{sample_admin_id}}\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users"]
+						}
+					}
+				},
+				{
+					"name": "Update Admin User",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"John Updated\",\n    \"last_name\": \"Admin Updated\",\n    \"role\": \"super_admin\",\n    \"permissions\": [\n        \"user_management\",\n        \"booking_management\",\n        \"payment_management\",\n        \"system_configuration\"\n    ],\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Admin User",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Admin Roles",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users/roles",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users", "roles"]
+						}
+					}
+				},
+				{
+					"name": "Create Admin Role",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"support_manager\",\n    \"display_name\": \"Support Manager\",\n    \"description\": \"Manages customer support operations\",\n    \"permissions\": [\n        \"support_tickets_read\",\n        \"support_tickets_write\",\n        \"user_profile_read\",\n        \"faq_management\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users/roles",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users", "roles"]
+						}
+					}
+				},
+				{
+					"name": "Get Admin Permissions",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users/permissions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users", "permissions"]
+						}
+					}
+				},
+				{
+					"name": "Reset Admin Password",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"new_password\": \"NewSecurePassword123!\",\n    \"send_email_notification\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users/1/reset-password",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users", "1", "reset-password"]
+						}
+					}
+				},
+				{
+					"name": "Get Admin Activity Logs",
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}"}]},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/admin/v1/admin-users/activity-logs?admin_id=1&start_date=2024-01-01",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "v1", "admin-users", "activity-logs"],
+							"query": [
+								{"key": "admin_id", "value": "1"},
+								{"key": "start_date", "value": "2024-01-01"}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Automatically set authorization header for all requests except login",
+					"const requestUrl = pm.request.url.toString();",
+					"",
+					"// Skip auth for login endpoint",
+					"if (requestUrl.includes('/auth/login')) {",
+					"    console.log('🔓 Skipping auth for login endpoint');",
+					"    return;",
+					"}",
+					"",
+					"// Get the stored access token",
+					"const token = pm.collectionVariables.get('access_token');",
+					"",
+					"if (token && token.length > 0) {",
+					"    console.log('🔐 Setting Bearer token for request');",
+					"    pm.request.headers.add({",
+					"        key: 'Authorization',",
+					"        value: `Bearer ${token}`",
+					"    });",
+					"} else {",
+					"    console.log('⚠️ No access token found. Please run Admin Login first.');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-save token for login endpoint",
+					"const requestUrl = pm.request.url.toString();",
+					"",
+					"if (requestUrl.includes('/auth/login') && pm.response.code === 200) {",
+					"    try {",
+					"        const responseJson = pm.response.json();",
+					"        ",
+					"        // Handle standardized response format",
+					"        let token = null;",
+					"        if (responseJson.success && responseJson.data && responseJson.data.access_token) {",
+					"            token = responseJson.data.access_token;",
+					"            console.log('✅ Token extracted from standardized response');",
+					"        } else if (responseJson.access_token) {",
+					"            token = responseJson.access_token;",
+					"            console.log('✅ Token extracted from direct response');",
+					"        }",
+					"        ",
+					"        if (token) {",
+					"            pm.collectionVariables.set('access_token', token);",
+					"            console.log('🔐 Access token saved to collection variables');",
+					"        } else {",
+					"            console.error('❌ Could not find access_token in response');",
+					"            console.log('Response structure:', JSON.stringify(responseJson, null, 2));",
+					"        }",
+					"    } catch (error) {",
+					"        console.error('❌ Error processing login response:', error);",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "admin_email",
+			"value": "admin@maya.com"
+		},
+		{
+			"key": "admin_password",
+			"value": "admin123"
+		},
+		{
+			"key": "sample_user_id",
+			"value": "123e4567-e89b-12d3-a456-426614174000"
+		},
+		{
+			"key": "sample_provider_id", 
+			"value": "987fcdeb-51d2-4a3b-9876-426614174001"
+		},
+		{
+			"key": "sample_booking_id",
+			"value": "456e7890-a12b-34c5-d678-426614174002"
+		},
+		{
+			"key": "sample_payment_id",
+			"value": "789a0123-b45c-67d8-e901-426614174003"
+		},
+		{
+			"key": "sample_review_id",
+			"value": "012b3456-c78d-90e1-f234-426614174004"
+		},
+		{
+			"key": "sample_admin_id",
+			"value": "cf42e206-92d0-499a-8808-10888ba8cda9"
+		},
+		{
+			"key": "sample_category_id",
+			"value": "678d9012-e34f-56a7-8901-426614174006"
+		},
+		{
+			"key": "sample_ticket_id",
+			"value": "901e2345-f67a-89b0-c123-426614174007"
+		},
+		{
+			"key": "sample_email",
+			"value": "john.doe@example.com"
+		},
+		{
+			"key": "sample_phone",
+			"value": "+1-555-123-4567"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

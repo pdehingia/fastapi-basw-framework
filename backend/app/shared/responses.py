@@ -5,6 +5,7 @@ Ensures consistent response format across the API.
 
 from typing import TypeVar, Generic, Optional, Any, Dict
 from pydantic import BaseModel, Field
+from fastapi.responses import JSONResponse
 
 T = TypeVar('T')
 
@@ -105,14 +106,14 @@ class BulkOperationResponse(BaseModel):
 
 def success_response(data: Any, message: Optional[str] = None) -> Dict[str, Any]:
     """
-    Create a success response dictionary.
+    Create a standardized success response dictionary.
 
     Args:
         data: Response data
         message: Optional success message
 
     Returns:
-        Success response dictionary
+        Standardized success response dictionary
     """
     response = {
         "success": True,
@@ -124,26 +125,80 @@ def success_response(data: Any, message: Optional[str] = None) -> Dict[str, Any]
 
 
 def error_response(
-    error: str,
-    code: str,
+    message: str,
+    error_code: str,
+    status_code: int,
     details: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
-    Create an error response dictionary.
+    Create a standardized error response dictionary.
 
     Args:
-        error: Error message
-        code: Error code
+        message: Error message
+        error_code: Error code for client handling
+        status_code: HTTP status code
         details: Additional error details
 
     Returns:
-        Error response dictionary
+        Standardized error response dictionary
     """
     response = {
         "success": False,
-        "error": error,
-        "code": code
+        "message": message,
+        "errorCode": error_code,
+        "statusCode": status_code
     }
     if details:
         response["details"] = details
     return response
+
+
+def create_success_json_response(
+    data: Any, 
+    message: Optional[str] = None,
+    status_code: int = 200
+) -> JSONResponse:
+    """
+    Create a standardized success JSONResponse.
+
+    Args:
+        data: Response data
+        message: Optional success message
+        status_code: HTTP status code
+
+    Returns:
+        JSONResponse with standardized success format
+    """
+    from fastapi.responses import JSONResponse
+    
+    return JSONResponse(
+        status_code=status_code,
+        content=success_response(data, message)
+    )
+
+
+def create_error_json_response(
+    message: str,
+    error_code: str,
+    status_code: int,
+    details: Optional[Dict[str, Any]] = None,
+    headers: Optional[Dict[str, str]] = None
+) -> JSONResponse:
+    """
+    Create a standardized error JSONResponse.
+
+    Args:
+        message: Error message
+        error_code: Error code
+        status_code: HTTP status code
+        details: Additional error details
+        headers: Optional HTTP headers
+
+    Returns:
+        JSONResponse with standardized error format
+    """
+    return JSONResponse(
+        status_code=status_code,
+        content=error_response(message, error_code, status_code, details),
+        headers=headers
+    )

@@ -24,7 +24,8 @@ from .schemas import (
 )
 from .service import AdminAuthService
 from .dependencies import get_current_admin_user
-from app.shared.exceptions import ValidationException
+from app.shared.exceptions import ValidationException, UnauthorizedException, NotFoundError
+from app.shared.responses import success_response, create_success_json_response
 
 # OAuth2 scheme for admin authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/admin/auth/login")
@@ -32,11 +33,11 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/admin/auth/login")
 router = APIRouter(prefix="/auth", tags=["admin-auth"])
 
 
-@router.post("/login", response_model=AdminLoginResponse)
+@router.post("/login")
 async def admin_login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
-) -> AdminLoginResponse:
+) -> Dict[str, Any]:
     """Authenticate admin user and return access token."""
     auth_service = AdminAuthService(db)
     
@@ -47,16 +48,15 @@ async def admin_login(
         )
         
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password",
-                headers={"WWW-Authenticate": "Bearer"},
+            raise UnauthorizedException(
+                message="Incorrect email or password",
+                code="INVALID_CREDENTIALS"
             )
         
         if not user.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Admin account is disabled",
+            raise UnauthorizedException(
+                message="Admin account is disabled",
+                code="ACCOUNT_DISABLED"
             )
         
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -65,22 +65,29 @@ async def admin_login(
                 "sub": str(user.id),
                 "email": user.email,
                 "domain": "admin",
-                "role": user.role
+                "is_superuser": user.is_superuser
             },
             expires_delta=access_token_expires
         )
         
-        return AdminLoginResponse(
-            access_token=access_token,
-            token_type="bearer",
-            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            user=AdminUserResponse.from_orm(user)
+        return success_response(
+            data={
+                "access_token": access_token,
+                "token_type": "bearer",
+                "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+                "user": AdminUserResponse.from_orm(user).dict()
+            },
+            message="Login successful"
         )
         
     except ValidationException as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Authentication failed")
+        raise UnauthorizedException(
+            message="Authentication failed",
+            code="AUTH_FAILED",
+            details={"error": str(e)}
+        )
 
 
 @router.post("/register", response_model=AdminUserResponse)
@@ -122,7 +129,7 @@ async def refresh_token(
             "sub": str(current_user["id"]),
             "email": current_user["email"],
             "domain": "admin",
-            "role": current_user["role"]
+            "is_superuser": current_user.get("is_superuser", False)
         },
         expires_delta=access_token_expires
     )
@@ -133,11 +140,11 @@ async def refresh_token(
     )
 
 
-@router.get("/me", response_model=AdminUserResponse)
+@router.get("/me")
 async def get_current_admin_profile(
     current_user: dict = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
-) -> AdminUserResponse:
+):
     """Get current admin user profile."""
     auth_service = AdminAuthService(db)
     
@@ -145,7 +152,10 @@ async def get_current_admin_profile(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    return AdminUserResponse.from_orm(user)
+    return success_response(
+        data=AdminUserResponse.from_orm(user).dict(),
+        message="Profile retrieved successfully"
+    )
 
 
 # Dependency to get current admin user
@@ -188,6 +198,29 @@ async def get_current_admin_user(
     return {
         "id": user.id,
         "email": user.email,
-        "role": user.role,
+        "is_superuser": user.is_superuser,
         "domain": "admin"
     }
+
+
+@router.get("/test-success")
+async def test_success_response() -> Dict[str, Any]:
+    """
+    Test endpoint to demonstrate standardized success response format.
+    """
+    return create_success_json_response(
+        data={
+            "id": 101,
+            "name": "iPhone 14",
+            "price": 79999
+        },
+        message="Product fetched successfully"
+    )
+
+
+@router.get("/test-error")
+async def test_error_response():
+    """
+    Test endpoint to demonstrate standardized error response format.
+    """
+    raise NotFoundError("Product not found")

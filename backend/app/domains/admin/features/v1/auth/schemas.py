@@ -67,12 +67,18 @@ class AdminUserResponse(BaseModel):
     """Admin user response schema."""
     id: UUID
     email: EmailStr
-    first_name: str
-    last_name: str
-    role: str
+    username: Optional[str] = None
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
     is_active: bool
     is_verified: bool
-    last_login_at: Optional[datetime] = None
+    is_superuser: bool = False
+    department: Optional[str] = None
+    employee_id: Optional[str] = None
+    can_manage_users: bool = False
+    can_manage_system: bool = False
+    can_view_reports: bool = False
+    last_login: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
     
@@ -86,11 +92,17 @@ class AdminUserResponse(BaseModel):
 
 class AdminUserUpdateRequest(BaseModel):
     """Admin user update request schema."""
-    first_name: Optional[str] = Field(None, min_length=2, max_length=50)
-    last_name: Optional[str] = Field(None, min_length=2, max_length=50)
+    full_name: Optional[str] = Field(None, min_length=2, max_length=100)
     email: Optional[EmailStr] = None
+    phone: Optional[str] = Field(None, max_length=20)
     is_active: Optional[bool] = None
-    role: Optional[str] = Field(None, pattern="^(super_admin|admin|moderator)$")
+    department: Optional[str] = Field(None, max_length=100)
+    employee_id: Optional[str] = Field(None, max_length=20)
+    can_manage_users: Optional[bool] = None
+    can_manage_system: Optional[bool] = None
+    can_view_reports: Optional[bool] = None
+    # For superuser updates
+    is_superuser: Optional[bool] = None
 
 
 class ChangePasswordRequest(BaseModel):
