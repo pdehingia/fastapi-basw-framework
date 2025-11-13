@@ -26,6 +26,7 @@ def upgrade() -> None:
     op.create_table('bank_accounts',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('user_type', sa.VARCHAR(length=20), nullable=False),  # 'admin', 'provider', 'customer'
         sa.Column('account_holder_name', sa.VARCHAR(length=255), nullable=False),
         sa.Column('account_number_encrypted', sa.Text(), nullable=False),
         sa.Column('account_number_hash', sa.VARCHAR(length=64), nullable=False),
@@ -43,18 +44,17 @@ def upgrade() -> None:
         sa.Column('is_active', sa.Boolean(), server_default='true', nullable=True),
         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('razorpay_fund_account_id'),
-        sa.UniqueConstraint('user_id', 'account_number_hash')
+        sa.UniqueConstraint('user_id', 'user_type', 'account_number_hash')
     )
-    op.create_index('idx_bank_user', 'bank_accounts', ['user_id', 'is_primary'], unique=False)
+    op.create_index('idx_bank_user', 'bank_accounts', ['user_id', 'user_type', 'is_primary'], unique=False)
     op.create_index('idx_bank_verified', 'bank_accounts', ['is_verified', 'is_active'], unique=False)
     
     # Add partial unique index for single primary account per user
     op.execute("""
         CREATE UNIQUE INDEX uq_bank_user_primary 
-        ON bank_accounts (user_id) 
+        ON bank_accounts (user_id, user_type) 
         WHERE is_primary = TRUE
     """)
     
@@ -63,6 +63,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('transaction_number', sa.VARCHAR(length=50), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('user_type', sa.VARCHAR(length=20), nullable=False),  # 'admin', 'provider', 'customer'
         sa.Column('booking_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('transaction_type', sa.Enum('payment', 'payout', 'refund', 'wallet_credit', 'wallet_debit', 'subscription_payment', 'commission', name='transaction_type'), nullable=False),
         sa.Column('amount', sa.NUMERIC(precision=10, scale=2), nullable=False),
@@ -91,11 +92,10 @@ def upgrade() -> None:
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.CheckConstraint('amount > 0', name='positive_amount'),
         sa.ForeignKeyConstraint(['bank_account_id'], ['bank_accounts.id'], ),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('transaction_number')
     )
-    op.create_index('idx_transactions_user', 'transactions', ['user_id', 'created_at'], unique=False)
+    op.create_index('idx_transactions_user', 'transactions', ['user_id', 'user_type', 'created_at'], unique=False)
     op.create_index('idx_transactions_status', 'transactions', ['status', 'created_at'], unique=False)
     op.create_index('idx_transactions_gateway_order', 'transactions', ['gateway_order_id'], unique=False)
     op.create_index('idx_transactions_gateway_payment', 'transactions', ['gateway_payment_id'], unique=False)
@@ -121,11 +121,10 @@ def upgrade() -> None:
         sa.CheckConstraint('balance >= 0', name='non_negative_balance'),
         sa.CheckConstraint('balance >= min_balance', name='balance_above_min'),
         sa.CheckConstraint('balance <= max_balance', name='balance_below_max'),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('user_id')
+        sa.UniqueConstraint('user_id', 'user_type')
     )
-    op.create_index('idx_wallets_user', 'wallets', ['user_id'], unique=False)
+    op.create_index('idx_wallets_user', 'wallets', ['user_id', 'user_type'], unique=False)
     op.create_index('idx_wallets_balance', 'wallets', ['balance'], unique=False)
     
     # Create wallet_transactions table
@@ -133,6 +132,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('wallet_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('user_type', sa.VARCHAR(length=20), nullable=False),  # 'admin', 'provider', 'customer'
         sa.Column('transaction_type', sa.Enum('credit', 'debit', 'refund', 'bonus', 'penalty', 'withdrawal', name='wallet_transaction_type'), nullable=False),
         sa.Column('amount', sa.NUMERIC(precision=10, scale=2), nullable=False),
         sa.Column('balance_before', sa.NUMERIC(precision=10, scale=2), nullable=False),
@@ -146,12 +146,11 @@ def upgrade() -> None:
         sa.CheckConstraint('amount > 0', name='positive_amount'),
         sa.CheckConstraint('balance_after >= 0', name='non_negative_balance_after'),
         sa.ForeignKeyConstraint(['transaction_id'], ['transactions.id'], ),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.ForeignKeyConstraint(['wallet_id'], ['wallets.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index('idx_wallet_txn_wallet', 'wallet_transactions', ['wallet_id', 'created_at'], unique=False)
-    op.create_index('idx_wallet_txn_user', 'wallet_transactions', ['user_id', 'created_at'], unique=False)
+    op.create_index('idx_wallet_txn_user', 'wallet_transactions', ['user_id', 'user_type', 'created_at'], unique=False)
     op.create_index('idx_wallet_txn_reference', 'wallet_transactions', ['reference_type', 'reference_id'], unique=False)
     
     # Create bookings table
@@ -159,7 +158,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('booking_number', sa.VARCHAR(length=50), nullable=False),
         sa.Column('customer_user_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('artist_user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('provider_user_id', postgresql.UUID(as_uuid=True), nullable=False),  # Changed from artist_user_id
         sa.Column('service_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('service_name', sa.VARCHAR(length=255), nullable=False),
         sa.Column('service_price', sa.NUMERIC(precision=10, scale=2), nullable=False),
@@ -186,7 +185,7 @@ def upgrade() -> None:
         sa.Column('total_amount', sa.NUMERIC(precision=10, scale=2), nullable=False),
         sa.Column('platform_commission_rate', sa.NUMERIC(precision=5, scale=2), server_default='15.00', nullable=False),
         sa.Column('platform_commission', sa.NUMERIC(precision=10, scale=2), nullable=False),
-        sa.Column('artist_payout', sa.NUMERIC(precision=10, scale=2), nullable=False),
+        sa.Column('provider_payout', sa.NUMERIC(precision=10, scale=2), nullable=False),  # Changed from artist_payout
         sa.Column('academy_commission', sa.NUMERIC(precision=10, scale=2), nullable=True),
         sa.Column('transaction_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('payout_transaction_id', postgresql.UUID(as_uuid=True), nullable=True),
@@ -196,14 +195,14 @@ def upgrade() -> None:
         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.ForeignKeyConstraint(['address_id'], ['addresses.id'], ),
-        sa.ForeignKeyConstraint(['artist_user_id'], ['artists.user_id'], ),
-        sa.ForeignKeyConstraint(['customer_user_id'], ['customers.user_id'], ),
+        sa.ForeignKeyConstraint(['provider_user_id'], ['provider_users.id'], ),  # Changed from artists.user_id
+        sa.ForeignKeyConstraint(['customer_user_id'], ['customer_users.id'], ),  # Changed from customers.user_id
         sa.ForeignKeyConstraint(['service_id'], ['services.id'], ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('booking_number')
     )
     op.create_index('idx_bookings_customer', 'bookings', ['customer_user_id', 'booking_date'], unique=False)
-    op.create_index('idx_bookings_artist', 'bookings', ['artist_user_id', 'booking_date'], unique=False)
+    op.create_index('idx_bookings_provider', 'bookings', ['provider_user_id', 'booking_date'], unique=False)  # Changed from artist
     op.create_index('idx_bookings_status', 'bookings', ['status', 'booking_date'], unique=False)
     op.create_index('idx_bookings_payment_status', 'bookings', ['payment_status'], unique=False)
     
@@ -215,7 +214,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('booking_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('customer_user_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('artist_user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('provider_user_id', postgresql.UUID(as_uuid=True), nullable=False),  # Changed from artist_user_id
         sa.Column('rating', sa.SmallInteger(), nullable=False),
         sa.Column('review_title', sa.VARCHAR(length=255), nullable=True),
         sa.Column('review_text', sa.Text(), nullable=True),
@@ -239,15 +238,15 @@ def upgrade() -> None:
         sa.CheckConstraint('rating_professionalism >= 1 AND rating_professionalism <= 5', name='rating_professionalism_range'),
         sa.CheckConstraint('rating_punctuality >= 1 AND rating_punctuality <= 5', name='rating_punctuality_range'),
         sa.CheckConstraint('rating_value >= 1 AND rating_value <= 5', name='rating_value_range'),
-        sa.ForeignKeyConstraint(['artist_user_id'], ['artists.user_id'], ),
+        sa.ForeignKeyConstraint(['provider_user_id'], ['provider_users.id'], ),  # Changed from artists.user_id
         sa.ForeignKeyConstraint(['booking_id'], ['bookings.id'], ondelete='CASCADE'),
-        sa.ForeignKeyConstraint(['customer_user_id'], ['customers.user_id'], ),
+        sa.ForeignKeyConstraint(['customer_user_id'], ['customer_users.id'], ),  # Changed from customers.user_id
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('booking_id')
     )
-    op.create_index('idx_reviews_artist', 'reviews', ['artist_user_id', 'created_at'], unique=False)
+    op.create_index('idx_reviews_provider', 'reviews', ['provider_user_id', 'created_at'], unique=False)  # Changed from artist
     op.create_index('idx_reviews_customer', 'reviews', ['customer_user_id', 'created_at'], unique=False)
-    op.create_index('idx_reviews_rating', 'reviews', ['artist_user_id', 'rating'], unique=False)
+    op.create_index('idx_reviews_rating', 'reviews', ['provider_user_id', 'rating'], unique=False)  # Changed from artist_user_id
     op.create_index('idx_reviews_flagged', 'reviews', ['is_flagged', 'moderation_status'], unique=False)
 
 

@@ -42,6 +42,19 @@ def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 
+def get_password_hash(password: str) -> str:
+    """
+    Alias for hash_password for compatibility.
+    
+    Args:
+        password: The plain text password to hash
+
+    Returns:
+        Hashed password string
+    """
+    return hash_password(password)
+
+
 def create_access_token(
     data: Dict[str, Any],
     expires_delta: Optional[timedelta] = None

@@ -19,10 +19,10 @@ depends_on = None
 def upgrade() -> None:
     """Create business core tables: academies, salons, salon_artists, services, courses."""
     
-    # Create academies table
+    # Create academies table (linked to provider_users)
     op.create_table('academies',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
-        sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=True),
+        sa.Column('provider_user_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('academy_name', sa.VARCHAR(length=255), nullable=False),
         sa.Column('gst_number', sa.VARCHAR(length=20), nullable=True),
         sa.Column('registration_number', sa.VARCHAR(length=100), nullable=True),
@@ -34,9 +34,9 @@ def upgrade() -> None:
         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.ForeignKeyConstraint(['address_id'], ['addresses.id'], ),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.ForeignKeyConstraint(['provider_user_id'], ['provider_users.id'], ),
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('user_id')
+        sa.UniqueConstraint('provider_user_id')
     )
     op.create_index('idx_academies_verified', 'academies', ['is_verified'], unique=False)
     op.create_index('idx_academies_active', 'academies', ['is_active'], unique=False)
@@ -60,11 +60,11 @@ def upgrade() -> None:
     op.create_index('idx_salons_verified', 'salons', ['is_verified'], unique=False)
     op.create_index('idx_salons_active', 'salons', ['is_active'], unique=False)
     
-    # Create salon_artists table
-    op.create_table('salon_artists',
+    # Create salon_providers table (artists are now provider_users)
+    op.create_table('salon_providers',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('salon_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('artist_user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('provider_user_id', postgresql.UUID(as_uuid=True), nullable=False),  # Changed from artist_user_id
         sa.Column('employment_type', sa.VARCHAR(length=20), nullable=False),
         sa.Column('joined_date', sa.Date(), nullable=False),
         sa.Column('left_date', sa.Date(), nullable=True),
@@ -73,13 +73,13 @@ def upgrade() -> None:
         sa.Column('total_revenue', sa.NUMERIC(precision=12, scale=2), server_default='0', nullable=True),
         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-        sa.ForeignKeyConstraint(['artist_user_id'], ['artists.user_id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['provider_user_id'], ['provider_users.id'], ondelete='CASCADE'),  # Changed from artists.user_id
         sa.ForeignKeyConstraint(['salon_id'], ['salons.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('salon_id', 'artist_user_id')
+        sa.UniqueConstraint('salon_id', 'provider_user_id')  # Changed from artist_user_id
     )
-    op.create_index('idx_salon_artists_salon', 'salon_artists', ['salon_id', 'is_active'], unique=False)
-    op.create_index('idx_salon_artists_artist', 'salon_artists', ['artist_user_id'], unique=False)
+    op.create_index('idx_salon_providers_salon', 'salon_providers', ['salon_id', 'is_active'], unique=False)  # Changed table name
+    op.create_index('idx_salon_providers_provider', 'salon_providers', ['provider_user_id'], unique=False)  # Changed table and column name
     
     # Create services table
     op.create_table('services',
@@ -158,20 +158,14 @@ def upgrade() -> None:
     )
     op.create_index('idx_academy_courses_academy', 'academy_courses', ['academy_id', 'is_active'], unique=False)
     op.create_index('idx_academy_courses_course', 'academy_courses', ['course_id'], unique=False)
-    
-    # Now add the foreign key constraint from artists to academies
-    op.create_foreign_key('fk_artists_academy_id', 'artists', 'academies', ['academy_id'], ['id'])
 
 
 def downgrade() -> None:
     """Drop business core tables."""
-    # Drop foreign key constraint first
-    op.drop_constraint('fk_artists_academy_id', 'artists', type_='foreignkey')
-    
     # Drop tables in reverse order
     op.drop_table('academy_courses')
     op.drop_table('courses')
     op.drop_table('services')
-    op.drop_table('salon_artists')
+    op.drop_table('salon_providers')  # Changed from salon_artists
     op.drop_table('salons')
     op.drop_table('academies')

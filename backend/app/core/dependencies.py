@@ -10,6 +10,8 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import decode_token
 from app.core.exceptions import UnauthorizedException
+from app.shared.models.user import AdminUser
+from app.shared.repositories.user import AdminUserRepository
 
 
 async def get_correlation_id(
@@ -136,3 +138,38 @@ def require_superuser(
     """
     # This is a placeholder - implement based on your User model
     return current_user_id
+
+
+async def get_current_admin_user(
+    current_user_id: int = Depends(get_current_user_id),
+    db: Session = Depends(get_db)
+) -> AdminUser:
+    """
+    Get current admin user from token.
+
+    Args:
+        current_user_id: Current user ID from token
+        db: Database session
+
+    Returns:
+        AdminUser object
+
+    Raises:
+        HTTPException: If user is not found or not an admin
+    """
+    admin_repo = AdminUserRepository(db)
+    admin_user = admin_repo.get(current_user_id)
+    
+    if not admin_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Admin user not found"
+        )
+    
+    if not admin_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Admin account is deactivated"
+        )
+    
+    return admin_user

@@ -22,7 +22,7 @@ def upgrade() -> None:
     # Create subscriptions table
     op.create_table('subscriptions',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
-        sa.Column('artist_user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('provider_user_id', postgresql.UUID(as_uuid=True), nullable=False),  # Changed from artist_user_id
         sa.Column('plan_type', sa.Enum('premium', 'elite', name='subscription_plan'), nullable=False),
         sa.Column('plan_name', sa.VARCHAR(length=100), nullable=False),
         sa.Column('plan_price', sa.NUMERIC(precision=10, scale=2), nullable=False),
@@ -41,12 +41,12 @@ def upgrade() -> None:
         sa.Column('payment_failed_count', sa.Integer(), server_default='0', nullable=True),
         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-        sa.ForeignKeyConstraint(['artist_user_id'], ['artists.user_id'], ),
+        sa.ForeignKeyConstraint(['provider_user_id'], ['provider_users.id'], ),  # Changed from artists.user_id
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('artist_user_id'),
+        sa.UniqueConstraint('provider_user_id'),  # Changed from artist_user_id
         sa.UniqueConstraint('razorpay_subscription_id')
     )
-    op.create_index('idx_subscriptions_artist', 'subscriptions', ['artist_user_id'], unique=False)
+    op.create_index('idx_subscriptions_provider', 'subscriptions', ['provider_user_id'], unique=False)  # Changed from artist
     op.create_index('idx_subscriptions_status', 'subscriptions', ['status', 'end_date'], unique=False)
     op.create_index('idx_subscriptions_billing', 'subscriptions', ['current_period_end', 'status'], unique=False)
     
@@ -54,7 +54,7 @@ def upgrade() -> None:
     op.create_table('subscription_payments',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('subscription_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('artist_user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('provider_user_id', postgresql.UUID(as_uuid=True), nullable=False),  # Changed from artist_user_id
         sa.Column('amount', sa.NUMERIC(precision=10, scale=2), nullable=False),
         sa.Column('currency', sa.VARCHAR(length=3), server_default='INR', nullable=False),
         sa.Column('razorpay_payment_id', sa.VARCHAR(length=255), nullable=True),
@@ -67,24 +67,23 @@ def upgrade() -> None:
         sa.Column('transaction_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('payment_date', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-        sa.ForeignKeyConstraint(['artist_user_id'], ['artists.user_id'], ),
+        sa.ForeignKeyConstraint(['provider_user_id'], ['provider_users.id'], ),  # Changed from artists.user_id
         sa.ForeignKeyConstraint(['subscription_id'], ['subscriptions.id'], ),
         sa.ForeignKeyConstraint(['transaction_id'], ['transactions.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index('idx_sub_payments_subscription', 'subscription_payments', ['subscription_id', 'payment_date'], unique=False)
-    op.create_index('idx_sub_payments_artist', 'subscription_payments', ['artist_user_id', 'payment_date'], unique=False)
+    op.create_index('idx_sub_payments_provider', 'subscription_payments', ['provider_user_id', 'payment_date'], unique=False)  # Changed from artist
     op.create_index('idx_sub_payments_status', 'subscription_payments', ['status', 'payment_date'], unique=False)
     
-    # Add foreign key from artists to subscriptions
-    op.create_foreign_key('fk_artists_subscription_id', 'artists', 'subscriptions', ['subscription_id'], ['id'])
-    
-    # Create referrals table
+    # Create referrals table (supports all user types)
     op.create_table('referrals',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('referrer_user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('referrer_user_type', sa.VARCHAR(length=20), nullable=False),  # 'admin', 'provider', 'customer'
         sa.Column('referral_code', sa.VARCHAR(length=50), nullable=False),
         sa.Column('referee_user_id', postgresql.UUID(as_uuid=True), nullable=True),
+        sa.Column('referee_user_type', sa.VARCHAR(length=20), nullable=True),  # 'admin', 'provider', 'customer'
         sa.Column('referee_phone', sa.VARCHAR(length=20), nullable=True),
         sa.Column('status', sa.Enum('pending', 'qualified', 'rewarded', 'expired', name='referral_status'), server_default='pending', nullable=True),
         sa.Column('referee_first_booking_id', postgresql.UUID(as_uuid=True), nullable=True),
@@ -98,10 +97,9 @@ def upgrade() -> None:
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.ForeignKeyConstraint(['referee_first_booking_id'], ['bookings.id'], ),
         sa.ForeignKeyConstraint(['referee_wallet_txn_id'], ['wallet_transactions.id'], ),
-        sa.ForeignKeyConstraint(['referrer_user_id'], ['users.id'], ),
         sa.ForeignKeyConstraint(['referrer_wallet_txn_id'], ['wallet_transactions.id'], ),
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('referee_user_id'),
+        sa.UniqueConstraint('referee_user_id', 'referee_user_type'),
         sa.UniqueConstraint('referral_code')
     )
     op.create_index('idx_referrals_referrer', 'referrals', ['referrer_user_id', 'created_at'], unique=False)
@@ -128,7 +126,7 @@ def upgrade() -> None:
         sa.Column('created_by', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-        sa.ForeignKeyConstraint(['created_by'], ['admins.user_id'], ),
+        sa.ForeignKeyConstraint(['created_by'], ['admin_users.id'], ),  # Changed from admins.user_id
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('code')
     )
@@ -160,18 +158,18 @@ def upgrade() -> None:
     op.create_index('idx_ads_status', 'ads', ['status'], unique=False)
     op.create_index('idx_ads_type', 'ads', ['ad_type'], unique=False)
     
-    # Create user_activity_logs table (partitioned)
+    # Create user_activity_logs table (partitioned) - polymorphic for all user types
     op.execute("""
         CREATE TABLE user_activity_logs (
             id BIGSERIAL,
-            user_id UUID NOT NULL REFERENCES users(id),
-            user_type VARCHAR(20) NOT NULL,
+            user_id UUID NOT NULL,
+            user_type VARCHAR(20) NOT NULL,  -- 'admin', 'provider', 'customer'
             activity_type VARCHAR(100) NOT NULL,
             activity_category VARCHAR(50),
             description TEXT,
             metadata JSONB,
             ip_address INET,
-            session_id UUID REFERENCES user_sessions(id),
+            session_id UUID,  -- Removed specific table reference as sessions are domain-specific now
             created_at TIMESTAMPTZ DEFAULT NOW()
         ) PARTITION BY RANGE (created_at);
     """)
@@ -200,19 +198,19 @@ def upgrade() -> None:
     op.execute("""
         CREATE MATERIALIZED VIEW earnings_summary AS
         SELECT 
-            artist_user_id,
+            provider_user_id,  -- Changed from artist_user_id
             DATE(created_at) as earning_date,
             COUNT(*) as total_bookings,
-            SUM(artist_payout) as total_earnings,
+            SUM(provider_payout) as total_earnings,  -- Changed from artist_payout
             SUM(platform_commission) as total_commission,
             AVG(service_price) as avg_service_price
         FROM bookings 
         WHERE status = 'completed'
-        GROUP BY artist_user_id, DATE(created_at);
+        GROUP BY provider_user_id, DATE(created_at);  -- Changed from artist_user_id
     """)
     
     # Create index on the materialized view
-    op.execute("CREATE UNIQUE INDEX idx_earnings_summary_unique ON earnings_summary (artist_user_id, earning_date);")
+    op.execute("CREATE UNIQUE INDEX idx_earnings_summary_unique ON earnings_summary (provider_user_id, earning_date);")
     
     # Create function to update updated_at column
     op.execute("""
@@ -227,8 +225,8 @@ def upgrade() -> None:
     
     # Add triggers for updated_at columns on tables that have them
     tables_with_updated_at = [
-        'users', 'roles', 'admins', 'customers', 'artists', 'addresses',
-        'academies', 'salons', 'salon_artists', 'services', 'courses', 'academy_courses',
+        'admin_users', 'provider_users', 'customer_users', 'roles', 'addresses',
+        'academies', 'salons', 'salon_providers', 'services', 'courses', 'academy_courses',
         'transactions', 'wallets', 'bookings', 'reviews', 'subscriptions',
         'referrals', 'promo_codes', 'ads'
     ]
@@ -247,8 +245,8 @@ def downgrade() -> None:
     
     # Drop triggers
     tables_with_updated_at = [
-        'users', 'roles', 'admins', 'customers', 'artists', 'addresses',
-        'academies', 'salons', 'salon_artists', 'services', 'courses', 'academy_courses',
+        'admin_users', 'provider_users', 'customer_users', 'roles', 'addresses',
+        'academies', 'salons', 'salon_providers', 'services', 'courses', 'academy_courses',
         'transactions', 'wallets', 'bookings', 'reviews', 'subscriptions',
         'referrals', 'promo_codes', 'ads'
     ]

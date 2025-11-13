@@ -70,37 +70,164 @@ def upgrade() -> None:
         sa.UniqueConstraint('role_id', 'permission_id')
     )
     
-    # Create users table
-    op.create_table('users',
+    # Create independent admin_users table
+    op.create_table('admin_users',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
-        sa.Column('phone_e164', sa.VARCHAR(length=20), nullable=True),
-        sa.Column('email', postgresql.CITEXT(), nullable=True),
-        sa.Column('password_hash', sa.Text(), nullable=True),
+        
+        # Authentication (independent)
+        sa.Column('email', sa.VARCHAR(length=255), nullable=False),
+        sa.Column('username', sa.VARCHAR(length=100), nullable=False),
+        sa.Column('hashed_password', sa.Text(), nullable=False),
+        
+        # Personal information
+        sa.Column('full_name', sa.VARCHAR(length=150), nullable=True),
+        sa.Column('phone', sa.VARCHAR(length=20), nullable=True),
+        
+        # Status flags
+        sa.Column('is_active', sa.Boolean(), server_default='true', nullable=False),
+        sa.Column('is_verified', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('email_verified_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        
+        # Security
+        sa.Column('last_login', sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.Column('failed_login_attempts', sa.Integer(), server_default='0', nullable=False),
+        sa.Column('locked_until', sa.TIMESTAMP(timezone=True), nullable=True),
+        
+        # Admin-specific fields
+        sa.Column('is_superuser', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('permissions', sa.Text(), nullable=True),
+        sa.Column('department', sa.VARCHAR(length=100), nullable=True),
+        sa.Column('employee_id', sa.VARCHAR(length=50), nullable=True),
+        
+        # Admin capabilities
+        sa.Column('can_manage_users', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('can_manage_system', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('can_view_reports', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('can_manage_providers', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('can_manage_customers', sa.Boolean(), server_default='false', nullable=False),
+        
+        # Timestamps
+        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+        sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+        
+        # Constraints
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('email'),
+        sa.UniqueConstraint('username'),
+        sa.UniqueConstraint('employee_id')
+    )
+    op.create_index('idx_admin_users_email', 'admin_users', ['email'], unique=True)
+    op.create_index('idx_admin_users_active', 'admin_users', ['is_active'], unique=False)
+    op.create_index('idx_admin_users_superuser', 'admin_users', ['is_superuser'], unique=False)
+    
+    # Create independent provider_users table
+    op.create_table('provider_users',
+        sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
+        
+        # Authentication (independent)
+        sa.Column('email', sa.VARCHAR(length=255), nullable=False),
+        sa.Column('username', sa.VARCHAR(length=100), nullable=False),
+        sa.Column('hashed_password', sa.Text(), nullable=False),
+        
+        # Personal information
+        sa.Column('full_name', sa.VARCHAR(length=150), nullable=True),
+        sa.Column('phone', sa.VARCHAR(length=20), nullable=True),
+        
+        # Status flags
+        sa.Column('is_active', sa.Boolean(), server_default='true', nullable=False),
+        sa.Column('is_verified', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('email_verified_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        
+        # Security
+        sa.Column('last_login', sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.Column('failed_login_attempts', sa.Integer(), server_default='0', nullable=False),
+        sa.Column('locked_until', sa.TIMESTAMP(timezone=True), nullable=True),
+        
+        # Provider-specific fields
+        sa.Column('business_name', sa.VARCHAR(length=200), nullable=True),
+        sa.Column('business_type', sa.VARCHAR(length=100), nullable=True),
+        sa.Column('business_registration_number', sa.VARCHAR(length=100), nullable=True),
+        sa.Column('tax_id', sa.VARCHAR(length=50), nullable=True),
+        
+        # Provider status
+        sa.Column('verification_status', sa.VARCHAR(length=50), server_default='pending', nullable=False),
+        sa.Column('verified_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.Column('verification_documents', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        
+        # Business operations
+        sa.Column('is_accepting_bookings', sa.Boolean(), server_default='true', nullable=False),
+        sa.Column('business_hours', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column('service_area', sa.Text(), nullable=True),
+        
+        # Timestamps
+        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+        sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+        
+        # Constraints
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('email'),
+        sa.UniqueConstraint('username'),
+        sa.UniqueConstraint('business_registration_number')
+    )
+    op.create_index('idx_provider_users_email', 'provider_users', ['email'], unique=True)
+    op.create_index('idx_provider_users_active', 'provider_users', ['is_active'], unique=False)
+    op.create_index('idx_provider_users_verification', 'provider_users', ['verification_status'], unique=False)
+    
+    # Create independent customer_users table
+    op.create_table('customer_users',
+        sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
+        
+        # Authentication (independent)
+        sa.Column('email', sa.VARCHAR(length=255), nullable=True),
+        sa.Column('phone', sa.VARCHAR(length=20), nullable=False),
+        sa.Column('hashed_password', sa.Text(), nullable=True),
+        
+        # OAuth authentication
         sa.Column('oauth_google_id', sa.Text(), nullable=True),
         sa.Column('oauth_facebook_id', sa.Text(), nullable=True),
         sa.Column('oauth_apple_id', sa.Text(), nullable=True),
+        
+        # Personal information
         sa.Column('full_name', sa.VARCHAR(length=150), nullable=True),
+        sa.Column('date_of_birth', sa.Date(), nullable=True),
+        sa.Column('gender', sa.VARCHAR(length=20), nullable=True),
         sa.Column('profile_image_url', sa.Text(), nullable=True),
-        sa.Column('two_factor_enabled', sa.Boolean(), nullable=True, server_default='false'),
-        sa.Column('is_active', sa.Boolean(), nullable=True, server_default='true'),
-        sa.Column('is_verified', sa.Boolean(), nullable=True, server_default='false'),
-        sa.Column('is_blocked', sa.Boolean(), nullable=True, server_default='false'),
-        sa.Column('block_reason', sa.Text(), nullable=True),
-        sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False, server_default=sa.text('now()')),
-        sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=False, server_default=sa.text('now()')),
-        sa.Column('is_deleted', sa.Boolean(), nullable=False, server_default='false'),
-        sa.Column('deleted_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        
+        # Status flags
+        sa.Column('is_active', sa.Boolean(), server_default='true', nullable=False),
+        sa.Column('is_verified', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('phone_verified_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.Column('email_verified_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        
+        # Security and preferences
+        sa.Column('last_login', sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.Column('two_factor_enabled', sa.Boolean(), server_default='false', nullable=False),
+        sa.Column('preferences', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column('favorite_services', postgresql.ARRAY(sa.Text()), nullable=True),
+        
+        # Customer behavior
+        sa.Column('total_bookings', sa.Integer(), server_default='0', nullable=False),
+        sa.Column('total_spent', sa.DECIMAL(precision=10, scale=2), server_default='0.00', nullable=False),
+        sa.Column('loyalty_points', sa.Integer(), server_default='0', nullable=False),
+        
+        # Timestamps
+        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+        sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+        
+        # Constraints
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('email'),
-        sa.UniqueConstraint('oauth_apple_id'),
-        sa.UniqueConstraint('oauth_facebook_id'),
+        sa.UniqueConstraint('phone'),
         sa.UniqueConstraint('oauth_google_id'),
-        sa.UniqueConstraint('phone_e164')
+        sa.UniqueConstraint('oauth_facebook_id'),
+        sa.UniqueConstraint('oauth_apple_id')
     )
-    op.create_index('idx_users_active', 'users', ['is_active'], unique=False)
+    op.create_index('idx_customer_users_email', 'customer_users', ['email'], unique=False)
+    op.create_index('idx_customer_users_phone', 'customer_users', ['phone'], unique=True)
+    op.create_index('idx_customer_users_active', 'customer_users', ['is_active'], unique=False)
     
-    # Create user_sessions table
-    op.create_table('user_sessions',
+    # Create admin_user_sessions table
+    op.create_table('admin_user_sessions',
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('session_token', sa.Text(), nullable=False),
@@ -118,21 +245,78 @@ def upgrade() -> None:
         sa.Column('last_active_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('expires_at', sa.TIMESTAMP(timezone=True), server_default=sa.text("now() + interval '30 days'"), nullable=True),
         sa.Column('logged_out_at', sa.TIMESTAMP(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.ForeignKeyConstraint(['user_id'], ['admin_users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('refresh_token'),
         sa.UniqueConstraint('session_token')
     )
-    op.create_index('idx_sessions_user_id', 'user_sessions', ['user_id'], unique=False)
-    op.create_index('idx_sessions_expires', 'user_sessions', ['expires_at'], unique=False)
-    op.create_index('idx_sessions_active', 'user_sessions', ['user_id', 'is_active'], unique=False)
+    op.create_index('idx_admin_sessions_user_id', 'admin_user_sessions', ['user_id'], unique=False)
+    op.create_index('idx_admin_sessions_expires', 'admin_user_sessions', ['expires_at'], unique=False)
+    op.create_index('idx_admin_sessions_active', 'admin_user_sessions', ['user_id', 'is_active'], unique=False)
     
-    # Create OTP verifications table
+    # Create provider_user_sessions table
+    op.create_table('provider_user_sessions',
+        sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
+        sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('session_token', sa.Text(), nullable=False),
+        sa.Column('refresh_token', sa.Text(), nullable=True),
+        sa.Column('device_id', sa.Text(), nullable=True),
+        sa.Column('device_type', sa.VARCHAR(length=30), nullable=True),
+        sa.Column('device_name', sa.Text(), nullable=True),
+        sa.Column('os_version', sa.VARCHAR(length=50), nullable=True),
+        sa.Column('app_version', sa.VARCHAR(length=50), nullable=True),
+        sa.Column('ip_address', postgresql.INET(), nullable=True),
+        sa.Column('city', sa.VARCHAR(length=100), nullable=True),
+        sa.Column('country', sa.VARCHAR(length=100), nullable=True),
+        sa.Column('is_active', sa.Boolean(), nullable=True, server_default='true'),
+        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+        sa.Column('last_active_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+        sa.Column('expires_at', sa.TIMESTAMP(timezone=True), server_default=sa.text("now() + interval '30 days'"), nullable=True),
+        sa.Column('logged_out_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.ForeignKeyConstraint(['user_id'], ['provider_users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('refresh_token'),
+        sa.UniqueConstraint('session_token')
+    )
+    op.create_index('idx_provider_sessions_user_id', 'provider_user_sessions', ['user_id'], unique=False)
+    op.create_index('idx_provider_sessions_expires', 'provider_user_sessions', ['expires_at'], unique=False)
+    op.create_index('idx_provider_sessions_active', 'provider_user_sessions', ['user_id', 'is_active'], unique=False)
+    
+    # Create customer_user_sessions table
+    op.create_table('customer_user_sessions',
+        sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
+        sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('session_token', sa.Text(), nullable=False),
+        sa.Column('refresh_token', sa.Text(), nullable=True),
+        sa.Column('device_id', sa.Text(), nullable=True),
+        sa.Column('device_type', sa.VARCHAR(length=30), nullable=True),
+        sa.Column('device_name', sa.Text(), nullable=True),
+        sa.Column('os_version', sa.VARCHAR(length=50), nullable=True),
+        sa.Column('app_version', sa.VARCHAR(length=50), nullable=True),
+        sa.Column('ip_address', postgresql.INET(), nullable=True),
+        sa.Column('city', sa.VARCHAR(length=100), nullable=True),
+        sa.Column('country', sa.VARCHAR(length=100), nullable=True),
+        sa.Column('is_active', sa.Boolean(), nullable=True, server_default='true'),
+        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+        sa.Column('last_active_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+        sa.Column('expires_at', sa.TIMESTAMP(timezone=True), server_default=sa.text("now() + interval '30 days'"), nullable=True),
+        sa.Column('logged_out_at', sa.TIMESTAMP(timezone=True), nullable=True),
+        sa.ForeignKeyConstraint(['user_id'], ['customer_users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('refresh_token'),
+        sa.UniqueConstraint('session_token')
+    )
+    op.create_index('idx_customer_sessions_user_id', 'customer_user_sessions', ['user_id'], unique=False)
+    op.create_index('idx_customer_sessions_expires', 'customer_user_sessions', ['expires_at'], unique=False)
+    op.create_index('idx_customer_sessions_active', 'customer_user_sessions', ['user_id', 'is_active'], unique=False)
+    
+    # Create OTP verifications table (can reference any domain user)
     op.create_table('otp_verifications',
         sa.Column('id', sa.BigInteger(), nullable=False),
         sa.Column('phone_number', sa.VARCHAR(length=20), nullable=False),
         sa.Column('country_code', sa.VARCHAR(length=5), nullable=False, server_default='+91'),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=True),
+        sa.Column('user_type', sa.VARCHAR(length=20), nullable=True),  # 'admin', 'provider', 'customer'
         sa.Column('otp_code', sa.VARCHAR(length=6), nullable=False),
         sa.Column('otp_hash', sa.VARCHAR(length=255), nullable=False),
         sa.Column('purpose', sa.VARCHAR(length=50), nullable=False),
@@ -150,7 +334,7 @@ def upgrade() -> None:
     )
     op.create_index('idx_otp_phone_purpose', 'otp_verifications', ['phone_number', 'purpose'], unique=False)
     op.create_index('idx_otp_expires_at', 'otp_verifications', ['expires_at'], unique=False)
-    op.create_index('idx_otp_user_id', 'otp_verifications', ['user_id'], unique=False)
+    op.create_index('idx_otp_user_id_type', 'otp_verifications', ['user_id', 'user_type'], unique=False)
     
     # Add partial unique index for unverified OTPs
     op.execute("""
@@ -163,8 +347,12 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Drop all core tables."""
     op.drop_table('otp_verifications')
-    op.drop_table('user_sessions')
-    op.drop_table('users')
+    op.drop_table('customer_user_sessions')
+    op.drop_table('provider_user_sessions')
+    op.drop_table('admin_user_sessions')
+    op.drop_table('customer_users')
+    op.drop_table('provider_users')
+    op.drop_table('admin_users')
     op.drop_table('role_permissions')
     op.drop_table('permissions')
     op.drop_table('roles')

@@ -11,7 +11,8 @@ import logging
 from app.core.config import settings
 from app.core.logging import setup_logging
 from app.core.database import init_db
-from app.api.v1.router import api_router
+from app.shared.health import router as health_router
+from app.domains.admin import admin_router
 from app.middleware.error_handler import add_exception_handlers
 from app.middleware.correlation_id import CorrelationIdMiddleware
 from app.middleware.request_logging import RequestLoggingMiddleware
@@ -59,8 +60,15 @@ def create_application() -> FastAPI:
     # Add exception handlers
     add_exception_handlers(app)
 
-    # Include API router
-    app.include_router(api_router, prefix=settings.API_V1_STR)
+    # Include shared health router (available to all domains)
+    app.include_router(health_router, tags=["Health"])
+    
+    # Include domain routers
+    app.include_router(admin_router, prefix="/api")
+    
+    # TODO: Add remaining domain routers
+    # app.include_router(provider_router, prefix="/api")  
+    # app.include_router(web_router, prefix="/api")
 
     # Root endpoint
     @app.get("/", include_in_schema=False)
@@ -70,7 +78,7 @@ def create_application() -> FastAPI:
             return RedirectResponse(url="/docs")
         return {
             "message": f"Welcome to {settings.PROJECT_NAME}",
-            "version": settings.VERSION,
+            "version": settings.PROJECT_VERSION,
             "status": "running"
         }
 
