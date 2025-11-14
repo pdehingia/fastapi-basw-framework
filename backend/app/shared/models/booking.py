@@ -2,10 +2,10 @@
 Super Admin Panel models for bookings, reviews, and related entities.
 """
 
-from datetime import datetime
+from datetime import datetime, date, time
 from enum import Enum
 from typing import Optional, Dict, Any
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, DECIMAL, JSON, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, DECIMAL, JSON, ForeignKey, Enum as SQLEnum, Date, Time, UUID
 from sqlalchemy.orm import relationship
 
 from app.shared.models.base import BaseModel
@@ -41,47 +41,65 @@ class Booking(BaseModel):
     
     __tablename__ = "bookings"
     
-    booking_number = Column(String(20), unique=True, nullable=False, index=True)
-    customer_user_id = Column(Integer, nullable=False, index=True)
-    provider_user_id = Column(Integer, nullable=False, index=True)
-    service_type = Column(String(100), nullable=False, index=True)
-    occasion_type = Column(String(100), nullable=False, index=True)
-    booking_date = Column(DateTime(timezone=True), nullable=False)
-    event_date = Column(DateTime(timezone=True), nullable=False, index=True)
-    event_duration_hours = Column(Integer, nullable=False)
-    venue_name = Column(String(255), nullable=True)
-    venue_address = Column(Text, nullable=True)
-    city = Column(String(100), nullable=False, index=True)
-    state = Column(String(100), nullable=False)
+    # Basic booking information matching actual database schema
+    booking_number = Column(String(50), unique=True, nullable=False, index=True)
+    customer_user_id = Column(UUID, nullable=False, index=True)
+    provider_user_id = Column(UUID, nullable=False, index=True)
+    service_id = Column(UUID, nullable=False)
+    service_name = Column(String(255), nullable=False)
+    service_price = Column(DECIMAL(10, 2), nullable=False)
+    service_duration_minutes = Column(Integer, nullable=False)
+    occasion_type = Column(String(50), nullable=False)
     
-    # Status
-    status = Column(SQLEnum(BookingStatus), default=BookingStatus.PENDING, nullable=False, index=True)
-    cancellation_reason = Column(Text, nullable=True)
-    cancelled_by = Column(SQLEnum(CancelledBy), nullable=True)
-    cancelled_at = Column(DateTime(timezone=True), nullable=True)
+    # Booking timing
+    booking_date = Column(Date, nullable=False)
+    booking_start_time = Column(Time, nullable=False)
+    booking_end_time = Column(Time, nullable=False)
     
-    # Pricing
-    base_price = Column(DECIMAL(10, 2), nullable=False)
-    platform_fee = Column(DECIMAL(10, 2), nullable=False)
-    taxes = Column(DECIMAL(10, 2), default=0)
-    discount_amount = Column(DECIMAL(10, 2), default=0)
-    promo_code = Column(String(50), nullable=True)
-    total_amount = Column(DECIMAL(10, 2), nullable=False)
-    academy_commission = Column(DECIMAL(10, 2), default=0)
-    academy_commission_rate = Column(DECIMAL(5, 2), default=0)
-    
-    # Payment
-    payment_status = Column(SQLEnum(PaymentStatus), default=PaymentStatus.PENDING, nullable=False)
-    payment_method = Column(String(50), nullable=True)
-    transaction_id = Column(String(100), nullable=True)
-    refund_amount = Column(DECIMAL(10, 2), default=0)
-    refund_reason = Column(Text, nullable=True)
+    # Location
+    location_type = Column(String(20), nullable=False)
+    address_id = Column(UUID, nullable=False)
     
     # Additional details
     special_requests = Column(Text, nullable=True)
-    guest_count = Column(Integer, nullable=True)
-    contact_phone = Column(String(15), nullable=False)
-    contact_email = Column(String(255), nullable=False)
+    
+    # Status and timing
+    status = Column(SQLEnum(BookingStatus), default=BookingStatus.PENDING, nullable=False, index=True)
+    payment_status = Column(SQLEnum(PaymentStatus), default=PaymentStatus.PENDING, nullable=False)
+    confirmed_at = Column(DateTime(timezone=True), nullable=True)
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    cancelled_at = Column(DateTime(timezone=True), nullable=True)
+    cancelled_by = Column(String(20), nullable=True)
+    cancellation_reason = Column(Text, nullable=True)
+    
+    # Financial information
+    subtotal = Column(DECIMAL(10, 2), nullable=False)
+    discount_amount = Column(DECIMAL(10, 2), nullable=False, default=0)
+    promo_code = Column(String(50), nullable=True)
+    taxes = Column(DECIMAL(10, 2), nullable=False, default=0)
+    total_amount = Column(DECIMAL(10, 2), nullable=False)
+    
+    # Commission and payouts
+    platform_commission_rate = Column(DECIMAL(5, 2), nullable=False, default=15.00)
+    platform_commission = Column(DECIMAL(10, 2), nullable=False)
+    provider_payout = Column(DECIMAL(10, 2), nullable=False)
+    academy_commission = Column(DECIMAL(10, 2), nullable=True)
+    academy_commission_rate = Column(DECIMAL(5, 2), nullable=True)
+    academy_commission_amount = Column(DECIMAL(10, 2), nullable=True)
+    
+    # Transaction information
+    transaction_id = Column(UUID, nullable=True)
+    payout_transaction_id = Column(UUID, nullable=True)
+    
+    # Additional features
+    chat_pg_id = Column(UUID, nullable=True)
+    reschedule_count = Column(Integer, default=0)
+    original_booking_id = Column(UUID, nullable=True)
+    
+    # Academy features
+    is_academy_student_booking = Column(Boolean, default=False)
+    academy_student_id = Column(UUID, nullable=True)
 
 
 class ModerationStatus(str, Enum):

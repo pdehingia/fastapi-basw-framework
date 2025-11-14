@@ -3,7 +3,8 @@ Global dependencies for FastAPI dependency injection.
 Common dependencies that can be used across the application.
 """
 
-from typing import Optional
+import uuid
+from typing import Optional, Union
 from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -31,7 +32,7 @@ async def get_correlation_id(
 
 async def get_current_user_id(
     authorization: Optional[str] = Header(None)
-) -> int:
+) -> str:
     """
     Extract user ID from JWT token.
 
@@ -39,7 +40,7 @@ async def get_current_user_id(
         authorization: Authorization header with Bearer token
 
     Returns:
-        User ID
+        User ID as UUID string
 
     Raises:
         UnauthorizedException: If token is invalid or missing
@@ -65,15 +66,17 @@ async def get_current_user_id(
     if not user_id:
         raise UnauthorizedException("Invalid token payload")
 
+    # Validate UUID format
     try:
-        return int(user_id)
+        uuid.UUID(user_id)  # This will raise ValueError if not a valid UUID
+        return user_id
     except (ValueError, TypeError):
         raise UnauthorizedException("Invalid user ID in token")
 
 
 async def get_optional_current_user_id(
     authorization: Optional[str] = Header(None)
-) -> Optional[int]:
+) -> Optional[str]:
     """
     Extract user ID from JWT token (optional).
     Returns None if no token provided.
@@ -82,7 +85,7 @@ async def get_optional_current_user_id(
         authorization: Authorization header with Bearer token
 
     Returns:
-        User ID or None
+        User ID as UUID string or None
     """
     if not authorization:
         return None
@@ -94,9 +97,9 @@ async def get_optional_current_user_id(
 
 
 def require_admin(
-    current_user_id: int = Depends(get_current_user_id),
+    current_user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
-) -> int:
+) -> str:
     """
     Dependency that requires admin privileges.
 
@@ -120,9 +123,9 @@ def require_admin(
 
 
 def require_superuser(
-    current_user_id: int = Depends(get_current_user_id),
+    current_user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
-) -> int:
+) -> str:
     """
     Dependency that requires superuser privileges.
 
@@ -141,14 +144,14 @@ def require_superuser(
 
 
 async def get_current_admin_user(
-    current_user_id: int = Depends(get_current_user_id),
+    current_user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ) -> AdminUser:
     """
     Get current admin user from token.
 
     Args:
-        current_user_id: Current user ID from token
+        current_user_id: Current user ID from token as UUID string
         db: Database session
 
     Returns:
@@ -163,7 +166,7 @@ async def get_current_admin_user(
     if not admin_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Admin user not found"
+            detail="Invalid user ID in token"
         )
     
     if not admin_user.is_active:

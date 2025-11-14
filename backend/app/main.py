@@ -12,6 +12,7 @@ from app.core.config import settings
 from app.core.logging import setup_logging
 from app.core.database import init_db
 from app.shared.health import router as health_router
+from app.shared.test_router import router as test_router
 from app.domains.admin import admin_router
 from app.middleware.error_handler import add_exception_handlers
 from app.middleware.correlation_id import CorrelationIdMiddleware
@@ -61,7 +62,10 @@ def create_application() -> FastAPI:
     add_exception_handlers(app)
 
     # Include shared health router (available to all domains)
-    app.include_router(health_router, tags=["Health"])
+    app.include_router(health_router, prefix=settings.API_V1_STR, tags=["Health"])
+    
+    # Include test router for demonstrating standardized responses
+    app.include_router(test_router, prefix=settings.API_V1_STR, tags=["Test"])
     
     # Include domain routers
     app.include_router(admin_router, prefix="/api")

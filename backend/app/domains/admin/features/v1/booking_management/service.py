@@ -24,7 +24,7 @@ from .schemas import (
     BookingTimelineEntry,
 )
 from app.shared.exceptions import ValidationException, NotFoundError
-from app.shared.pagination import PaginationParams, PaginatedResponse
+from app.shared.pagination import PaginationParams, PaginatedResponse, PageMetadata
 
 
 class BookingManagementService:
@@ -50,8 +50,8 @@ class BookingManagementService:
             total_count = query.count()
 
             # Apply pagination
-            offset = (pagination.page - 1) * pagination.size
-            bookings = query.order_by(desc(Booking.created_at)).offset(offset).limit(pagination.size).all()
+            offset = (pagination.page - 1) * pagination.page_size
+            bookings = query.order_by(desc(Booking.created_at)).offset(offset).limit(pagination.page_size).all()
 
             # Convert to response models
             booking_responses = []
@@ -61,7 +61,7 @@ class BookingManagementService:
                     booking_number=booking.booking_number,
                     customer_user_id=booking.customer_user_id,
                     provider_user_id=booking.provider_user_id,
-                    service_type=booking.service_type,
+                    service_type=booking.service_name,
                     occasion_type=booking.occasion_type,
                     booking_date=booking.booking_date,
                     event_date=booking.event_date,
@@ -97,14 +97,18 @@ class BookingManagementService:
                 ))
 
             # Calculate pagination info
-            total_pages = (total_count + pagination.size - 1) // pagination.size
+            total_pages = (total_count + pagination.page_size - 1) // pagination.page_size
 
             return PaginatedResponse(
                 items=booking_responses,
-                total=total_count,
-                page=pagination.page,
-                size=pagination.size,
-                pages=total_pages
+                metadata=PageMetadata(
+                    page=pagination.page,
+                    page_size=pagination.page_size,
+                    total_items=total_count,
+                    total_pages=total_pages,
+                    has_next=pagination.page < total_pages,
+                    has_previous=pagination.page > 1
+                )
             )
 
         except SQLAlchemyError as e:
@@ -145,7 +149,7 @@ class BookingManagementService:
                 booking_number=booking.booking_number,
                 customer_user_id=booking.customer_user_id,
                 provider_user_id=booking.provider_user_id,
-                service_type=booking.service_type,
+                service_type=booking.service_name,
                 occasion_type=booking.occasion_type,
                 booking_date=booking.booking_date,
                 event_date=booking.event_date,
@@ -370,7 +374,7 @@ class BookingManagementService:
                     customer_email,
                     provider_name,
                     provider_business,
-                    booking.service_type,
+                    booking.service_name,
                     booking.occasion_type,
                     booking.booking_date.strftime('%Y-%m-%d %H:%M:%S') if booking.booking_date else "",
                     booking.event_date.strftime('%Y-%m-%d %H:%M:%S') if booking.event_date else "",
@@ -436,7 +440,7 @@ class BookingManagementService:
             query = query.filter(Booking.occasion_type == filters.occasion_type)
 
         if filters.service_type:
-            query = query.filter(Booking.service_type == filters.service_type)
+            query = query.filter(Booking.service_name == filters.service_type)
 
         if filters.city:
             query = query.filter(Booking.city.ilike(f"%{filters.city}%"))
@@ -525,9 +529,9 @@ class BookingManagementService:
 
             # Top services
             top_services = self.db.query(
-                Booking.service_type,
+                Booking.service_name,
                 func.count(Booking.id).label('booking_count')
-            ).group_by(Booking.service_type).order_by(desc('booking_count')).limit(10).all()
+            ).group_by(Booking.service_name).order_by(desc('booking_count')).limit(10).all()
 
             return BookingStatistics(
                 total_bookings=total_bookings,

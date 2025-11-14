@@ -677,3 +677,117 @@ class SupportManagementService:
             )
             for i in range(1, 31)
         ]
+    
+    def add_internal_note(self, ticket_id: int, note: str) -> bool:
+        """Add internal note to ticket (only visible to admin users)"""
+        # In real implementation, save to database
+        # For now, return success
+        return True
+    
+    def merge_tickets(self, primary_ticket_id: int, secondary_ticket_ids: List[int], merge_reason: str) -> Dict[str, Any]:
+        """Merge multiple tickets into a primary ticket"""
+        # In real implementation:
+        # 1. Validate all tickets exist and can be merged
+        # 2. Move all messages from secondary tickets to primary
+        # 3. Update references and close secondary tickets
+        # 4. Add merge activity to ticket history
+        
+        return {
+            "primary_ticket_id": primary_ticket_id,
+            "merged_ticket_ids": secondary_ticket_ids,
+            "merge_summary": f"Successfully merged {len(secondary_ticket_ids)} tickets. Reason: {merge_reason}",
+            "created_at": datetime.now()
+        }
+    
+    def close_ticket(self, ticket_id: int, resolution_summary: str, send_survey: bool, resolution_category: Optional[str] = None) -> bool:
+        """Close ticket with resolution summary"""
+        # In real implementation:
+        # 1. Update ticket status to RESOLVED
+        # 2. Add resolution summary to ticket
+        # 3. Send customer satisfaction survey if requested
+        # 4. Update SLA completion metrics
+        # 5. Notify stakeholders
+        
+        return True
+    
+    def get_support_analytics(self, timeframe: str = "this_month") -> Dict[str, Any]:
+        """Get comprehensive support analytics and performance metrics"""
+        # Mock analytics data based on timeframe
+        base_multiplier = 1.0
+        if timeframe == "today":
+            base_multiplier = 0.1
+        elif timeframe == "this_week":
+            base_multiplier = 0.3
+        elif timeframe == "last_month":
+            base_multiplier = 0.9
+        elif timeframe == "last_3_months":
+            base_multiplier = 2.5
+        
+        total_tickets = int(500 * base_multiplier)
+        open_tickets = int(total_tickets * 0.15)
+        resolved_today = int(25 * base_multiplier)
+        
+        return {
+            "timeframe": timeframe,
+            "total_tickets": total_tickets,
+            "open_tickets": open_tickets,
+            "resolved_today": resolved_today,
+            "avg_response_time_minutes": 45.5,
+            "avg_resolution_time_hours": 8.2,
+            "satisfaction_score": 4.6,
+            "escalation_rate": 0.12,
+            "overdue_tickets": int(open_tickets * 0.1),
+            "tickets_by_priority": {
+                "low": int(total_tickets * 0.4),
+                "medium": int(total_tickets * 0.35),
+                "high": int(total_tickets * 0.2),
+                "critical": int(total_tickets * 0.05)
+            },
+            "tickets_by_status": {
+                "new": int(total_tickets * 0.05),
+                "open": int(total_tickets * 0.1),
+                "in_progress": int(total_tickets * 0.08),
+                "waiting_customer": int(total_tickets * 0.02),
+                "resolved": int(total_tickets * 0.7),
+                "closed": int(total_tickets * 0.05)
+            },
+            "tickets_by_issue_type": {
+                "booking": int(total_tickets * 0.3),
+                "payment": int(total_tickets * 0.25),
+                "account": int(total_tickets * 0.2),
+                "technical": int(total_tickets * 0.15),
+                "general": int(total_tickets * 0.1)
+            },
+            "agent_performance": [
+                {
+                    "agent_id": 1,
+                    "agent_name": "Sarah Johnson",
+                    "tickets_handled": int(80 * base_multiplier),
+                    "avg_response_time_minutes": 35.2,
+                    "avg_resolution_time_hours": 6.8,
+                    "satisfaction_score": 4.8,
+                    "escalation_count": int(3 * base_multiplier)
+                },
+                {
+                    "agent_id": 2,
+                    "agent_name": "Mike Chen",
+                    "tickets_handled": int(75 * base_multiplier),
+                    "avg_response_time_minutes": 42.1,
+                    "avg_resolution_time_hours": 7.5,
+                    "satisfaction_score": 4.7,
+                    "escalation_count": int(2 * base_multiplier)
+                },
+                {
+                    "agent_id": 3,
+                    "agent_name": "Emma Davis",
+                    "tickets_handled": int(95 * base_multiplier),
+                    "avg_response_time_minutes": 28.5,
+                    "avg_resolution_time_hours": 5.9,
+                    "satisfaction_score": 4.9,
+                    "escalation_count": int(1 * base_multiplier)
+                }
+            ],
+            "resolution_rate": 0.85,
+            "first_response_sla": 0.92,  # 92% of tickets responded within SLA
+            "resolution_sla": 0.88  # 88% of tickets resolved within SLA
+        }

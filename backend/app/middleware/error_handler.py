@@ -3,7 +3,7 @@ Global error handling middleware.
 Catches all exceptions and returns standardized error responses.
 """
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, status, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import IntegrityError, OperationalError
@@ -20,7 +20,7 @@ from app.core.exceptions import (
     RateLimitException,
     ServiceUnavailableException
 )
-from app.shared.responses import error_response
+from app.shared.responses import error_response, create_error_json_response
 
 logger = logging.getLogger(__name__)
 
@@ -38,27 +38,23 @@ def add_exception_handlers(app: FastAPI) -> None:
         """Handle resource not found exceptions."""
         logger.warning(f"Not found: {exc.message}", extra={"path": request.url.path})
 
-        return JSONResponse(
+        return create_error_json_response(
+            message=exc.message,
+            error_code=exc.code,
             status_code=status.HTTP_404_NOT_FOUND,
-            content=error_response(
-                error=exc.message,
-                code=exc.code,
-                details=exc.details
-            )
+            details=exc.details
         )
 
     @app.exception_handler(ValidationException)
-    async def validation_exception_handler(request: Request, exc: ValidationException):
+    async def validation_handler(request: Request, exc: ValidationException):
         """Handle validation exceptions."""
         logger.warning(f"Validation error: {exc.message}")
 
-        return JSONResponse(
+        return create_error_json_response(
+            message=exc.message,
+            error_code=exc.code,
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content=error_response(
-                error=exc.message,
-                code=exc.code,
-                details=exc.details
-            )
+            details=exc.details
         )
 
     @app.exception_handler(RequestValidationError)
@@ -74,13 +70,11 @@ def add_exception_handlers(app: FastAPI) -> None:
 
         logger.warning(f"Request validation failed: {errors}")
 
-        return JSONResponse(
+        return create_error_json_response(
+            message="Validation failed",
+            error_code="VALIDATION_ERROR",
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content=error_response(
-                error="Validation failed",
-                code="VALIDATION_ERROR",
-                details={"errors": errors}
-            )
+            details={"errors": errors}
         )
 
     @app.exception_handler(UnauthorizedException)
@@ -88,13 +82,11 @@ def add_exception_handlers(app: FastAPI) -> None:
         """Handle authentication failures."""
         logger.warning(f"Unauthorized access attempt: {exc.message}")
 
-        return JSONResponse(
+        return create_error_json_response(
+            message=exc.message,
+            error_code=exc.code,
             status_code=status.HTTP_401_UNAUTHORIZED,
-            content=error_response(
-                error=exc.message,
-                code=exc.code,
-                details=exc.details
-            ),
+            details=exc.details,
             headers={"WWW-Authenticate": "Bearer"}
         )
 
@@ -106,13 +98,11 @@ def add_exception_handlers(app: FastAPI) -> None:
             extra={"path": request.url.path}
         )
 
-        return JSONResponse(
+        return create_error_json_response(
+            message=exc.message,
+            error_code=exc.code,
             status_code=status.HTTP_403_FORBIDDEN,
-            content=error_response(
-                error=exc.message,
-                code=exc.code,
-                details=exc.details
-            )
+            details=exc.details
         )
 
     @app.exception_handler(ConflictException)
@@ -223,6 +213,30 @@ def add_exception_handlers(app: FastAPI) -> None:
             )
         )
 
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException):
+        """Handle FastAPI HTTPException with standardized response format."""
+        
+        # If the detail is already a dict (from our standardized exceptions), use it directly
+        if isinstance(exc.detail, dict):
+            return JSONResponse(
+                status_code=exc.status_code,
+                content=exc.detail,
+                headers=getattr(exc, 'headers', None)
+            )
+        
+        # Otherwise, wrap the detail in our standard format
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=error_response(
+                message=exc.detail,
+                error_code="HTTP_ERROR",
+                status_code=exc.status_code,
+                details=None
+            ),
+            headers=getattr(exc, 'headers', None)
+        )
+
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
         """Handle all unhandled exceptions."""
@@ -232,11 +246,9 @@ def add_exception_handlers(app: FastAPI) -> None:
         from app.core.config import settings
         error_detail = str(exc) if settings.DEBUG else "An unexpected error occurred"
 
-        return JSONResponse(
+        return create_error_json_response(
+            message="Internal server error",
+            error_code="INTERNAL_ERROR",
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content=error_response(
-                error="Internal server error",
-                code="INTERNAL_ERROR",
-                details={"detail": error_detail} if settings.DEBUG else None
-            )
+            details={"detail": error_detail} if settings.DEBUG else None
         )

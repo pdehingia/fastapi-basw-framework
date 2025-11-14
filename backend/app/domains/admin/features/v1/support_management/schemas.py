@@ -118,6 +118,50 @@ class CloseTicketRequest(BaseModel):
     resolution_category: Optional[str] = Field(None, description="Category of resolution")
 
 
+class AnalyticsTimeframe(str, Enum):
+    TODAY = "today"
+    THIS_WEEK = "this_week"  
+    THIS_MONTH = "this_month"
+    LAST_MONTH = "last_month"
+    LAST_3_MONTHS = "last_3_months"
+
+
+class AgentPerformance(BaseModel):
+    agent_id: int
+    agent_name: str
+    tickets_handled: int
+    avg_response_time_minutes: float
+    avg_resolution_time_hours: float
+    satisfaction_score: float
+    escalation_count: int
+
+
+class SupportAnalyticsResponse(BaseModel):
+    timeframe: AnalyticsTimeframe
+    total_tickets: int
+    open_tickets: int
+    resolved_today: int
+    avg_response_time_minutes: float
+    avg_resolution_time_hours: float
+    satisfaction_score: float
+    escalation_rate: float
+    overdue_tickets: int
+    tickets_by_priority: Dict[str, int]
+    tickets_by_status: Dict[str, int]
+    tickets_by_issue_type: Dict[str, int]
+    agent_performance: List[AgentPerformance]
+    resolution_rate: float
+    first_response_sla: float
+    resolution_sla: float
+
+
+class MergeTicketsResponse(BaseModel):
+    primary_ticket_id: int
+    merged_ticket_ids: List[int]
+    merge_summary: str
+    created_at: datetime
+
+
 # Response Schemas
 class UserInfo(BaseModel):
     id: int

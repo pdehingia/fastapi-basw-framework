@@ -119,3 +119,4 @@ python-slugify>=8.0.1
 pendulum>=3.0.0
 rich>=13.7.0
 typer>=0.9.0
+user-agents>=2.2.0

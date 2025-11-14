@@ -24,6 +24,7 @@ bcrypt==4.1.2
 # HTTP utilities
 httpx==0.25.2
 requests==2.31.0
+user-agents==2.2.0
 
 # Logging
 structlog==23.2.0

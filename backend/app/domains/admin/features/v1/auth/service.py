@@ -1,8 +1,10 @@
 """Admin authentication service."""
 
-from datetime import datetime
-from typing import Optional
-from uuid import UUID
+from datetime import datetime, timedelta, timezone
+from typing import Optional, Dict, Any, Tuple
+from uuid import UUID, uuid4
+import secrets
+import logging
 
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, desc, text
@@ -10,8 +12,10 @@ from sqlalchemy import and_, desc, text
 from app.core.security import get_password_hash, verify_password
 from .schemas import AdminRegisterRequest, AdminUserUpdateRequest
 from app.shared.exceptions import ValidationException
-from app.shared.models.user import AdminUser, AdminSession, AdminActivityLog
+from app.shared.models.user import AdminUser, AdminAuditLog, AdminUserSession
 from app.shared.repositories.user import AdminUserRepository
+
+logger = logging.getLogger(__name__)
 
 
 class AdminAuthService:
@@ -21,7 +25,7 @@ class AdminAuthService:
         self.db = db
         self.user_repository = AdminUserRepository(db)
     
-    async def authenticate_user(self, email: str, password: str) -> Optional[AdminUser]:
+    async def authenticate_user(self, email: str, password: str, client_info: dict = None) -> Optional[AdminUser]:
         """Authenticate admin user by email and password."""
         user = await self.get_user_by_email(email)
         
@@ -33,23 +37,166 @@ class AdminAuthService:
             await self._log_activity(
                 user_id=user.id,
                 action="login_failed",
-                details={"reason": "invalid_password"}
+                details={
+                    "reason": "invalid_password",
+                    **(client_info or {})
+                }
             )
             return None
         
         # Update last login
-        user.last_login_at = datetime.utcnow()
+        user.last_login_at = datetime.now(timezone.utc)
         self.db.commit()
         
-        # Log successful login
+        # Try to create session record with error handling
+        session_token = None
+        try:
+            session_token = await self.create_session(user.id, client_info or {})
+            logger.info(f"Session created successfully: {session_token[:8]}...")
+        except Exception as e:
+            logger.error(f"Failed to create session: {e}")
+            # Continue without session tracking for now
+        
+        # Log successful login with client information
         await self._log_activity(
             user_id=user.id,
             action="login_success",
-            details={"ip_address": "system"}  # TODO: Get real IP
+            details=client_info or {"ip_address": "unknown"}
         )
         
         return user
     
+    async def create_session(self, user_id: UUID, client_info: dict) -> str:
+        """Create a new user session."""
+        session_token = secrets.token_urlsafe(32)
+        
+        # Extract client information with proper mapping
+        user_agent = client_info.get("user_agent", "Unknown Device")
+        browser = client_info.get("browser", "Unknown Browser")
+        os_info = client_info.get("operating_system", "Unknown OS")
+        
+        # Determine device type based on client info
+        if client_info.get("is_mobile"):
+            device_type = "Mobile"
+        elif client_info.get("is_tablet"):
+            device_type = "Tablet"
+        elif client_info.get("is_pc"):
+            device_type = "PC"
+        else:
+            device_type = "Other"
+        
+        # Generate device ID based on user agent and IP (simplified)
+        import hashlib
+        device_id = hashlib.md5(f"{user_agent}{client_info.get('ip_address', '')}".encode()).hexdigest()[:16]
+        
+        # Extract device name (browser + OS)
+        device_name = f"{browser} on {os_info}"
+        
+        # Extract location
+        ip_address = client_info.get("ip_address", "Unknown")
+        city = client_info.get("city")
+        country = client_info.get("country")
+        
+        # Extract OS version and app version
+        os_version = os_info if os_info != "Unknown OS" else None
+        app_version = "Admin Panel v1.0.0"  # Static for now, can be dynamic later
+        
+        # Create session record
+        session = AdminUserSession(
+            user_id=user_id,
+            session_token=session_token,
+            device_id=device_id,
+            device_type=device_type,
+            device_name=device_name,
+            os_version=os_version,
+            app_version=app_version,
+            ip_address=ip_address,
+            city=city,
+            country=country,
+            expires_at=datetime.now(timezone.utc) + timedelta(hours=24),  # 24-hour session
+            is_active=True
+        )
+        
+        self.db.add(session)
+        self.db.commit()
+        
+        return session_token
+    
+    async def get_session_by_token(self, session_token: str) -> Optional[AdminUserSession]:
+        """Get session by token."""
+        return self.db.query(AdminUserSession).filter(
+            AdminUserSession.session_token == session_token,
+            AdminUserSession.is_active == True
+        ).first()
+    
+    async def update_session_activity(self, session_token: str) -> bool:
+        """Update session activity timestamp."""
+        session = await self.get_session_by_token(session_token)
+        if session and not session.is_expired():
+            session.update_activity()
+            self.db.commit()
+            return True
+        return False
+    
+    async def logout_session(self, session_token: str) -> bool:
+        """Logout and deactivate session."""
+        session = await self.get_session_by_token(session_token)
+        if session:
+            session.mark_logout()
+            self.db.commit()
+            
+            # Log logout activity
+            await self._log_activity(
+                user_id=session.user_id,
+                action="logout",
+                details={
+                    "session_token": session_token[:8] + "...",  # Only log partial token
+                    "device_type": session.device_type,
+                    "ip_address": session.ip_address
+                }
+            )
+            return True
+        return False
+    
+    async def logout_all_sessions(self, user_id: UUID) -> int:
+        """Logout all active sessions for a user."""
+        sessions = self.db.query(AdminUserSession).filter(
+            AdminUserSession.user_id == user_id,
+            AdminUserSession.is_active == True
+        ).all()
+        
+        count = 0
+        for session in sessions:
+            session.mark_logout()
+            count += 1
+        
+        if count > 0:
+            self.db.commit()
+            await self._log_activity(
+                user_id=user_id,
+                action="logout_all_sessions",
+                details={"sessions_count": count}
+            )
+        
+        return count
+    
+    async def cleanup_expired_sessions(self) -> int:
+        """Clean up expired sessions."""
+        expired_sessions = self.db.query(AdminUserSession).filter(
+            AdminUserSession.is_active == True,
+            AdminUserSession.expires_at < datetime.now(timezone.utc)
+        ).all()
+        
+        count = 0
+        for session in expired_sessions:
+            session.is_active = False
+            count += 1
+        
+        if count > 0:
+            self.db.commit()
+        
+        return count
+
     async def get_user_by_email(self, email: str) -> Optional[AdminUser]:
         """Get admin user by email."""
         return self.user_repository.get_by_email(email)
@@ -183,16 +330,28 @@ class AdminAuthService:
     
     async def get_user_sessions(self, user_id: UUID, limit: int = 10) -> list:
         """Get admin user active sessions."""
-        query = text("""
-            SELECT id, session_token, device_name, device_type, ip_address, 
-                   city, country, is_active, created_at, last_active_at, expires_at
-            FROM admin_user_sessions 
-            WHERE user_id = :user_id AND is_active = true AND expires_at > NOW()
-            ORDER BY last_active_at DESC
-            LIMIT :limit
-        """)
-        result = self.db.execute(query, {"user_id": str(user_id), "limit": limit})
-        return [dict(row._mapping) for row in result]
+        sessions = self.db.query(AdminUserSession).filter(
+            AdminUserSession.user_id == user_id,
+            AdminUserSession.is_active == True,
+            AdminUserSession.expires_at > datetime.now(timezone.utc)
+        ).order_by(desc(AdminUserSession.last_active_at)).limit(limit).all()
+        
+        return [
+            {
+                "id": str(session.id),
+                "session_token": session.session_token[:8] + "...",  # Partial token for security
+                "device_name": session.device_name,
+                "device_type": session.device_type,
+                "ip_address": session.ip_address,
+                "city": session.city,
+                "country": session.country,
+                "is_active": session.is_active,
+                "created_at": session.created_at.isoformat(),
+                "last_active_at": session.last_active_at.isoformat(),
+                "expires_at": session.expires_at.isoformat() if session.expires_at else None
+            }
+            for session in sessions
+        ]
     
     async def get_user_activity_logs(self, user_id: UUID, limit: int = 20) -> list:
         """Get admin user activity logs."""
@@ -209,7 +368,7 @@ class AdminAuthService:
     
     async def _log_activity(self, user_id: UUID, action: str, details: dict = None):
         """Log admin user activity."""
-        activity_log = AdminActivityLog(
+        activity_log = AdminAuditLog(
             admin_user_id=user_id,
             action=action,
             entity="auth",  # Entity being acted upon
