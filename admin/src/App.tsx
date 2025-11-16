@@ -1,50 +1,30 @@
 /**
- * Main App component
- * Root application component with providers
+ * OPTIMIZED App component
+ * No blocking auth initialization for public routes
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RouterProvider } from '@tanstack/react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { router } from './router';
-
-// Create QueryClient instance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
-      retry: 2,
-      refetchOnWindowFocus: false,
-    },
-    mutations: {
-      retry: 1,
-    },
-  },
-});
+import { ErrorBoundary } from '@/components/organisms/ErrorBoundary';
+import { useAuthStore } from '@/stores/authStore';
 
 const App: React.FC = () => {
+  const initAuth = useAuthStore(state => state.initAuth);
+
+  // Initialize auth in background - don't block UI
+  useEffect(() => {
+    console.log('🚀 Initializing auth in background...');
+    initAuth(); // No blocking, just start the process
+  }, [initAuth]);
+
+  // Render router immediately - let routes handle their own auth logic
   return (
-    <QueryClientProvider client={queryClient}>
+    <ErrorBoundary>
       <RouterProvider router={router} />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-          },
-          success: {
-            duration: 3000,
-          },
-          error: {
-            duration: 5000,
-          },
-        }}
-      />
-    </QueryClientProvider>
+      <Toaster position="top-right" />
+    </ErrorBoundary>
   );
 };
 

@@ -37,8 +37,8 @@ const LoginForm: React.FC = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: '',
-      password: '',
+      username: 'admin@maya.com', // Demo credentials
+      password: 'admin123',
       rememberMe: false,
     },
   });
@@ -69,6 +69,15 @@ const LoginForm: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Demo credentials notice */}
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+            <p className="text-sm text-blue-700">
+              <span className="font-medium">Demo Mode:</span> Pre-filled with test credentials.
+              <br />
+              <span className="text-xs">Username: admin@maya.com | Password: admin123</span>
+            </p>
+          </div>
+
           {/* General error message */}
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-md p-3">

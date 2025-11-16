@@ -4,56 +4,71 @@
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import { AuthService } from '@/services/api/auth';
 import type { 
   AuthStore, 
   AuthUser, 
   LoginCredentials, 
-  Permission, 
   UserRole 
 } from '@/types/auth.types';
 
-// Initial auth state - NO TOKEN STORAGE (httpOnly cookies only)
+// Initial auth state - NO PERSISTENCE (httpOnly cookies only)
 const initialState = {
   user: null,
   isAuthenticated: false,
+  isInitialized: false,
   isLoading: false,
   error: null,
 };
 
 export const useAuthStore = create<AuthStore>()(
-  persist(
-    (set, get) => ({
-      ...initialState,
+  // NO PERSISTENCE - httpOnly cookies handle all auth state
+  (set, get) => ({
+    ...initialState,
 
-      // Actions
-      login: async (credentials: LoginCredentials) => {
-        set({ isLoading: true, error: null });
+    // Actions
+    login: async (credentials: LoginCredentials) => {
+      console.log('🏪 [AUTH STORE] Starting login process...');
+      set({ isLoading: true, error: null });
+      
+      try {
+        console.log('🏪 [AUTH STORE] Step 1: Calling AuthService.login...');
+        // Step 1: Login - httpOnly cookies set by server
+        await AuthService.login(credentials);
+        console.log('🏪 [AUTH STORE] Step 1 completed - cookies should be set');
         
-        try {
-          // Step 1: Login - httpOnly cookies set by server
-          await AuthService.login(credentials);
-          
-          // Step 2: Fetch user profile to get complete user data
-          const profileResponse = await AuthService.getUserProfile();
-          
-          set({
-            user: profileResponse.data,
-            isAuthenticated: true,
-            isLoading: false,
-            error: null,
-          });
-        } catch (error) {
-          set({
-            user: null,
-            isAuthenticated: false,
-            isLoading: false,
-            error: error instanceof Error ? error.message : 'Login failed',
-          });
-          throw error;
-        }
-      },
+        console.log('🏪 [AUTH STORE] Step 2: Fetching user profile...');
+        // Step 2: Fetch user profile to get complete user data
+        const profileResponse = await AuthService.getUserProfile();
+        console.log('🏪 [AUTH STORE] Step 2 completed - profile data received:', {
+          userId: profileResponse.data.id,
+          email: profileResponse.data.email
+        });
+        
+        console.log('🏪 [AUTH STORE] Setting authenticated state...');
+        set({
+          user: profileResponse.data,
+          isAuthenticated: true,
+          isInitialized: true,
+          isLoading: false,
+          error: null,
+        });
+        
+        console.log('🏪 [AUTH STORE] Login completed successfully, final state:', {
+          isAuthenticated: true,
+          user: profileResponse.data.email
+        });
+      } catch (error) {
+        console.error('🏪 [AUTH STORE] Login failed:', error);
+        set({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: error instanceof Error ? error.message : 'Login failed',
+        });
+        throw error;
+      }
+    },
 
       logout: async () => {
         set({ isLoading: true });
@@ -148,18 +163,53 @@ export const useAuthStore = create<AuthStore>()(
         const { hasRole } = get();
         return roles.some(role => hasRole(role));
       },
-    }),
-    {
-      name: 'maya-auth-storage',
-      storage: createJSONStorage(() => localStorage),
-      // Only persist essential user data, not loading states
-      // NO TOKEN STORAGE - httpOnly cookies managed by server
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-      }),
-    }
-  )
+
+      // Initialize auth state from httpOnly cookies on app load
+      initAuth: async () => {
+        console.log('🏪 [AUTH STORE] initAuth called');
+        
+        // Prevent double initialization
+        const currentState = get();
+        if (currentState.isInitialized) {
+          console.log('🏪 [AUTH STORE] Already initialized, skipping...');
+          return;
+        }
+        
+        set({ isLoading: true });
+        
+        // Add small delay to ensure proper initialization timing
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        try {
+          console.log('🏪 [AUTH STORE] Attempting to get user profile from existing session...');
+          // Try to get user profile - this will work if httpOnly cookies are valid
+          const profileResponse = await AuthService.getUserProfile();
+          console.log('🏪 [AUTH STORE] Profile retrieved successfully:', {
+            userId: profileResponse.data.id,
+            email: profileResponse.data.email
+          });
+          set({
+            user: profileResponse.data,
+            isAuthenticated: true,
+            isInitialized: true,
+            isLoading: false,
+            error: null,
+          });
+          console.log('🏪 [AUTH STORE] initAuth completed - user is authenticated');
+        } catch (error) {
+          console.log('🏪 [AUTH STORE] No valid session found (expected for logged out users)');
+          // No valid session, stay logged out
+          set({
+            user: null,
+            isAuthenticated: false,
+            isInitialized: true,
+            isLoading: false,
+            error: null,
+          });
+          console.log('🏪 [AUTH STORE] initAuth completed - user is not authenticated');
+        }
+      },
+    })
 );
 
 // Export individual selectors for performance
@@ -177,6 +227,7 @@ export const useAuthActions = () => useAuthStore((state) => ({
   clearError: state.clearError,
   setLoading: state.setLoading,
   setUser: state.setUser,
+  initAuth: state.initAuth,
 }));
 
 export const useAuthHelpers = () => useAuthStore((state) => ({

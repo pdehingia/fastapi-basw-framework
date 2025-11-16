@@ -5,7 +5,7 @@
  */
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { API_BASE_URL, AUTH_ENDPOINTS } from '@/constants/api';
+import { API_BASE_URL, AUTH_ENDPOINTS } from '@/config/api';
 
 // Create axios instance with default configuration
 const createApiClient = (): AxiosInstance => {
@@ -62,8 +62,8 @@ const createApiClient = (): AxiosInstance => {
           // Retry the original request
           return client(originalRequest);
         } catch (refreshError) {
-          // Refresh failed, redirect to login
-          window.location.href = '/login';
+          // Refresh failed - let the calling code handle the redirect
+          console.log('🔗 [API CLIENT] Refresh failed during 401 handling');
           return Promise.reject(refreshError);
         }
       }

@@ -4,7 +4,7 @@
  */
 
 import { apiClient, handleApiResponse, handleApiError } from './client';
-import { AUTH_ENDPOINTS } from '@/constants/api';
+import { AUTH_ENDPOINTS } from '@/config/api';
 import type { 
   LoginCredentials, 
   LoginResponse, 
