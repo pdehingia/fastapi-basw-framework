@@ -10,10 +10,10 @@ from sqlalchemy import Column, String, Text, Date, Boolean, Integer, ForeignKey,
 from sqlalchemy.dialects.postgresql import UUID as PostgresUUID, JSONB, NUMERIC
 from sqlalchemy.orm import relationship
 
-from app.core.database import BaseModel
+from app.core.database import Base
 
 
-class ProviderBusinessDetail(BaseModel):
+class ProviderBusinessDetail(Base):
     """
     Extended business details for provider users.
     Additional business information beyond basic provider profile.
@@ -59,7 +59,7 @@ class ProviderBusinessDetail(BaseModel):
         return f"<ProviderBusinessDetail(provider_id={self.provider_user_id}, approved={self.is_approved})>"
 
 
-class ProviderSalon(BaseModel):
+class ProviderSalon(Base):
     """
     Junction table for provider-salon ownership relationships.
     Tracks provider ownership and management of salons.
@@ -70,11 +70,13 @@ class ProviderSalon(BaseModel):
     provider_user_id = Column(
         PostgresUUID(as_uuid=True),
         ForeignKey('provider_users.id', ondelete='CASCADE'),
+        primary_key=True,
         nullable=False
     )
     salon_id = Column(
         PostgresUUID(as_uuid=True),
         ForeignKey('salons.id', ondelete='CASCADE'),
+        primary_key=True,
         nullable=False
     )
     

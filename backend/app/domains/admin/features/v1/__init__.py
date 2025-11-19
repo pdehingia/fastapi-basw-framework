@@ -20,13 +20,12 @@ from .roles_permissions import roles_permissions_router
 from .subscription_management import subscription_management_router
 from .address_management import address_management_router
 from .course_management import router as course_management_router
-from .salon_provider_management import router as salon_provider_management_router
 
 __all__ = [
     "auth_router", 
     "booking_management_router", 
     "customer_management_router",
-    "provider_management_router",
+    "provider_management_router",  # Now includes salon-providers & business details as sub-routers
     "business_management_router",
     "payment_management_router",
     "review_management_router",
@@ -42,6 +41,5 @@ __all__ = [
     "roles_permissions_router",
     "subscription_management_router",
     "address_management_router",
-    "course_management_router",
-    "salon_provider_management_router"
+    "course_management_router"
 ]

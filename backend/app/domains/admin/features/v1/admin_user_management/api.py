@@ -23,7 +23,7 @@ from .schemas import (
 # Import from the old user_management module that we're consolidating
 from app.domains.admin.features.v1.auth.schemas import AdminUserResponse, AdminUserUpdateRequest, AdminDashboardStats
 from app.domains.admin.features.v1.auth.service import AdminAuthService
-from app.domains.admin.features.v1.user_management.dependencies import require_user_management_access, require_system_admin_access
+from .dependencies import require_user_management_access, require_system_admin_access
 
 router = APIRouter(prefix="/admin-users", tags=[API_TAGS.USER_MANAGEMENT])
 

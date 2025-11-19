@@ -1,4 +1,12 @@
-"""Provider Management API for Admin Panel."""
+"""
+Provider Management API for Admin Panel
+
+Consolidated provider management with sub-routers for:
+- Core provider operations
+- Salon-provider employment relationships
+- Provider business details and approval
+- Salon ownership management
+"""
 
 from typing import Optional, Dict, Any
 from uuid import UUID
@@ -19,6 +27,11 @@ from .schemas import (
     ProviderBusinessHoursUpdate,
     ProviderStatusUpdate
 )
+
+# Import sub-routers
+from .salon_providers.api import router as salon_providers_router
+# Business details router will be added when implemented
+# from .business_details.api import router as business_details_router
 
 router = APIRouter(prefix="/providers", tags=[API_TAGS.PROVIDER_MANAGEMENT])
 
@@ -219,6 +232,23 @@ async def update_provider_business_hours(
         business_hours=hours_data.business_hours
     )
 
+
+# ============================================================================
+# Include Sub-Routers for Provider-Related Operations
+# ============================================================================
+
+# Salon-Provider Employment Relationships
+# Endpoints: /providers/salon-providers/*
+router.include_router(salon_providers_router)
+
+# Provider Business Details & Salon Ownership (to be implemented)
+# Endpoints: /providers/business-details/* and /providers/salon-ownership/*
+# router.include_router(business_details_router)
+
+
+# ============================================================================
+# Export
+# ============================================================================
 
 # Alias for backward compatibility and easier import
 provider_management_router = router
