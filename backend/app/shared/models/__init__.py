@@ -53,6 +53,7 @@ from app.shared.models.subscription import (
 from app.shared.models.address import Address
 from app.shared.models.provider_business import ProviderBusinessDetail, ProviderSalon
 from app.shared.models.otp import OTPVerification
+from app.shared.models.provider_session import ProviderUserSession
 
 __all__ = [
     "BaseModel",
@@ -90,6 +91,8 @@ __all__ = [
     # Provider business models
     "ProviderBusinessDetail",
     "ProviderSalon",
+    # Session models
+    "ProviderUserSession",
     # OTP model
     "OTPVerification",
     # Enums
