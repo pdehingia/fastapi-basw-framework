@@ -18,29 +18,21 @@ from app.domains.admin.features.v1 import (
     admin_user_management_router,
     financial_management_router,
     marketing_management_router,
-    academy_student_management_router,
+    academy_management_router,
     roles_permissions_router,
     subscription_management_router,
     address_management_router,
     course_management_router,
     otp_management_router,
-    provider_user_sessions_router,
-    provider_audit_logs_router,
-    customer_audit_logs_router,
-    user_activity_logs_router,
+    user_sessions_router,
+    audit_logs_router,
     ppc_campaigns_router,
     admission_inquiries_router,
     user_segments_router,
-    email_campaigns_router,
-    sms_campaigns_router,
-    rbac_router,
-    email_templates_router,
+    campaigns_router,
     feature_flags_router,
     system_notifications_router,
-    admin_user_sessions_router,
-    customer_user_sessions_router,
-    platform_analytics_router,
-    academy_performance_router
+    platform_analytics_router
     # Note: salon_provider_management is now a sub-router of provider_management
 )
 
@@ -63,29 +55,21 @@ admin_router.include_router(system_configuration_router)
 admin_router.include_router(admin_user_management_router)
 admin_router.include_router(financial_management_router)
 admin_router.include_router(marketing_management_router)
-admin_router.include_router(academy_student_management_router)
+admin_router.include_router(academy_management_router)
 admin_router.include_router(roles_permissions_router)
 admin_router.include_router(subscription_management_router)
 admin_router.include_router(address_management_router)
 admin_router.include_router(course_management_router)
 admin_router.include_router(otp_management_router)
-admin_router.include_router(provider_user_sessions_router)
-admin_router.include_router(provider_audit_logs_router)
-admin_router.include_router(customer_audit_logs_router)
-admin_router.include_router(user_activity_logs_router)
+admin_router.include_router(user_sessions_router)
+admin_router.include_router(audit_logs_router)
 admin_router.include_router(ppc_campaigns_router)
 admin_router.include_router(admission_inquiries_router)
 admin_router.include_router(user_segments_router)
-admin_router.include_router(email_campaigns_router)
-admin_router.include_router(sms_campaigns_router)
-admin_router.include_router(rbac_router)
-admin_router.include_router(email_templates_router)
+admin_router.include_router(campaigns_router)
 admin_router.include_router(feature_flags_router)
 admin_router.include_router(system_notifications_router)
-admin_router.include_router(admin_user_sessions_router)
-admin_router.include_router(customer_user_sessions_router)
 admin_router.include_router(platform_analytics_router)
-admin_router.include_router(academy_performance_router)
 # Note: salon_provider_management is now included as sub-router in provider_management
 
 __all__ = ["admin_router"]
