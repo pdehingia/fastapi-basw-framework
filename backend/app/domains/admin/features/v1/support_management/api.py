@@ -20,7 +20,11 @@ from .schemas import (
     TicketStatus,
     TicketCategory,
     IssueType,
-    CannedResponse
+    CannedResponse,
+    TicketMessageCreate,
+    TicketMessageUpdate,
+    TicketMessageResponse,
+    TicketMessageListResponse
 )
 
 router = APIRouter(prefix="/support", tags=[API_TAGS.SUPPORT_MANAGEMENT])
@@ -239,4 +243,85 @@ async def get_support_analytics(
     return SuccessResponse(
         data=analytics,
         message="Support analytics retrieved successfully"
+    )
+
+
+# ========== TICKET MESSAGES ENDPOINTS ==========
+
+@router.get("/tickets/{ticket_id}/messages", response_model=SuccessResponse[TicketMessageListResponse])
+async def get_ticket_messages(
+    ticket_id: int,
+    service: Annotated[SupportManagementService, Depends(get_support_service)],
+    include_internal: bool = Query(True, description="Include internal notes")
+):
+    """Get all messages for a specific support ticket."""
+    messages = service.get_ticket_messages(ticket_id, include_internal=include_internal)
+    if messages is None:
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
+    
+    return SuccessResponse(
+        data=TicketMessageListResponse(
+            messages=messages,
+            total=len(messages),
+            ticket_id=ticket_id
+        ),
+        message="Ticket messages retrieved successfully"
+    )
+
+
+@router.post("/tickets/{ticket_id}/messages", response_model=SuccessResponse[TicketMessageResponse])
+async def add_ticket_message(
+    ticket_id: int,
+    message_data: TicketMessageCreate,
+    service: Annotated[SupportManagementService, Depends(get_support_service)]
+):
+    """Add a new message to a support ticket."""
+    message = service.add_ticket_message(ticket_id, message_data)
+    if not message:
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
+    
+    return SuccessResponse(
+        data=message,
+        message="Message added to ticket successfully"
+    )
+
+
+@router.put("/tickets/{ticket_id}/messages/{message_id}", response_model=SuccessResponse[TicketMessageResponse])
+async def update_ticket_message(
+    ticket_id: int,
+    message_id: int,
+    message_data: TicketMessageUpdate,
+    service: Annotated[SupportManagementService, Depends(get_support_service)]
+):
+    """Update a ticket message (only admin messages can be edited)."""
+    message = service.update_ticket_message(ticket_id, message_id, message_data)
+    if not message:
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail="Ticket or message not found, or message cannot be edited"
+        )
+    
+    return SuccessResponse(
+        data=message,
+        message="Ticket message updated successfully"
+    )
+
+
+@router.delete("/tickets/{ticket_id}/messages/{message_id}", response_model=SuccessResponse[dict])
+async def delete_ticket_message(
+    ticket_id: int,
+    message_id: int,
+    service: Annotated[SupportManagementService, Depends(get_support_service)]
+):
+    """Delete a ticket message (only internal notes can be deleted)."""
+    success = service.delete_ticket_message(ticket_id, message_id)
+    if not success:
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND,
+            detail="Ticket or message not found, or message cannot be deleted"
+        )
+    
+    return SuccessResponse(
+        data={"deleted": True, "message_id": message_id},
+        message="Ticket message deleted successfully"
     )

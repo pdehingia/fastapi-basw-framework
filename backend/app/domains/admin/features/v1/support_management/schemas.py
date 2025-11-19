@@ -289,3 +289,42 @@ class CannedResponseListResponse(BaseModel):
     canned_responses: List[CannedResponse]
     categories: List[str]
     pagination: Dict[str, Any]
+
+
+# Support Ticket Message Schemas
+class TicketMessageCreate(BaseModel):
+    """Schema for creating a ticket message."""
+    message: str = Field(..., min_length=1, max_length=5000, description="Message content")
+    is_internal: bool = Field(False, description="Whether message is internal note")
+    attachments: Optional[List[str]] = Field(None, description="Attachment URLs")
+
+
+class TicketMessageUpdate(BaseModel):
+    """Schema for updating a ticket message."""
+    message: Optional[str] = Field(None, min_length=1, max_length=5000)
+    is_internal: Optional[bool] = None
+
+
+class TicketMessageResponse(BaseModel):
+    """Schema for ticket message response."""
+    id: int
+    ticket_id: int
+    message: str
+    sender_type: str
+    sender_id: int
+    sender_name: str
+    is_internal: bool
+    attachments: List[str]
+    created_at: datetime
+    updated_at: Optional[datetime]
+    read_at: Optional[datetime]
+    
+    class Config:
+        from_attributes = True
+
+
+class TicketMessageListResponse(BaseModel):
+    """Schema for paginated ticket message list."""
+    messages: List[TicketMessageResponse]
+    total: int
+    ticket_id: int

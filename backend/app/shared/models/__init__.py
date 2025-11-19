@@ -64,6 +64,13 @@ from app.shared.models.sms_campaign import SMSCampaign
 from app.shared.models.role import Role
 from app.shared.models.permission import Permission
 from app.shared.models.role_permission import RolePermission
+from app.shared.models.feature_flag import FeatureFlag
+from app.shared.models.system_notification import (
+    SystemNotification,
+    NotificationType,
+    NotificationPriority,
+    TargetAudience
+)
 
 __all__ = [
     "BaseModel",
@@ -118,6 +125,9 @@ __all__ = [
     "RolePermission",
     # OTP model
     "OTPVerification",
+    # Feature management
+    "FeatureFlag",
+    "SystemNotification",
     # Enums
     "UserTypeEnum",
     "TicketPriority",
@@ -133,5 +143,8 @@ __all__ = [
     "AdStatus",
     "SubscriptionPlanEnum",
     "SubscriptionStatusEnum",
-    "TransactionStatusEnum"
+    "TransactionStatusEnum",
+    "NotificationType",
+    "NotificationPriority",
+    "TargetAudience"
 ]

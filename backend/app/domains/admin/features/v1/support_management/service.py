@@ -791,3 +791,143 @@ class SupportManagementService:
             "first_response_sla": 0.92,  # 92% of tickets responded within SLA
             "resolution_sla": 0.88  # 88% of tickets resolved within SLA
         }
+
+    # ========== TICKET MESSAGE METHODS ==========
+
+    def get_ticket_messages(
+        self,
+        ticket_id: int,
+        include_internal: bool = True
+    ) -> Optional[List[Any]]:
+        """Get all messages for a ticket."""
+        # Verify ticket exists
+        ticket = self.get_ticket(str(ticket_id))
+        if not ticket:
+            return None
+        
+        # Mock message data
+        messages = [
+            {
+                "id": 1,
+                "ticket_id": ticket_id,
+                "message": "I'm having trouble completing my booking payment.",
+                "sender_type": "customer",
+                "sender_id": 101,
+                "sender_name": "John Doe",
+                "is_internal": False,
+                "attachments": [],
+                "created_at": datetime.utcnow() - timedelta(hours=2),
+                "updated_at": None,
+                "read_at": datetime.utcnow() - timedelta(hours=1, minutes=45)
+            },
+            {
+                "id": 2,
+                "ticket_id": ticket_id,
+                "message": "Internal note: Customer has premium account, prioritize this.",
+                "sender_type": "admin",
+                "sender_id": self.admin_user_id,
+                "sender_name": "Support Admin",
+                "is_internal": True,
+                "attachments": [],
+                "created_at": datetime.utcnow() - timedelta(hours=1, minutes=50),
+                "updated_at": None,
+                "read_at": None
+            },
+            {
+                "id": 3,
+                "ticket_id": ticket_id,
+                "message": "Hi John, I can help you with that. Can you please share your booking ID?",
+                "sender_type": "admin",
+                "sender_id": self.admin_user_id,
+                "sender_name": "Support Team",
+                "is_internal": False,
+                "attachments": [],
+                "created_at": datetime.utcnow() - timedelta(hours=1, minutes=45),
+                "updated_at": None,
+                "read_at": datetime.utcnow() - timedelta(hours=1, minutes=30)
+            }
+        ]
+        
+        # Filter internal messages if needed
+        if not include_internal:
+            messages = [m for m in messages if not m["is_internal"]]
+        
+        return messages
+
+    def add_ticket_message(
+        self,
+        ticket_id: int,
+        message_data: Any
+    ) -> Optional[Dict[str, Any]]:
+        """Add a new message to a ticket."""
+        # Verify ticket exists
+        ticket = self.get_ticket(str(ticket_id))
+        if not ticket:
+            return None
+        
+        # Create new message
+        new_message = {
+            "id": 999,  # Would be auto-generated in real DB
+            "ticket_id": ticket_id,
+            "message": message_data.message,
+            "sender_type": "admin",
+            "sender_id": self.admin_user_id,
+            "sender_name": "Support Admin",
+            "is_internal": message_data.is_internal,
+            "attachments": message_data.attachments or [],
+            "created_at": datetime.utcnow(),
+            "updated_at": None,
+            "read_at": None
+        }
+        
+        return new_message
+
+    def update_ticket_message(
+        self,
+        ticket_id: int,
+        message_id: int,
+        message_data: Any
+    ) -> Optional[Dict[str, Any]]:
+        """Update a ticket message (only admin messages)."""
+        # Verify ticket exists
+        ticket = self.get_ticket(str(ticket_id))
+        if not ticket:
+            return None
+        
+        # In real implementation, check if message belongs to admin
+        # and is editable (within timeframe, etc.)
+        
+        updated_message = {
+            "id": message_id,
+            "ticket_id": ticket_id,
+            "message": message_data.message if message_data.message else "Original message content",
+            "sender_type": "admin",
+            "sender_id": self.admin_user_id,
+            "sender_name": "Support Admin",
+            "is_internal": message_data.is_internal if message_data.is_internal is not None else False,
+            "attachments": [],
+            "created_at": datetime.utcnow() - timedelta(hours=1),
+            "updated_at": datetime.utcnow(),
+            "read_at": None
+        }
+        
+        return updated_message
+
+    def delete_ticket_message(
+        self,
+        ticket_id: int,
+        message_id: int
+    ) -> bool:
+        """Delete a ticket message (only internal notes)."""
+        # Verify ticket exists
+        ticket = self.get_ticket(str(ticket_id))
+        if not ticket:
+            return False
+        
+        # In real implementation:
+        # 1. Check if message exists
+        # 2. Check if message is internal note
+        # 3. Check if admin has permission to delete
+        # 4. Soft delete or hard delete based on policy
+        
+        return True

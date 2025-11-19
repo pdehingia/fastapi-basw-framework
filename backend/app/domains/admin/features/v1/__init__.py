@@ -32,6 +32,8 @@ from .email_campaigns import router as email_campaigns_router
 from .sms_campaigns import router as sms_campaigns_router
 from .roles_permissions_management import router as rbac_router
 from .email_templates import router as email_templates_router
+from .feature_flags import router as feature_flags_router
+from .system_notifications import router as system_notifications_router
 
 __all__ = [
     "auth_router", 
@@ -65,5 +67,7 @@ __all__ = [
     "email_campaigns_router",
     "sms_campaigns_router",
     "rbac_router",
-    "email_templates_router"
+    "email_templates_router",
+    "feature_flags_router",
+    "system_notifications_router"
 ]
