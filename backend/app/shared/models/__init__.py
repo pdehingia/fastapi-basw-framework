@@ -61,6 +61,9 @@ from app.shared.models.user_segment import UserSegment
 from app.shared.models.email_template import EmailTemplate
 from app.shared.models.email_campaign import EmailCampaign
 from app.shared.models.sms_campaign import SMSCampaign
+from app.shared.models.role import Role
+from app.shared.models.permission import Permission
+from app.shared.models.role_permission import RolePermission
 
 __all__ = [
     "BaseModel",
@@ -109,6 +112,10 @@ __all__ = [
     "EmailTemplate",
     "EmailCampaign",
     "SMSCampaign",
+    # RBAC models
+    "Role",
+    "Permission",
+    "RolePermission",
     # OTP model
     "OTPVerification",
     # Enums

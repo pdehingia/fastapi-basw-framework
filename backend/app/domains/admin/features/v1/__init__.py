@@ -30,6 +30,7 @@ from .admission_inquiries import admission_inquiries_router
 from .user_segments import user_segments_router
 from .email_campaigns import router as email_campaigns_router
 from .sms_campaigns import router as sms_campaigns_router
+from .roles_permissions_management import router as rbac_router
 
 __all__ = [
     "auth_router", 
@@ -61,5 +62,6 @@ __all__ = [
     "admission_inquiries_router",
     "user_segments_router",
     "email_campaigns_router",
-    "sms_campaigns_router"
+    "sms_campaigns_router",
+    "rbac_router"
 ]
