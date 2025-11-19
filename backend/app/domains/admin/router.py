@@ -26,7 +26,8 @@ from app.domains.admin.features.v1 import (
     otp_management_router,
     provider_user_sessions_router,
     provider_audit_logs_router,
-    customer_audit_logs_router
+    customer_audit_logs_router,
+    user_activity_logs_router
     # Note: salon_provider_management is now a sub-router of provider_management
 )
 
@@ -58,6 +59,7 @@ admin_router.include_router(otp_management_router)
 admin_router.include_router(provider_user_sessions_router)
 admin_router.include_router(provider_audit_logs_router)
 admin_router.include_router(customer_audit_logs_router)
+admin_router.include_router(user_activity_logs_router)
 # Note: salon_provider_management is now included as sub-router in provider_management
 
 __all__ = ["admin_router"]
