@@ -27,6 +27,7 @@ from .customer_audit_logs import customer_audit_logs_router
 from .user_activity_logs import user_activity_logs_router
 from .ppc_campaigns import ppc_campaigns_router
 from .admission_inquiries import admission_inquiries_router
+from .user_segments import user_segments_router
 
 __all__ = [
     "auth_router", 
@@ -55,5 +56,6 @@ __all__ = [
     "customer_audit_logs_router",
     "user_activity_logs_router",
     "ppc_campaigns_router",
-    "admission_inquiries_router"
+    "admission_inquiries_router",
+    "user_segments_router"
 ]
