@@ -58,6 +58,9 @@ from app.shared.models.activity_log import UserActivityLog
 from app.shared.models.ppc_campaign import PPCCampaign
 from app.shared.models.admission_inquiry import AdmissionInquiry
 from app.shared.models.user_segment import UserSegment
+from app.shared.models.email_template import EmailTemplate
+from app.shared.models.email_campaign import EmailCampaign
+from app.shared.models.sms_campaign import SMSCampaign
 
 __all__ = [
     "BaseModel",
@@ -103,6 +106,9 @@ __all__ = [
     "PPCCampaign",
     "AdmissionInquiry",
     "UserSegment",
+    "EmailTemplate",
+    "EmailCampaign",
+    "SMSCampaign",
     # OTP model
     "OTPVerification",
     # Enums

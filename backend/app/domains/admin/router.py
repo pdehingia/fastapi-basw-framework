@@ -30,7 +30,9 @@ from app.domains.admin.features.v1 import (
     user_activity_logs_router,
     ppc_campaigns_router,
     admission_inquiries_router,
-    user_segments_router
+    user_segments_router,
+    email_campaigns_router,
+    sms_campaigns_router
     # Note: salon_provider_management is now a sub-router of provider_management
 )
 
@@ -66,6 +68,8 @@ admin_router.include_router(user_activity_logs_router)
 admin_router.include_router(ppc_campaigns_router)
 admin_router.include_router(admission_inquiries_router)
 admin_router.include_router(user_segments_router)
+admin_router.include_router(email_campaigns_router)
+admin_router.include_router(sms_campaigns_router)
 # Note: salon_provider_management is now included as sub-router in provider_management
 
 __all__ = ["admin_router"]
