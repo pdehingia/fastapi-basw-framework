@@ -30,8 +30,7 @@ from .schemas import (
 
 # Import sub-routers
 from .salon_providers.api import router as salon_providers_router
-# Business details router will be added when implemented
-# from .business_details.api import router as business_details_router
+from .business_details.api import router as business_details_router
 
 router = APIRouter(prefix="/providers", tags=[API_TAGS.PROVIDER_MANAGEMENT])
 
@@ -241,9 +240,9 @@ async def update_provider_business_hours(
 # Endpoints: /providers/salon-providers/*
 router.include_router(salon_providers_router)
 
-# Provider Business Details & Salon Ownership (to be implemented)
-# Endpoints: /providers/business-details/* and /providers/salon-ownership/*
-# router.include_router(business_details_router)
+# Provider Business Details & Salon Ownership
+# Endpoints: /providers/business-details/*
+router.include_router(business_details_router)
 
 
 # ============================================================================
