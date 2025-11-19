@@ -22,6 +22,7 @@ from .address_management import address_management_router
 from .course_management import router as course_management_router
 from .otp_management import otp_management_router
 from .provider_user_sessions import provider_user_sessions_router
+from .provider_audit_logs import provider_audit_logs_router
 
 __all__ = [
     "auth_router", 
@@ -45,5 +46,6 @@ __all__ = [
     "address_management_router",
     "course_management_router",
     "otp_management_router",
-    "provider_user_sessions_router"
+    "provider_user_sessions_router",
+    "provider_audit_logs_router"
 ]
