@@ -20,6 +20,7 @@ from .roles_permissions import roles_permissions_router
 from .subscription_management import subscription_management_router
 from .address_management import address_management_router
 from .course_management import router as course_management_router
+from .otp_management import otp_management_router
 
 __all__ = [
     "auth_router", 
@@ -41,5 +42,6 @@ __all__ = [
     "roles_permissions_router",
     "subscription_management_router",
     "address_management_router",
-    "course_management_router"
+    "course_management_router",
+    "otp_management_router"
 ]

@@ -52,6 +52,7 @@ from app.shared.models.subscription import (
 )
 from app.shared.models.address import Address
 from app.shared.models.provider_business import ProviderBusinessDetail, ProviderSalon
+from app.shared.models.otp import OTPVerification
 
 __all__ = [
     "BaseModel",
@@ -89,6 +90,8 @@ __all__ = [
     # Provider business models
     "ProviderBusinessDetail",
     "ProviderSalon",
+    # OTP model
+    "OTPVerification",
     # Enums
     "UserTypeEnum",
     "TicketPriority",

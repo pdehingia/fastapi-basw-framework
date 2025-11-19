@@ -22,7 +22,8 @@ from app.domains.admin.features.v1 import (
     roles_permissions_router,
     subscription_management_router,
     address_management_router,
-    course_management_router
+    course_management_router,
+    otp_management_router
     # Note: salon_provider_management is now a sub-router of provider_management
 )
 
@@ -50,6 +51,7 @@ admin_router.include_router(roles_permissions_router)
 admin_router.include_router(subscription_management_router)
 admin_router.include_router(address_management_router)
 admin_router.include_router(course_management_router)
+admin_router.include_router(otp_management_router)
 # Note: salon_provider_management is now included as sub-router in provider_management
 
 __all__ = ["admin_router"]
