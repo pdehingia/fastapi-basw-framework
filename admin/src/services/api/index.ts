@@ -12,6 +12,7 @@ export { BookingService, bookingService } from './bookings';
 export { PaymentService, paymentService } from './payments';
 export { AdminUserService, adminUserService } from './adminUsers';
 export { SupportTicketService, supportTicketService } from './supportTickets';
+export { SessionManagementService, sessionManagementService } from './sessions';
 
 // Legacy/Class-based services for compatibility
 export { DashboardService } from './dashboard';  
@@ -33,6 +34,7 @@ import { bookingService } from './bookings';
 import { paymentService } from './payments';
 import { adminUserService } from './adminUsers';
 import { supportTicketService } from './supportTickets';
+import { sessionManagementService } from './sessions';
 
 // Service instances for direct import (recommended pattern)
 export const services = {
@@ -44,4 +46,5 @@ export const services = {
   payment: paymentService,
   adminUser: adminUserService,
   supportTicket: supportTicketService,
+  sessionManagement: sessionManagementService,
 } as const;

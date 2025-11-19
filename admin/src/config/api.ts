@@ -141,6 +141,33 @@ export const SUPPORT_ENDPOINTS = {
   SUPPORT_ANALYTICS: `${API_VERSION.CURRENT}/support/analytics`,
 } as const;
 
+// User Session Management Endpoints
+export const SESSION_ENDPOINTS = {
+  // Admin Sessions
+  ADMIN_SESSIONS: `${API_VERSION.CURRENT}/user-sessions/admins`,
+  ADMIN_SESSIONS_STATS: `${API_VERSION.CURRENT}/user-sessions/admins/stats`,
+  ADMIN_SESSIONS_ACTIVE: `${API_VERSION.CURRENT}/user-sessions/admins/active`,
+  ADMIN_SESSION_DETAIL: (sessionId: string) => `${API_VERSION.CURRENT}/user-sessions/admins/${sessionId}`,
+  ADMIN_SESSION_REVOKE: (sessionId: string) => `${API_VERSION.CURRENT}/user-sessions/admins/${sessionId}/revoke`,
+  ADMIN_USER_REVOKE_ALL: (userId: string) => `${API_VERSION.CURRENT}/user-sessions/admins/user/${userId}/revoke-all`,
+  
+  // Provider Sessions
+  PROVIDER_SESSIONS: `${API_VERSION.CURRENT}/user-sessions/providers`,
+  PROVIDER_SESSIONS_STATS: `${API_VERSION.CURRENT}/user-sessions/providers/stats`,
+  PROVIDER_SESSIONS_ACTIVE: `${API_VERSION.CURRENT}/user-sessions/providers/active`,
+  PROVIDER_SESSION_DETAIL: (sessionId: string) => `${API_VERSION.CURRENT}/user-sessions/providers/${sessionId}`,
+  PROVIDER_SESSION_REVOKE: (sessionId: string) => `${API_VERSION.CURRENT}/user-sessions/providers/${sessionId}/revoke`,
+  PROVIDER_USER_REVOKE_ALL: (userId: string) => `${API_VERSION.CURRENT}/user-sessions/providers/user/${userId}/revoke-all`,
+  
+  // Customer Sessions
+  CUSTOMER_SESSIONS: `${API_VERSION.CURRENT}/user-sessions/customers`,
+  CUSTOMER_SESSIONS_STATS: `${API_VERSION.CURRENT}/user-sessions/customers/stats`,
+  CUSTOMER_SESSIONS_ACTIVE: `${API_VERSION.CURRENT}/user-sessions/customers/active`,
+  CUSTOMER_SESSION_DETAIL: (sessionId: string) => `${API_VERSION.CURRENT}/user-sessions/customers/${sessionId}`,
+  CUSTOMER_SESSION_REVOKE: (sessionId: string) => `${API_VERSION.CURRENT}/user-sessions/customers/${sessionId}/revoke`,
+  CUSTOMER_USER_REVOKE_ALL: (userId: string) => `${API_VERSION.CURRENT}/user-sessions/customers/user/${userId}/revoke-all`,
+} as const;
+
 // Promotions & Marketing Endpoints
 export const PROMOTIONS_ENDPOINTS = {
   CAMPAIGNS: `${API_VERSION.CURRENT}/promotions/campaigns`,
@@ -150,6 +177,49 @@ export const PROMOTIONS_ENDPOINTS = {
   REFERRAL_CONFIG: `${API_VERSION.CURRENT}/promotions/referrals/config`,
   EMAIL_CAMPAIGNS: `${API_VERSION.CURRENT}/promotions/email-campaigns`,
   MARKETING_ANALYTICS: `${API_VERSION.CURRENT}/promotions/analytics`,
+} as const;
+
+// Marketing Management Endpoints
+export const MARKETING_ENDPOINTS = {
+  // Campaigns
+  CAMPAIGNS: `${API_VERSION.CURRENT}/marketing/campaigns`,
+  CAMPAIGN_DETAIL: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}`,
+  CAMPAIGN_DUPLICATE: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/duplicate`,
+  CAMPAIGN_PAUSE: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/pause`,
+  CAMPAIGN_RESUME: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/resume`,
+  CAMPAIGN_ANALYTICS: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/analytics`,
+  CAMPAIGNS_BULK: `${API_VERSION.CURRENT}/marketing/campaigns/bulk`,
+  CAMPAIGNS_EXPORT: `${API_VERSION.CURRENT}/marketing/campaigns/export`,
+  CAMPAIGN_EXPORT: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/export`,
+  
+  // Promotions
+  PROMOTIONS: `${API_VERSION.CURRENT}/marketing/promotions`,
+  PROMOTION_DETAIL: (id: string) => `${API_VERSION.CURRENT}/marketing/promotions/${id}`,
+  
+  // Coupons
+  COUPONS: `${API_VERSION.CURRENT}/marketing/coupons`,
+  COUPON_DETAIL: (id: string) => `${API_VERSION.CURRENT}/marketing/coupons/${id}`,
+  COUPONS_GENERATE: `${API_VERSION.CURRENT}/marketing/coupons/generate`,
+  
+  // Analytics
+  ANALYTICS: `${API_VERSION.CURRENT}/marketing/analytics`,
+  ANALYTICS_EXPORT: `${API_VERSION.CURRENT}/marketing/analytics/export`,
+  
+  // Customer Segments
+  SEGMENTS: `${API_VERSION.CURRENT}/marketing/segments`,
+  SEGMENT_DETAIL: (id: string) => `${API_VERSION.CURRENT}/marketing/segments/${id}`,
+  SEGMENT_CUSTOMERS: (id: string) => `${API_VERSION.CURRENT}/marketing/segments/${id}/customers`,
+  
+  // Referrals
+  REFERRALS_STATS: `${API_VERSION.CURRENT}/marketing/referrals/stats`,
+  REFERRALS_CONFIG: `${API_VERSION.CURRENT}/marketing/referrals/config`,
+  
+  // Templates
+  TEMPLATES: `${API_VERSION.CURRENT}/marketing/templates`,
+  
+  // Test Email
+  TEST_EMAIL: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/test-email`,
+  SCHEDULE_CAMPAIGN: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/schedule`,
 } as const;
 
 // Common query parameters

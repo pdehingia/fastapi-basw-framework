@@ -2205,6 +2205,86 @@ export interface BulkExportRequest {
   custom_styling?: ExportSettings['custom_styling'];
 }
 
+// ==================== SESSION MANAGEMENT TYPES ====================
+
+export interface UserSession {
+  id: string;
+  user_id: string;
+  user_type: 'admin' | 'provider' | 'customer';
+  session_token: string;
+  device_type: 'desktop' | 'mobile' | 'tablet' | 'unknown';
+  device_name: string;
+  browser: string;
+  os: string;
+  ip_address: string;
+  location: string;
+  is_active: boolean;
+  is_current: boolean;
+  last_activity: string;
+  created_at: string;
+  expires_at: string;
+}
+
+export interface AdminSession extends UserSession {
+  user_type: 'admin';
+  admin_email: string;
+  admin_name: string;
+  permissions: string[];
+  role: string;
+}
+
+export interface ProviderSession extends UserSession {
+  user_type: 'provider';
+  provider_email: string;
+  provider_name: string;
+  business_name?: string;
+}
+
+export interface CustomerSession extends UserSession {
+  user_type: 'customer';
+  customer_email: string;
+  customer_name: string;
+}
+
+export interface SessionStats {
+  total_sessions: number;
+  active_sessions: number;
+  inactive_sessions: number;
+  sessions_today: number;
+  unique_users: number;
+  avg_session_duration: number;
+  top_devices: Array<{
+    device_type: string;
+    count: number;
+  }>;
+  top_locations: Array<{
+    location: string;
+    count: number;
+  }>;
+}
+
+export interface SessionFilters {
+  page?: number;
+  page_size?: number;
+  user_id?: string;
+  is_active?: boolean;
+  device_type?: 'desktop' | 'mobile' | 'tablet';
+  location?: string;
+  date_from?: string;
+  date_to?: string;
+  search?: string;
+}
+
+export interface RevokeSessionRequest {
+  reason?: string;
+  notify_user?: boolean;
+}
+
+export interface RevokeAllSessionsRequest {
+  reason: string;
+  notify_user?: boolean;
+  exclude_current?: boolean;
+}
 
 // Export default type for convenience
 export type { ApiResponse as default };
