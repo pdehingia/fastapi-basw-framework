@@ -21,7 +21,9 @@ from app.domains.admin.features.v1 import (
     academy_student_management_router,
     roles_permissions_router,
     subscription_management_router,
-    address_management_router
+    address_management_router,
+    course_management_router,
+    salon_provider_management_router
 )
 
 # Create admin domain router with v1 prefix
@@ -47,5 +49,7 @@ admin_router.include_router(academy_student_management_router)
 admin_router.include_router(roles_permissions_router)
 admin_router.include_router(subscription_management_router)
 admin_router.include_router(address_management_router)
+admin_router.include_router(course_management_router)
+admin_router.include_router(salon_provider_management_router)
 
 __all__ = ["admin_router"]

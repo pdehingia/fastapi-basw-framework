@@ -51,6 +51,7 @@ from app.shared.models.subscription import (
     TransactionStatusEnum
 )
 from app.shared.models.address import Address
+from app.shared.models.provider_business import ProviderBusinessDetail, ProviderSalon
 
 __all__ = [
     "BaseModel",
@@ -85,6 +86,9 @@ __all__ = [
     "SubscriptionPayment",
     # Address model
     "Address",
+    # Provider business models
+    "ProviderBusinessDetail",
+    "ProviderSalon",
     # Enums
     "UserTypeEnum",
     "TicketPriority",

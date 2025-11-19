@@ -19,6 +19,8 @@ from .academy_student_management import academy_student_management_router
 from .roles_permissions import roles_permissions_router
 from .subscription_management import subscription_management_router
 from .address_management import address_management_router
+from .course_management import router as course_management_router
+from .salon_provider_management import router as salon_provider_management_router
 
 __all__ = [
     "auth_router", 
@@ -39,5 +41,7 @@ __all__ = [
     "academy_student_management_router",
     "roles_permissions_router",
     "subscription_management_router",
-    "address_management_router"
+    "address_management_router",
+    "course_management_router",
+    "salon_provider_management_router"
 ]
