@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 // Search parameters schema - all optional
 const settingsSearchSchema = z.object({
-  section: z.enum(['general', 'security', 'notifications', 'api']).optional().default('general'),
+  section: z.enum(['general', 'security', 'notifications', 'api', 'system']).optional().default('general'),
 }).optional();
 
 export const Route = createFileRoute('/_protected/settings/')({

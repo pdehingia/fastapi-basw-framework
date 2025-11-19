@@ -29,6 +29,15 @@ export const ROUTES = {
   ARTIST_VERIFICATION_DETAIL: '/artist-verification/verification-queue/$requestId',
   ARTIST_PORTFOLIO_MODERATION: '/artist-verification/portfolio-moderation',
   
+  // Content Management
+  CONTENT_MANAGEMENT: '/content-management',
+  
+  // API Integration
+  API_INTEGRATIONS: '/api-integrations',
+  
+  // Advanced Analytics & Reporting
+  ADVANCED_ANALYTICS: '/advanced-analytics',
+  
   SETTINGS: '/settings',
   
   // API routes
@@ -77,6 +86,21 @@ export const ROUTE_META = {
     description: 'Review and moderate artist portfolios',
     requiresAuth: true,
   },
+  [ROUTES.CONTENT_MANAGEMENT]: {
+    title: 'Content Management - Maya Admin',
+    description: 'Manage website content, media, and SEO',
+    requiresAuth: true,
+  },
+  [ROUTES.API_INTEGRATIONS]: {
+    title: 'API Integrations - Maya Admin',
+    description: 'Manage API keys, webhooks, and third-party integrations',
+    requiresAuth: true,
+  },
+  [ROUTES.ADVANCED_ANALYTICS]: {
+    title: 'Advanced Analytics - Maya Admin',
+    description: 'Advanced reporting, dashboards, and data visualization',
+    requiresAuth: true,
+  },
   [ROUTES.SETTINGS]: {
     title: 'Settings - Maya Admin',
     description: 'Application settings and configuration',
@@ -123,6 +147,24 @@ export const NAVIGATION_ITEMS = [
     description: 'Artist verification management',
   },
   {
+    name: 'Content Management',
+    href: ROUTES.CONTENT_MANAGEMENT,
+    icon: 'DocumentTextIcon',
+    description: 'Content and media management',
+  },
+  {
+    name: 'API Integrations',
+    href: ROUTES.API_INTEGRATIONS,
+    icon: 'LinkIcon',
+    description: 'API management and integrations',
+  },
+  {
+    name: 'Advanced Analytics',
+    href: ROUTES.ADVANCED_ANALYTICS,
+    icon: 'ChartPieIcon',
+    description: 'Advanced reporting and dashboards',
+  },
+  {
     name: 'Settings',
     href: ROUTES.SETTINGS,
     icon: 'CogIcon',
@@ -139,6 +181,9 @@ export const ROUTE_PERMISSIONS = {
   [ROUTES.REVIEWS]: ['admin', 'manager'],
   [ROUTES.ARTIST_VERIFICATION_QUEUE]: ['admin', 'manager'],
   [ROUTES.ARTIST_PORTFOLIO_MODERATION]: ['admin', 'manager'],
+  [ROUTES.CONTENT_MANAGEMENT]: ['admin', 'manager'],
+  [ROUTES.API_INTEGRATIONS]: ['admin'],
+  [ROUTES.ADVANCED_ANALYTICS]: ['admin', 'manager'],
   [ROUTES.SETTINGS]: ['admin'],
 } as const;
 

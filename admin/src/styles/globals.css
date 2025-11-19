@@ -22,10 +22,72 @@ body {
   min-height: 100vh;
 }
 
-/* Focus styles for accessibility */
+/* Accessibility Styles - WCAG 2.1 AA Compliance */
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ARIA live region for announcements */
+.aria-live-region {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Enhanced focus styles for accessibility */
 *:focus-visible {
   outline: 2px solid theme('colors.blue.500');
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  * {
+    outline-color: currentColor;
+  }
+  
+  button:focus,
+  input:focus,
+  select:focus,
+  textarea:focus,
+  a:focus {
+    outline: 3px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-spin {
+    animation: none;
+  }
+  
+  .animate-fade-in {
+    animation: none;
+  }
 }
 
 /* Custom scrollbar */
@@ -60,4 +122,86 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out;
+}
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: theme('colors.blue.600');
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Ensure sufficient color contrast */
+:root {
+  --text-primary: #1f2937; /* gray-800 - meets AA contrast on white */
+  --text-secondary: #4b5563; /* gray-600 - meets AA contrast on white */
+  --text-muted: #6b7280; /* gray-500 - meets AA contrast on white */
+}
+
+/* Keyboard navigation indicators */
+[data-keyboard-user] button:focus,
+[data-keyboard-user] input:focus,
+[data-keyboard-user] select:focus,
+[data-keyboard-user] textarea:focus,
+[data-keyboard-user] a:focus {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* Table accessibility improvements */
+table {
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+}
+
+th[aria-sort="ascending"]::after {
+  content: " ↑";
+  font-weight: normal;
+}
+
+th[aria-sort="descending"]::after {
+  content: " ↓";
+  font-weight: normal;
+}
+
+th[aria-sort="none"]::after {
+  content: " ↕";
+  opacity: 0.5;
+  font-weight: normal;
+}
+
+/* Form validation styling */
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: theme('colors.red.500');
+  box-shadow: 0 0 0 1px theme('colors.red.500');
+}
+
+/* Loading state accessibility */
+[aria-busy="true"] {
+  cursor: wait;
+}
+
+/* Disabled state styling */
+[disabled],
+[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }

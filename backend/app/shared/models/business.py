@@ -194,3 +194,38 @@ class AcademyCourse(BaseModel):
     
     def __repr__(self):
         return f"<AcademyCourse(academy_id={self.academy_id}, course_id={self.course_id})>"
+
+
+class AcademyStudent(BaseModel):
+    """
+    Academy students - Link table between academies and artists.
+    Tracks student enrollment, progress, and graduation status.
+    """
+    
+    __tablename__ = "academy_students"
+    
+    academy_id = Column(PostgresUUID(as_uuid=True), ForeignKey('academies.id', ondelete='CASCADE'), nullable=False)
+    artist_user_id = Column(PostgresUUID(as_uuid=True), ForeignKey('provider_users.id', ondelete='CASCADE'), nullable=False)
+    course_id = Column(PostgresUUID(as_uuid=True), ForeignKey('courses.id'), nullable=True)
+    
+    # Course enrollment details
+    course_name = Column(String(255), nullable=False)
+    enrollment_date = Column(Date, nullable=False)
+    graduation_date = Column(Date, nullable=True)
+    
+    # Registration and invitation status
+    maya_registration_status = Column(String(30), nullable=False, default='pending')  # pending, invited, registered, active, graduated, dropped_out, suspended
+    invitation_sent = Column(Boolean, nullable=False, default=False)
+    invitation_sent_at = Column(DateTime, nullable=True)
+    
+    # Media
+    student_photo_url = Column(Text, nullable=True)
+    certificate_url = Column(Text, nullable=True)
+    
+    # Relationships
+    academy = relationship("Academy", backref="students")
+    artist = relationship("ProviderUser", backref="academy_enrollments")
+    course = relationship("Course", backref="enrolled_students")
+    
+    def __repr__(self):
+        return f"<AcademyStudent(id={self.id}, academy_id={self.academy_id}, artist_id={self.artist_user_id}, status={self.maya_registration_status})>"

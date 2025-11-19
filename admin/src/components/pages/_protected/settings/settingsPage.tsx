@@ -3,7 +3,8 @@
  * Platform configuration and administrative settings
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useSearch } from '@tanstack/react-router';
 import { 
   Button, 
   Heading, 
@@ -16,13 +17,20 @@ import {
   CardBody,
   Modal 
 } from '@/components/molecules';
+import { SystemSettingsPage } from '@/components/organisms/SettingsManagement/SystemSettingsPage';
+
+// Search params from route
+interface SettingsSearch {
+  section?: 'general' | 'security' | 'notifications' | 'api' | 'system';
+}
 
 interface SettingSection {
   id: string;
   title: string;
   description: string;
   icon: string;
-  settings: Setting[];
+  component?: React.ComponentType;
+  settings?: Setting[];
 }
 
 interface Setting {
@@ -36,17 +44,27 @@ interface Setting {
 }
 
 const SettingsPage: React.FC = () => {
-  const [activeSection, setActiveSection] = useState('general');
+  const search = useSearch({ strict: false }) as SettingsSearch;
+  const initialSection = search?.section || 'general';
+  
+  const [activeSection, setActiveSection] = useState<string>(initialSection);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Mock settings data - will be replaced with real API calls
+  // Define settings sections
   const settingSections: SettingSection[] = [
+    {
+      id: 'system',
+      title: 'System Configuration',
+      description: 'Advanced system settings and configuration management',
+      icon: '⚙️',
+      component: SystemSettingsPage,
+    },
     {
       id: 'general',
       title: 'General Settings',
       description: 'Basic platform configuration',
-      icon: '⚙️',
+      icon: '🏠',
       settings: [
         {
           key: 'platform_name',
@@ -316,39 +334,45 @@ const SettingsPage: React.FC = () => {
 
         {/* Settings Content */}
         <div className="lg:col-span-3">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">{currentSection.icon}</span>
-                <div>
-                  <Heading as="h2" size="lg">{currentSection.title}</Heading>
-                  <Text color="muted">{currentSection.description}</Text>
+          {currentSection.component ? (
+            // Component-based section (like SystemSettingsPage)
+            <currentSection.component />
+          ) : (
+            // Traditional settings form section
+            <Card>
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <span className="text-2xl">{currentSection.icon}</span>
+                  <div>
+                    <Heading as="h2" size="lg">{currentSection.title}</Heading>
+                    <Text color="muted">{currentSection.description}</Text>
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <div className="space-y-6">
-                {currentSection.settings.map((setting) => (
-                  <div key={setting.key} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Text variant="body" className="font-medium text-gray-900">
-                          {setting.label}
-                          {setting.required && <span className="text-red-500 ml-1">*</span>}
-                        </Text>
-                        <Text variant="caption" color="muted">
-                          {setting.description}
-                        </Text>
+              </CardHeader>
+              <CardBody>
+                <div className="space-y-6">
+                  {currentSection.settings?.map((setting) => (
+                    <div key={setting.key} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Text variant="body" className="font-medium text-gray-900">
+                            {setting.label}
+                            {setting.required && <span className="text-red-500 ml-1">*</span>}
+                          </Text>
+                          <Text variant="caption" color="muted">
+                            {setting.description}
+                          </Text>
+                        </div>
+                      </div>
+                      <div className="max-w-md">
+                        {renderSettingInput(setting)}
                       </div>
                     </div>
-                    <div className="max-w-md">
-                      {renderSettingInput(setting)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
+                  ))}
+                </div>
+              </CardBody>
+            </Card>
+          )}
         </div>
       </div>
 

@@ -6,7 +6,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SettingsService } from '@/services/api';
 import { toast } from '@/services/toast';
-import type { SystemSettings } from '@/types/api.types';
+import type { SystemSettings, SystemSetting } from '@/types/api.types';
 
 // Query Keys
 export const SETTINGS_QUERY_KEYS = {
@@ -105,6 +105,37 @@ export const useUpdateSettings = () => {
     },
     onError: (error: any) => {
       toast.error(error?.message || 'Failed to update settings');
+    },
+  });
+};
+
+/**
+ * Hook to update a single system setting
+ */
+export const useUpdateSystemSetting = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ key, value }: { key: string; value: string }) => 
+      SettingsService.updateSetting(key, value),
+    onSuccess: (updatedSetting: SystemSetting) => {
+      // Update the specific setting in the cached array
+      queryClient.setQueryData(SETTINGS_QUERY_KEYS.full(), (oldSettings: SystemSettings | undefined) => {
+        if (!oldSettings) return [updatedSetting];
+        return oldSettings.map(setting => 
+          setting.key === updatedSetting.key ? updatedSetting : setting
+        );
+      });
+
+      // Invalidate section queries as they might be affected
+      queryClient.invalidateQueries({ 
+        queryKey: [...SETTINGS_QUERY_KEYS.all, 'section'] 
+      });
+
+      toast.success(`Setting '${updatedSetting.key}' updated successfully`);
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'Failed to update setting');
     },
   });
 };

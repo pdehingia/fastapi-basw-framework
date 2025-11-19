@@ -115,6 +115,19 @@ const Sidebar: React.FC<SidebarProps> = ({
       ],
     },
     {
+      id: 'content',
+      label: 'Content Management',
+      icon: 'DocumentTextIcon',
+      permission: 'content.view',
+      children: [
+        { id: 'content-list', label: 'All Content', icon: 'DocumentDuplicateIcon', path: '/content', permission: 'content.view' },
+        { id: 'content-create', label: 'Create Content', icon: 'PlusIcon', path: '/content/create', permission: 'content.create' },
+        { id: 'content-media', label: 'Media Library', icon: 'PhotoIcon', path: '/content/media', permission: 'content.view' },
+        { id: 'content-categories', label: 'Categories', icon: 'TagIcon', path: '/content/categories', permission: 'content.manage' },
+        { id: 'content-templates', label: 'Templates', icon: 'DocumentTextIcon', path: '/content/templates', permission: 'content.manage' },
+      ],
+    },
+    {
       id: 'analytics',
       label: 'Analytics',
       icon: 'ChartBarIcon',
@@ -131,9 +144,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       icon: 'CogIcon',
       permission: 'system.settings',
       children: [
+        { id: 'settings-system', label: 'System Configuration', icon: 'CogIcon', path: '/settings?section=system' },
         { id: 'settings-general', label: 'General', icon: 'AdjustmentsHorizontalIcon', path: ROUTES.SETTINGS },
-        { id: 'settings-security', label: 'Security', icon: 'LockClosedIcon', path: '/settings/security' },
-        { id: 'settings-integrations', label: 'Integrations', icon: 'LinkIcon', path: '/settings/integrations' },
+        { id: 'settings-security', label: 'Security', icon: 'LockClosedIcon', path: '/settings?section=security' },
+        { id: 'settings-notifications', label: 'Notifications', icon: 'BellIcon', path: '/settings?section=notifications' },
+        { id: 'settings-integrations', label: 'API & Integrations', icon: 'LinkIcon', path: '/settings?section=api' },
       ],
     },
   ];

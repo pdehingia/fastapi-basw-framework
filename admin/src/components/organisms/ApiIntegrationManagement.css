@@ -1,0 +1,187 @@
+.api-integration-management {
+  .page-header {
+    margin-bottom: 24px;
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-left {
+      .page-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        
+        .title-icon {
+          font-size: 32px;
+          color: #1890ff;
+        }
+        
+        h1 {
+          margin: 0;
+          font-size: 24px;
+          font-weight: 600;
+        }
+        
+        p {
+          margin: 0;
+          color: #666;
+          font-size: 14px;
+        }
+      }
+    }
+    
+    .header-actions {
+      .ant-btn {
+        height: 40px;
+        
+        &.ant-btn-primary {
+          background: linear-gradient(135deg, #1890ff, #40a9ff);
+          border: none;
+          box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+        }
+      }
+    }
+  }
+  
+  .api-integration-stats {
+    margin-bottom: 24px;
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      
+      .stat-card {
+        border-radius: 12px;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        
+        &:hover {
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+          border-color: #d9d9d9;
+        }
+        
+        .ant-card-body {
+          padding: 20px;
+        }
+        
+        .stat-content {
+          .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1890ff;
+            line-height: 1;
+            margin-bottom: 8px;
+          }
+          
+          .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 12px;
+          }
+          
+          .stat-badge {
+            .ant-badge-count {
+              font-size: 12px;
+              font-weight: 600;
+            }
+          }
+          
+          .stat-trend {
+            font-size: 12px;
+            font-weight: 500;
+            
+            &.positive {
+              color: #52c41a;
+            }
+            
+            &.negative {
+              color: #ff4d4f;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .main-content {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    
+    .api-integration-tabs {
+      .ant-tabs-nav {
+        margin-bottom: 24px;
+        
+        .ant-tabs-tab {
+          border-radius: 8px 8px 0 0;
+          font-weight: 500;
+          
+          .anticon {
+            margin-right: 8px;
+          }
+          
+          .ant-badge {
+            margin-left: 4px;
+            
+            .ant-badge-count {
+              background: #1890ff;
+              font-size: 10px;
+              height: 16px;
+              min-width: 16px;
+              line-height: 16px;
+            }
+          }
+          
+          &.ant-tabs-tab-active {
+            background: linear-gradient(135deg, #1890ff, #40a9ff);
+            border-color: #1890ff;
+            
+            .ant-tabs-tab-btn {
+              color: white;
+            }
+            
+            .ant-badge .ant-badge-count {
+              background: white;
+              color: #1890ff;
+            }
+          }
+        }
+      }
+      
+      .ant-tabs-content-holder {
+        .ant-tabs-content {
+          min-height: 500px;
+        }
+      }
+    }
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .api-integration-management {
+    .page-header .header-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    
+    .api-integration-stats .stats-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .api-integration-tabs {
+      .ant-tabs-nav {
+        .ant-tabs-tab {
+          font-size: 14px;
+          padding: 8px 12px;
+        }
+      }
+    }
+  }
+}

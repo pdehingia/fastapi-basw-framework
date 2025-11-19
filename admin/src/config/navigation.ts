@@ -19,6 +19,9 @@ export function useRouteNavigation() {
     goToLogin: () => navigate({ to: ROUTES.LOGIN }),
     goToUsers: () => navigate({ to: ROUTES.USERS, search: { page: 1, limit: 10 } }),
     goToBookings: () => navigate({ to: ROUTES.BOOKINGS, search: { page: 1, limit: 10 } }),
+    goToContentManagement: () => navigate({ to: ROUTES.CONTENT_MANAGEMENT }),
+    goToApiIntegrations: () => navigate({ to: ROUTES.API_INTEGRATIONS }),
+    goToAdvancedAnalytics: () => navigate({ to: ROUTES.ADVANCED_ANALYTICS }),
     goToSettings: () => navigate({ to: ROUTES.SETTINGS, search: { section: 'general' } }),
     
     // Navigation with parameters

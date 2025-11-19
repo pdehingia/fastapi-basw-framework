@@ -5,7 +5,7 @@
 
 import { apiClient, handleApiResponse, handleApiError } from './client';
 import { SETTINGS_ENDPOINTS, API_VERSION } from '@/config/api';
-import type { SystemSettings } from '@/types/api.types';
+import type { SystemSettings, SystemSetting } from '@/types/api.types';
 
 export class SettingsService {
   /**
@@ -26,6 +26,18 @@ export class SettingsService {
   static async updateSettings(settings: Partial<SystemSettings>): Promise<SystemSettings> {
     try {
       const response = await apiClient.patch(SETTINGS_ENDPOINTS.SYSTEM_SETTINGS, settings);
+      return handleApiResponse(response);
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+
+  /**
+   * Update a specific setting
+   */
+  static async updateSetting(key: string, value: string): Promise<SystemSetting> {
+    try {
+      const response = await apiClient.patch(`${API_VERSION.CURRENT}/settings/${key}`, { value });
       return handleApiResponse(response);
     } catch (error) {
       throw handleApiError(error);

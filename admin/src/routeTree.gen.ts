@@ -18,6 +18,7 @@ import { Route as ProtectedPaymentsIndexRouteRouteImport } from './components/pa
 import { Route as ProtectedDashboardIndexRouteRouteImport } from './components/pages/_protected/dashboard/index.route'
 import { Route as ProtectedBookingsIndexRouteRouteImport } from './components/pages/_protected/bookings/index.route'
 import { Route as ProtectedArtistVerificationIndexRouteRouteImport } from './components/pages/_protected/artist-verification/index.route'
+import { Route as ProtectedAdminUsersIndexRouteRouteImport } from './components/pages/_protected/admin-users/index.route'
 import { Route as ProtectedReviewsFlaggedRouteRouteImport } from './components/pages/_protected/reviews/flagged.route'
 import { Route as ProtectedReviewsAnalyticsRouteRouteImport } from './components/pages/_protected/reviews/analytics.route'
 import { Route as ProtectedPaymentsDisputesRouteRouteImport } from './components/pages/_protected/payments/disputes.route'
@@ -26,6 +27,7 @@ import { Route as ProtectedUsersUsersUserIdRouteRouteImport } from './components
 import { Route as ProtectedReviewsReviewsReviewIdRouteRouteImport } from './components/pages/_protected/reviews/reviews.$reviewId.route'
 import { Route as ProtectedPaymentsPaymentsPaymentIdRouteRouteImport } from './components/pages/_protected/payments/payments.$paymentId.route'
 import { Route as ProtectedArtistVerificationArtistVerificationRequestIdRouteRouteImport } from './components/pages/_protected/artist-verification/artist-verification.$requestId.route'
+import { Route as ProtectedAdminUsersAdminUsersAdminUserIdRouteRouteImport } from './components/pages/_protected/admin-users/admin-users.$adminUserId.route'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -78,6 +80,12 @@ const ProtectedArtistVerificationIndexRouteRoute =
     path: '/artist-verification',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedAdminUsersIndexRouteRoute =
+  ProtectedAdminUsersIndexRouteRouteImport.update({
+    id: '/admin-users/',
+    path: '/admin-users',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedReviewsFlaggedRouteRoute =
   ProtectedReviewsFlaggedRouteRouteImport.update({
     id: '/reviews/flagged',
@@ -128,6 +136,12 @@ const ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute =
       getParentRoute: () => ProtectedRouteRoute,
     } as any,
   )
+const ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute =
+  ProtectedAdminUsersAdminUsersAdminUserIdRouteRouteImport.update({
+    id: '/admin-users/admin-users/$adminUserId',
+    path: '/admin-users/admin-users/$adminUserId',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
@@ -135,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
   '/artist-verification': typeof ProtectedArtistVerificationIndexRouteRoute
   '/bookings': typeof ProtectedBookingsIndexRouteRoute
   '/dashboard': typeof ProtectedDashboardIndexRouteRoute
@@ -142,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ProtectedReviewsIndexRouteRoute
   '/settings': typeof ProtectedSettingsIndexRouteRoute
   '/users': typeof ProtectedUsersIndexRouteRoute
+  '/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   '/artist-verification/artist-verification/$requestId': typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   '/payments/payments/$paymentId': typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   '/reviews/reviews/$reviewId': typeof ProtectedReviewsReviewsReviewIdRouteRoute
@@ -153,6 +169,7 @@ export interface FileRoutesByTo {
   '/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
   '/artist-verification': typeof ProtectedArtistVerificationIndexRouteRoute
   '/bookings': typeof ProtectedBookingsIndexRouteRoute
   '/dashboard': typeof ProtectedDashboardIndexRouteRoute
@@ -160,6 +177,7 @@ export interface FileRoutesByTo {
   '/reviews': typeof ProtectedReviewsIndexRouteRoute
   '/settings': typeof ProtectedSettingsIndexRouteRoute
   '/users': typeof ProtectedUsersIndexRouteRoute
+  '/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   '/artist-verification/artist-verification/$requestId': typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   '/payments/payments/$paymentId': typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   '/reviews/reviews/$reviewId': typeof ProtectedReviewsReviewsReviewIdRouteRoute
@@ -173,6 +191,7 @@ export interface FileRoutesById {
   '/_protected/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/_protected/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/_protected/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/_protected/admin-users/': typeof ProtectedAdminUsersIndexRouteRoute
   '/_protected/artist-verification/': typeof ProtectedArtistVerificationIndexRouteRoute
   '/_protected/bookings/': typeof ProtectedBookingsIndexRouteRoute
   '/_protected/dashboard/': typeof ProtectedDashboardIndexRouteRoute
@@ -180,6 +199,7 @@ export interface FileRoutesById {
   '/_protected/reviews/': typeof ProtectedReviewsIndexRouteRoute
   '/_protected/settings/': typeof ProtectedSettingsIndexRouteRoute
   '/_protected/users/': typeof ProtectedUsersIndexRouteRoute
+  '/_protected/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   '/_protected/artist-verification/artist-verification/$requestId': typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   '/_protected/payments/payments/$paymentId': typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   '/_protected/reviews/reviews/$reviewId': typeof ProtectedReviewsReviewsReviewIdRouteRoute
@@ -193,6 +213,7 @@ export interface FileRouteTypes {
     | '/payments/disputes'
     | '/reviews/analytics'
     | '/reviews/flagged'
+    | '/admin-users'
     | '/artist-verification'
     | '/bookings'
     | '/dashboard'
@@ -200,6 +221,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/settings'
     | '/users'
+    | '/admin-users/admin-users/$adminUserId'
     | '/artist-verification/artist-verification/$requestId'
     | '/payments/payments/$paymentId'
     | '/reviews/reviews/$reviewId'
@@ -211,6 +233,7 @@ export interface FileRouteTypes {
     | '/payments/disputes'
     | '/reviews/analytics'
     | '/reviews/flagged'
+    | '/admin-users'
     | '/artist-verification'
     | '/bookings'
     | '/dashboard'
@@ -218,6 +241,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/settings'
     | '/users'
+    | '/admin-users/admin-users/$adminUserId'
     | '/artist-verification/artist-verification/$requestId'
     | '/payments/payments/$paymentId'
     | '/reviews/reviews/$reviewId'
@@ -230,6 +254,7 @@ export interface FileRouteTypes {
     | '/_protected/payments/disputes'
     | '/_protected/reviews/analytics'
     | '/_protected/reviews/flagged'
+    | '/_protected/admin-users/'
     | '/_protected/artist-verification/'
     | '/_protected/bookings/'
     | '/_protected/dashboard/'
@@ -237,6 +262,7 @@ export interface FileRouteTypes {
     | '/_protected/reviews/'
     | '/_protected/settings/'
     | '/_protected/users/'
+    | '/_protected/admin-users/admin-users/$adminUserId'
     | '/_protected/artist-verification/artist-verification/$requestId'
     | '/_protected/payments/payments/$paymentId'
     | '/_protected/reviews/reviews/$reviewId'
@@ -313,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedArtistVerificationIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/admin-users/': {
+      id: '/_protected/admin-users/'
+      path: '/admin-users'
+      fullPath: '/admin-users'
+      preLoaderRoute: typeof ProtectedAdminUsersIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/reviews/flagged': {
       id: '/_protected/reviews/flagged'
       path: '/reviews/flagged'
@@ -369,6 +402,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/admin-users/admin-users/$adminUserId': {
+      id: '/_protected/admin-users/admin-users/$adminUserId'
+      path: '/admin-users/admin-users/$adminUserId'
+      fullPath: '/admin-users/admin-users/$adminUserId'
+      preLoaderRoute: typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
   }
 }
 
@@ -377,6 +417,7 @@ interface ProtectedRouteRouteChildren {
   ProtectedPaymentsDisputesRouteRoute: typeof ProtectedPaymentsDisputesRouteRoute
   ProtectedReviewsAnalyticsRouteRoute: typeof ProtectedReviewsAnalyticsRouteRoute
   ProtectedReviewsFlaggedRouteRoute: typeof ProtectedReviewsFlaggedRouteRoute
+  ProtectedAdminUsersIndexRouteRoute: typeof ProtectedAdminUsersIndexRouteRoute
   ProtectedArtistVerificationIndexRouteRoute: typeof ProtectedArtistVerificationIndexRouteRoute
   ProtectedBookingsIndexRouteRoute: typeof ProtectedBookingsIndexRouteRoute
   ProtectedDashboardIndexRouteRoute: typeof ProtectedDashboardIndexRouteRoute
@@ -384,6 +425,7 @@ interface ProtectedRouteRouteChildren {
   ProtectedReviewsIndexRouteRoute: typeof ProtectedReviewsIndexRouteRoute
   ProtectedSettingsIndexRouteRoute: typeof ProtectedSettingsIndexRouteRoute
   ProtectedUsersIndexRouteRoute: typeof ProtectedUsersIndexRouteRoute
+  ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute: typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute: typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   ProtectedPaymentsPaymentsPaymentIdRouteRoute: typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   ProtectedReviewsReviewsReviewIdRouteRoute: typeof ProtectedReviewsReviewsReviewIdRouteRoute
@@ -396,6 +438,7 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedPaymentsDisputesRouteRoute: ProtectedPaymentsDisputesRouteRoute,
   ProtectedReviewsAnalyticsRouteRoute: ProtectedReviewsAnalyticsRouteRoute,
   ProtectedReviewsFlaggedRouteRoute: ProtectedReviewsFlaggedRouteRoute,
+  ProtectedAdminUsersIndexRouteRoute: ProtectedAdminUsersIndexRouteRoute,
   ProtectedArtistVerificationIndexRouteRoute:
     ProtectedArtistVerificationIndexRouteRoute,
   ProtectedBookingsIndexRouteRoute: ProtectedBookingsIndexRouteRoute,
@@ -404,6 +447,8 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedReviewsIndexRouteRoute: ProtectedReviewsIndexRouteRoute,
   ProtectedSettingsIndexRouteRoute: ProtectedSettingsIndexRouteRoute,
   ProtectedUsersIndexRouteRoute: ProtectedUsersIndexRouteRoute,
+  ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute:
+    ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute,
   ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute:
     ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute,
   ProtectedPaymentsPaymentsPaymentIdRouteRoute:

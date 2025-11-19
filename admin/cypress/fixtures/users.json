@@ -1,0 +1,43 @@
+{
+  "data": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john.doe@maya.com",
+      "role": "super_admin",
+      "permissions": ["users:read", "users:write", "payments:read"],
+      "is_active": true,
+      "last_login": "2023-11-19T10:30:00Z",
+      "created_at": "2023-01-15T09:00:00Z",
+      "updated_at": "2023-11-19T10:30:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "email": "jane.smith@maya.com",
+      "role": "admin",
+      "permissions": ["users:read", "payments:read"],
+      "is_active": true,
+      "last_login": "2023-11-18T14:20:00Z",
+      "created_at": "2023-02-01T09:00:00Z",
+      "updated_at": "2023-11-18T14:20:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Bob Wilson",
+      "email": "bob.wilson@maya.com",
+      "role": "moderator",
+      "permissions": ["reviews:read", "reviews:write"],
+      "is_active": false,
+      "last_login": "2023-11-10T09:15:00Z",
+      "created_at": "2023-03-01T09:00:00Z",
+      "updated_at": "2023-11-15T11:00:00Z"
+    }
+  ],
+  "metadata": {
+    "total_items": 3,
+    "total_pages": 1,
+    "current_page": 1,
+    "items_per_page": 20
+  }
+}

@@ -19,6 +19,7 @@ export const LazyDashboard = lazy(() => import('./_protected/dashboard/dashboard
 export const LazyUserList = lazy(() => import('./_protected/users/userListPage'));
 export const LazyUserDetail = lazy(() => import('./_protected/users/userDetailPage'));
 export const LazyBookingList = lazy(() => import('./_protected/bookings/bookingListPage'));
+export const LazyAdvancedAnalytics = lazy(() => import('./AdvancedAnalyticsPage'));
 
 // Higher-order component to wrap lazy components with Suspense
 export const withSuspense = <P extends object>(
@@ -40,3 +41,4 @@ export const Dashboard = withSuspense(LazyDashboard);
 export const UserList = withSuspense(LazyUserList);
 export const UserDetail = withSuspense(LazyUserDetail);
 export const BookingList = withSuspense(LazyBookingList);
+export const AdvancedAnalytics = withSuspense(LazyAdvancedAnalytics);

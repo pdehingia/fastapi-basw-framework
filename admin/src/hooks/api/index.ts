@@ -6,6 +6,15 @@
 // User hooks
 export * from './useUsers';
 
+// Admin user hooks
+export * from './useAdminUsers';
+
+// Support ticket hooks
+export * from './useSupportTickets';
+
+// Marketing hooks
+export * from './useMarketing';
+
 // Booking hooks  
 export * from './useBookings';
 
@@ -14,6 +23,15 @@ export * from './useDashboard';
 
 // Settings hooks
 export * from './useSettings';
+
+// Content management hooks
+export * from './useContent';
+
+// API Integration hooks
+export * from './useIntegrations';
+
+// Advanced Analytics hooks
+export * from './useAnalytics';
 
 // Re-export query client utilities if needed
 export { useQueryClient, useIsMutating, useIsFetching } from '@tanstack/react-query';
