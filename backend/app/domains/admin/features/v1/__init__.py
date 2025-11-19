@@ -31,6 +31,7 @@ from .user_segments import user_segments_router
 from .email_campaigns import router as email_campaigns_router
 from .sms_campaigns import router as sms_campaigns_router
 from .roles_permissions_management import router as rbac_router
+from .email_templates import router as email_templates_router
 
 __all__ = [
     "auth_router", 
@@ -63,5 +64,6 @@ __all__ = [
     "user_segments_router",
     "email_campaigns_router",
     "sms_campaigns_router",
-    "rbac_router"
+    "rbac_router",
+    "email_templates_router"
 ]
