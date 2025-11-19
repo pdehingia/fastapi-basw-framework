@@ -36,7 +36,11 @@ from app.domains.admin.features.v1 import (
     rbac_router,
     email_templates_router,
     feature_flags_router,
-    system_notifications_router
+    system_notifications_router,
+    admin_user_sessions_router,
+    customer_user_sessions_router,
+    platform_analytics_router,
+    academy_performance_router
     # Note: salon_provider_management is now a sub-router of provider_management
 )
 
@@ -78,6 +82,10 @@ admin_router.include_router(rbac_router)
 admin_router.include_router(email_templates_router)
 admin_router.include_router(feature_flags_router)
 admin_router.include_router(system_notifications_router)
+admin_router.include_router(admin_user_sessions_router)
+admin_router.include_router(customer_user_sessions_router)
+admin_router.include_router(platform_analytics_router)
+admin_router.include_router(academy_performance_router)
 # Note: salon_provider_management is now included as sub-router in provider_management
 
 __all__ = ["admin_router"]

@@ -71,6 +71,8 @@ from app.shared.models.system_notification import (
     NotificationPriority,
     TargetAudience
 )
+from app.shared.models.platform_analytic import PlatformAnalytic, MetricPeriod
+from app.shared.models.academy_performance import AcademyPerformance
 
 __all__ = [
     "BaseModel",
@@ -128,8 +130,12 @@ __all__ = [
     # Feature management
     "FeatureFlag",
     "SystemNotification",
+    # Analytics models
+    "PlatformAnalytic",
+    "AcademyPerformance",
     # Enums
     "UserTypeEnum",
+    "MetricPeriod",
     "TicketPriority",
     "TicketStatus",
     "SenderType",

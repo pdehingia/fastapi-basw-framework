@@ -34,6 +34,10 @@ from .roles_permissions_management import router as rbac_router
 from .email_templates import router as email_templates_router
 from .feature_flags import router as feature_flags_router
 from .system_notifications import router as system_notifications_router
+from .admin_user_sessions import router as admin_user_sessions_router
+from .customer_user_sessions import router as customer_user_sessions_router
+from .platform_analytics import platform_analytics_router
+from .academy_performance import router as academy_performance_router
 
 __all__ = [
     "auth_router", 
@@ -69,5 +73,9 @@ __all__ = [
     "rbac_router",
     "email_templates_router",
     "feature_flags_router",
-    "system_notifications_router"
+    "system_notifications_router",
+    "admin_user_sessions_router",
+    "customer_user_sessions_router",
+    "platform_analytics_router",
+    "academy_performance_router"
 ]

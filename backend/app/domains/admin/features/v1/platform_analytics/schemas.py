@@ -335,3 +335,43 @@ class AlertsResponse(BaseSchema):
     active_alerts: List[Dict[str, Any]]
     resolved_alerts: List[Dict[str, Any]]
     alert_summary: Dict[str, int]
+
+
+# Additional schemas for new API endpoints
+class MetricPeriod(str, Enum):
+    """Metric period types."""
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+    YEARLY = "yearly"
+
+
+class PlatformAnalyticListResponse(BaseSchema):
+    """Paginated platform analytics list."""
+    items: List[PlatformAnalyticsResponse]
+    total: int
+    page: int
+    size: int
+    pages: int
+
+
+class PlatformAnalyticSummary(BaseSchema):
+    """Platform analytics summary."""
+    total_revenue: float
+    total_bookings: int
+    total_users: int
+    active_providers: int
+    avg_booking_value: float
+
+
+class TrendDataPoint(BaseSchema):
+    """Single data point in trend analysis."""
+    date: date
+    value: float
+
+
+class PlatformAnalyticTrends(BaseSchema):
+    """Platform analytics trends."""
+    metric: str
+    period: MetricPeriod
+    data_points: List[TrendDataPoint]
