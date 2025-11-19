@@ -15,6 +15,10 @@ from .system_configuration import system_configuration_router
 from .admin_user_management import admin_user_management_router
 from .financial_management import financial_management_router
 from .marketing_management import marketing_management_router
+from .academy_student_management import academy_student_management_router
+from .roles_permissions import roles_permissions_router
+from .subscription_management import subscription_management_router
+from .address_management import address_management_router
 
 __all__ = [
     "auth_router", 
@@ -31,5 +35,9 @@ __all__ = [
     "system_configuration_router",
     "admin_user_management_router",
     "financial_management_router",
-    "marketing_management_router"
+    "marketing_management_router",
+    "academy_student_management_router",
+    "roles_permissions_router",
+    "subscription_management_router",
+    "address_management_router"
 ]

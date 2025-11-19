@@ -43,6 +43,14 @@ from app.shared.models.booking import (
     AdType,
     AdStatus
 )
+from app.shared.models.subscription import (
+    Subscription,
+    SubscriptionPayment,
+    SubscriptionPlanEnum,
+    SubscriptionStatusEnum,
+    TransactionStatusEnum
+)
+from app.shared.models.address import Address
 
 __all__ = [
     "BaseModel",
@@ -72,6 +80,11 @@ __all__ = [
     "WalletTransaction",
     "Referral",
     "Ad",
+    # Subscription models
+    "Subscription",
+    "SubscriptionPayment",
+    # Address model
+    "Address",
     # Enums
     "UserTypeEnum",
     "TicketPriority",
@@ -84,5 +97,8 @@ __all__ = [
     "DiscountType",
     "ReferralStatus",
     "AdType",
-    "AdStatus"
+    "AdStatus",
+    "SubscriptionPlanEnum",
+    "SubscriptionStatusEnum",
+    "TransactionStatusEnum"
 ]
