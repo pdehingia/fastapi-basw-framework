@@ -135,7 +135,7 @@ export interface CreateSegmentRequest {
 }
 
 class MarketingService extends ApiService {
-  private readonly basePath = '/admin/marketing';
+  private readonly basePath = '/api/admin/v1/marketing';
 
   // Campaign Management
   async getCampaigns(params: MarketingFilters & QueryParams = {}): Promise<ApiResponse<PaginatedResponse<MarketingCampaign>>> {

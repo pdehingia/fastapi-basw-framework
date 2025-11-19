@@ -18,6 +18,7 @@ export { SessionManagementService, sessionManagementService } from './sessions';
 export { DashboardService } from './dashboard';  
 export { default as SettingsService } from './settings';
 export { NotificationService } from './notifications';
+export { marketingService } from './marketing';
 
 // Client utilities
 export { apiClient, handleApiResponse, handleApiError } from './client';
@@ -35,6 +36,7 @@ import { paymentService } from './payments';
 import { adminUserService } from './adminUsers';
 import { supportTicketService } from './supportTickets';
 import { sessionManagementService } from './sessions';
+import { marketingService } from './marketing';
 
 // Service instances for direct import (recommended pattern)
 export const services = {
@@ -47,4 +49,5 @@ export const services = {
   adminUser: adminUserService,
   supportTicket: supportTicketService,
   sessionManagement: sessionManagementService,
+  marketing: marketingService,
 } as const;
