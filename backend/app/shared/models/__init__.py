@@ -55,6 +55,7 @@ from app.shared.models.provider_business import ProviderBusinessDetail, Provider
 from app.shared.models.otp import OTPVerification
 from app.shared.models.provider_session import ProviderUserSession
 from app.shared.models.activity_log import UserActivityLog
+from app.shared.models.ppc_campaign import PPCCampaign
 
 __all__ = [
     "BaseModel",
@@ -96,6 +97,8 @@ __all__ = [
     "ProviderUserSession",
     # Activity log model
     "UserActivityLog",
+    # Marketing models
+    "PPCCampaign",
     # OTP model
     "OTPVerification",
     # Enums
