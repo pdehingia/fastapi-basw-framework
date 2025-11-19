@@ -2,10 +2,10 @@
 
 from fastapi import APIRouter
 
-# Import schemas and services from original modules
-from ..provider_audit_logs import api as provider_audit_api
-from ..customer_audit_logs import api as customer_audit_api  
-from ..user_activity_logs import api as user_activity_api
+# Import from subdirectories
+from .provider import api as provider_audit_api
+from .customer import api as customer_audit_api  
+from .activity import api as user_activity_api
 
 # Create unified router
 router = APIRouter(prefix="/audit-logs", tags=["Audit Logs"])

@@ -2,9 +2,9 @@
 
 from fastapi import APIRouter
 
-# Import from original modules
-from ..academy_student_management import api as students_api
-from ..academy_performance import api as performance_api
+# Import from subdirectories
+from .students import api as students_api
+from .performance import api as performance_api
 
 # Create unified router
 router = APIRouter(prefix="/academy-management", tags=["Academy Management"])

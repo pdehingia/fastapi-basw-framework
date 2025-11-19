@@ -2,10 +2,10 @@
 
 from fastapi import APIRouter
 
-# Import from original modules
-from ..admin_user_sessions import api as admin_sessions_api
-from ..provider_user_sessions import api as provider_sessions_api
-from ..customer_user_sessions import api as customer_sessions_api
+# Import from subdirectories
+from .admin import api as admin_sessions_api
+from .provider import api as provider_sessions_api
+from .customer import api as customer_sessions_api
 
 # Create unified router
 router = APIRouter(prefix="/user-sessions", tags=["User Sessions"])

@@ -2,10 +2,10 @@
 
 from fastapi import APIRouter
 
-# Import from original modules
-from ..email_campaigns import api as email_campaigns_api
-from ..sms_campaigns import api as sms_campaigns_api
-from ..email_templates import api as email_templates_api
+# Import from subdirectories
+from .email import api as email_campaigns_api
+from .sms import api as sms_campaigns_api
+from .templates import api as email_templates_api
 
 # Create unified router
 router = APIRouter(prefix="/campaigns", tags=["Campaigns & Templates"])
