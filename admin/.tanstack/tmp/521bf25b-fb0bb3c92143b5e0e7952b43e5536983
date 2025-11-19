@@ -1,0 +1,27 @@
+/**
+ * Dashboard Page Route
+ * Main dashboard with analytics and overview
+ */
+
+import { createFileRoute } from '@tanstack/react-router';
+import { DashboardLayout } from '@/components/templates';
+import DashboardPage from './DashboardPage';
+
+function DashboardWithLayout() {
+  return (
+    <DashboardLayout
+      navigationProps={{
+        title: 'Dashboard',
+        breadcrumbs: [
+          { id: 'home', label: 'Home', current: true },
+        ],
+      }}
+    >
+      <DashboardPage />
+    </DashboardLayout>
+  );
+}
+
+export const Route = createFileRoute('/DashboardPage')({
+  component: DashboardWithLayout,
+});

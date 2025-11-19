@@ -3,7 +3,7 @@ Independent user models for complete domain separation.
 Each domain has its own login system and user table.
 """
 
-from sqlalchemy import Column, String, Boolean, Text, DateTime, Integer, BigInteger, ForeignKey
+from sqlalchemy import Column, String, Boolean, Text, DateTime, Integer, BigInteger, ForeignKey, Date
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from datetime import datetime, timezone
 import uuid
@@ -110,51 +110,41 @@ class CustomerUser(BaseModel):
     
     __tablename__ = "customer_users"
     
-    # Authentication (independent)
-    email = Column(String, unique=True, index=True, nullable=False)
-    username = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+    # Authentication (independent) - Note: email can be None for phone-only customers
+    email = Column(String, unique=True, index=True, nullable=True)
+    phone = Column(String, unique=True, index=True, nullable=False)  # Primary identifier
+    hashed_password = Column(String, nullable=True)  # Can be None for OAuth-only users
+    
+    # OAuth authentication
+    oauth_google_id = Column(Text, unique=True, nullable=True)
+    oauth_facebook_id = Column(Text, unique=True, nullable=True)
+    oauth_apple_id = Column(Text, unique=True, nullable=True)
     
     # Personal information
-    full_name = Column(String, nullable=True)
-    phone = Column(String, nullable=True)
+    full_name = Column(String(150), nullable=True)
+    date_of_birth = Column(Date, nullable=True)
+    gender = Column(String(20), nullable=True)
+    profile_image_url = Column(Text, nullable=True)
     
     # Status flags
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
-    email_verified_at = Column(DateTime, nullable=True)
+    phone_verified_at = Column(DateTime(timezone=True), nullable=True)
+    email_verified_at = Column(DateTime(timezone=True), nullable=True)
     
-    # Security
-    last_login = Column(DateTime, nullable=True)
-    failed_login_attempts = Column(Integer, default=0)
-    locked_until = Column(DateTime, nullable=True)
+    # Security and preferences
+    last_login = Column(DateTime(timezone=True), nullable=True)
+    two_factor_enabled = Column(Boolean, default=False)
+    preferences = Column(Text, nullable=True)  # JSONB in DB - user preferences
+    favorite_services = Column(Text, nullable=True)  # JSONB array in DB
     
-    # Customer preferences
-    preferred_language = Column(String, default="en")
-    preferred_currency = Column(String, default="USD")
-    timezone = Column(String, nullable=True)
-    
-    # Address information
-    address_line1 = Column(String, nullable=True)
-    address_line2 = Column(String, nullable=True)
-    city = Column(String, nullable=True)
-    state = Column(String, nullable=True)
-    postal_code = Column(String, nullable=True)
-    country = Column(String, nullable=True)
-    
-    # Customer metrics
+    # Customer behavior and metrics
     total_bookings = Column(Integer, default=0)
-    total_spent = Column(String, default="0.00")
+    total_spent = Column(String, default="0.00")  # DECIMAL in DB, stored as string
     loyalty_points = Column(Integer, default=0)
-    preferred_providers = Column(Text, nullable=True)  # JSON array of provider emails
-    
-    # Marketing preferences
-    email_notifications = Column(Boolean, default=True)
-    sms_notifications = Column(Boolean, default=False)
-    marketing_emails = Column(Boolean, default=False)
     
     def __repr__(self):
-        return f"<CustomerUser(id={self.id}, email={self.email}, bookings={self.total_bookings})>"
+        return f"<CustomerUser(id={self.id}, email={self.email}, phone={self.phone}, bookings={self.total_bookings})>"
 
 
 # Separate audit logs for each domain (no cross-domain references)
@@ -196,6 +186,68 @@ class AdminUserSession(Base):
     
     def __repr__(self):
         return f"<AdminUserSession(user_id={self.user_id}, device_type={self.device_type}, active={self.is_active})>"
+
+    def is_expired(self) -> bool:
+        """Check if session is expired."""
+        if not self.expires_at:
+            return False
+        # Use timezone-aware datetime for comparison
+        now = datetime.now(timezone.utc)
+        # If expires_at is naive, assume it's UTC
+        if self.expires_at.tzinfo is None:
+            expires_at = self.expires_at.replace(tzinfo=timezone.utc)
+        else:
+            expires_at = self.expires_at
+        return now > expires_at
+
+    def mark_logout(self):
+        """Mark session as logged out."""
+        self.is_active = False
+        self.logged_out_at = datetime.now(timezone.utc)
+
+    def update_activity(self):
+        """Update last activity timestamp."""
+        self.last_active_at = datetime.now(timezone.utc)
+
+
+class CustomerUserSession(Base):
+    """
+    Customer user session tracking - maps to customer_user_sessions table.
+    Tracks login sessions with device and location information.
+    Note: This table doesn't have updated_at column, so it doesn't inherit from BaseModel.
+    """
+    
+    __tablename__ = "customer_user_sessions"
+    
+    # Primary key
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    
+    # Session management
+    user_id = Column(UUID(as_uuid=True), ForeignKey("customer_users.id", ondelete="CASCADE"), nullable=False, index=True)
+    session_token = Column(Text, nullable=False, unique=True)  # Unique session identifier
+    refresh_token = Column(Text, nullable=True, unique=True)    # For token refresh (optional)
+    
+    # Device information
+    device_id = Column(Text, nullable=True)                     # Unique device identifier
+    device_type = Column(String(30), nullable=True)            # "Mobile", "Web", "Tablet"
+    device_name = Column(Text, nullable=True)                  # "iPhone 12", "Chrome Browser"
+    os_version = Column(String(50), nullable=True)             # "iOS 15.0", "Android 11"
+    app_version = Column(String(50), nullable=True)            # "Maya App v1.2.0"
+    
+    # Location and security (Note: ip_address is INET type in DB, but String works)
+    ip_address = Column(String, nullable=True)                 # Client IP address
+    city = Column(String(100), nullable=True)                  # Derived from IP
+    country = Column(String(100), nullable=True)               # Derived from IP
+    
+    # Session status
+    is_active = Column(Boolean, default=True, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=True)
+    last_active_at = Column(DateTime, default=datetime.utcnow, nullable=True)
+    expires_at = Column(DateTime, nullable=True)
+    logged_out_at = Column(DateTime, nullable=True)
+    
+    def __repr__(self):
+        return f"<CustomerUserSession(user_id={self.user_id}, device_type={self.device_type}, active={self.is_active})>"
 
     def is_expired(self) -> bool:
         """Check if session is expired."""
@@ -281,19 +333,26 @@ class CustomerAuditLog(BaseModel):
     
     __tablename__ = "customer_audit_logs"
     
-    # Customer reference (by email, not FK)
-    customer_email = Column(String, nullable=False)
-    customer_name = Column(String, nullable=True)
+    # Primary key override (BigInteger instead of UUID)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    
+    # Customer reference (by UUID FK to customer_users)
+    customer_user_id = Column(UUID(as_uuid=True), ForeignKey("customer_users.id", ondelete="SET NULL"), nullable=True)
     
     # Action details
-    action = Column(String, nullable=False)
-    resource = Column(String, nullable=True)
-    ip_address = Column(String, nullable=True)
-    user_agent = Column(Text, nullable=True)
+    action = Column(String(120), nullable=False)
+    entity = Column(String(120), nullable=True)
+    entity_id = Column(UUID(as_uuid=True), nullable=True)
     
-    # Additional context
-    details = Column(Text, nullable=True)  # JSON string
-    status = Column(String, nullable=False)  # 'success', 'failed'
+    # Audit data - what changed
+    before = Column(JSONB, nullable=True)  # Data before change
+    after = Column(JSONB, nullable=True)   # Data after change
+    
+    # No updated_at column in the actual table - only created_at
+    updated_at = None
+    
+    def __repr__(self):
+        return f"<CustomerAuditLog(customer_user_id={self.customer_user_id}, action={self.action})>"
     
     def __repr__(self):
         return f"<CustomerAuditLog(customer={self.customer_email}, action={self.action})>"

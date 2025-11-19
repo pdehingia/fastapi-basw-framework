@@ -1,0 +1,48 @@
+/**
+ * Booking List Page Route
+ * Booking management with filters and actions
+ */
+
+import { createFileRoute } from '@tanstack/react-router';
+import { DashboardLayout } from '@/components/templates';
+import BookingList from './BookingList';
+
+function BookingListWithLayout() {
+  return (
+    <DashboardLayout
+      navigationProps={{
+        title: 'Booking Management',
+        breadcrumbs: [
+          { id: 'home', label: 'Home', href: '/dashboard' },
+          { id: 'bookings', label: 'Bookings', current: true },
+        ],
+        actions: [
+          {
+            id: 'export-bookings',
+            label: 'Export',
+            icon: 'ArrowDownTrayIcon',
+            variant: 'secondary',
+            onClick: () => {
+              console.log('Export bookings clicked');
+            },
+          },
+          {
+            id: 'add-booking',
+            label: 'Add Booking',
+            icon: 'PlusIcon',
+            variant: 'primary',
+            onClick: () => {
+              console.log('Add booking clicked');
+            },
+          },
+        ],
+      }}
+    >
+      <BookingList />
+    </DashboardLayout>
+  );
+}
+
+export const Route = createFileRoute('/BookingList')({
+  component: BookingListWithLayout,
+});

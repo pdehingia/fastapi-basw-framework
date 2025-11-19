@@ -113,9 +113,9 @@ class ProviderUserRepository(BaseRepository[ProviderUser, ProviderUserCreate, Pr
             or_(ProviderUser.email == identifier, ProviderUser.username == identifier)
         ).first()
     
-    def get_by_business_license(self, license_number: str) -> Optional[ProviderUser]:
-        """Get provider by business license."""
-        return self.get_by_field("business_license", license_number)
+    def get_by_business_registration_number(self, registration_number: str) -> Optional[ProviderUser]:
+        """Get provider by business registration number."""
+        return self.get_by_field("business_registration_number", registration_number)
     
     def create_provider_user(self, user_in: ProviderUserCreate) -> ProviderUser:
         """Create provider user with password hashing."""
@@ -126,8 +126,8 @@ class ProviderUserRepository(BaseRepository[ProviderUser, ProviderUserCreate, Pr
         if self.get_by_username(user_in.username):
             raise ConflictError(f"Provider user with username {user_in.username} already exists")
         
-        if user_in.business_license and self.get_by_business_license(user_in.business_license):
-            raise ConflictError(f"Provider with business license {user_in.business_license} already exists")
+        if user_in.business_registration_number and self.get_by_business_registration_number(user_in.business_registration_number):
+            raise ConflictError(f"Provider with business registration number {user_in.business_registration_number} already exists")
         
         # Hash password and create user
         user_dict = user_in.model_dump()
@@ -185,6 +185,10 @@ class CustomerUserRepository(BaseRepository[CustomerUser, CustomerUserCreate, Cu
     def get_by_username(self, username: str) -> Optional[CustomerUser]:
         """Get customer user by username."""
         return self.get_by_field("username", username)
+    
+    def get_by_phone(self, phone: str) -> Optional[CustomerUser]:
+        """Get customer user by phone."""
+        return self.get_by_field("phone", phone)
     
     def get_by_email_or_username(self, identifier: str) -> Optional[CustomerUser]:
         """Get customer user by email or username."""

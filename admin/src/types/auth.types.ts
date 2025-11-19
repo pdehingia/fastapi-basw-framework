@@ -5,6 +5,15 @@
 // User roles for RBAC based on backend response
 export type UserRole = 'super_admin' | 'admin' | 'manager' | 'support';
 
+// Permission type for RBAC
+export type Permission = 
+  | 'users.view' | 'users.create' | 'users.edit' | 'users.delete'
+  | 'bookings.view' | 'bookings.create' | 'bookings.edit' | 'bookings.delete'
+  | 'payments.view' | 'payments.process' | 'payments.refund'
+  | 'reviews.view' | 'reviews.moderate' | 'reviews.delete'
+  | 'analytics.view' | 'analytics.export'
+  | 'system.settings' | 'system.users' | 'system.reports';
+
 // User interface for authenticated admin user
 export interface AuthUser {
   id: string;
@@ -23,6 +32,9 @@ export interface AuthUser {
   last_login?: string;
   created_at: string;
   updated_at: string;
+  // Add missing properties
+  role: UserRole;
+  permissions: Permission[];
 }
 
 // Login credentials
@@ -59,6 +71,7 @@ export interface RefreshResponse {
 export interface AuthState {
   user: AuthUser | null;
   isAuthenticated: boolean;
+  isInitialized: boolean;
   isLoading: boolean;
   error: string | null;
 }
@@ -81,6 +94,7 @@ export interface AuthActions {
   hasPermission: (permission: string) => boolean;
   hasRole: (role: UserRole) => boolean;
   hasAnyRole: (roles: UserRole[]) => boolean;
+  initAuth: () => Promise<void>; // Initialize auth from httpOnly cookies
 }
 
 // Complete auth store type

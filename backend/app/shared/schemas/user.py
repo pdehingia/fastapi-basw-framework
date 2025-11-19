@@ -108,8 +108,14 @@ class ProviderUserCreate(BaseUserCreate):
     
     business_name: Optional[str] = Field(None, max_length=200)
     business_type: Optional[str] = Field(None, max_length=100)
-    business_license: Optional[str] = Field(None, max_length=100)
+    business_registration_number: Optional[str] = Field(None, max_length=100)
     tax_id: Optional[str] = Field(None, max_length=50)
+    
+    # Provider-specific fields for database schema compatibility
+    verification_status: str = Field("pending", max_length=50)
+    is_accepting_bookings: bool = Field(True)
+    business_hours: Optional[str] = Field(None)  # JSON string
+    service_area: Optional[str] = Field(None)
 
 
 class ProviderUserUpdate(BaseUserUpdate):
@@ -117,11 +123,15 @@ class ProviderUserUpdate(BaseUserUpdate):
     
     business_name: Optional[str] = Field(None, max_length=200)
     business_type: Optional[str] = Field(None, max_length=100)
-    business_license: Optional[str] = Field(None, max_length=100)
+    business_registration_number: Optional[str] = Field(None, max_length=100)
     tax_id: Optional[str] = Field(None, max_length=50)
-    service_categories: Optional[List[str]] = None
-    service_areas: Optional[List[str]] = None
-    is_featured: Optional[bool] = None
+    
+    # Provider-specific fields for database schema compatibility
+    verification_status: Optional[str] = Field(None, max_length=50)
+    verified_at: Optional[datetime] = Field(None)
+    is_accepting_bookings: Optional[bool] = Field(None)
+    business_hours: Optional[str] = Field(None)  # JSON string
+    service_area: Optional[str] = Field(None)
 
 
 class ProviderUserResponse(BaseUserInDB):
@@ -129,10 +139,17 @@ class ProviderUserResponse(BaseUserInDB):
     
     business_name: Optional[str] = None
     business_type: Optional[str] = None
-    business_license: Optional[str] = None
+    business_registration_number: Optional[str] = None
     tax_id: Optional[str] = None
-    is_approved: bool
-    approval_date: Optional[datetime] = None
+    
+    # Provider status fields
+    verification_status: str
+    verified_at: Optional[datetime] = None
+    
+    # Business operations
+    is_accepting_bookings: bool
+    business_hours: Optional[str] = None  # JSON string
+    service_area: Optional[str] = None
     approved_by: Optional[UUID] = None
     service_categories: Optional[str] = None
     service_areas: Optional[str] = None

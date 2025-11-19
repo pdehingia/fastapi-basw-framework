@@ -5,6 +5,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.responses import StreamingResponse
 
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 from app.shared.responses import SuccessResponse
 from app.shared.pagination import PaginationParams
 from .dependencies import get_promotions_service
@@ -25,7 +26,7 @@ from .schemas import (
     SMSStatus
 )
 
-router = APIRouter(prefix="/promotions", tags=["Promotions & Marketing"])
+router = APIRouter(prefix="/promotions", tags=[API_TAGS.PROMOTION_MANAGEMENT])
 
 
 # Promo Code Management Endpoints (5 endpoints)
@@ -67,7 +68,10 @@ async def update_promo_code(
     """Update promo code."""
     promo_code = service.update_promo_code(promo_id, promo_data)
     if not promo_code:
-        raise HTTPException(status_code=404, detail="Promo code not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail=ERROR_MESSAGES.PROMO_CODE_NOT_FOUND
+        )
     return SuccessResponse(data=promo_code)
 
 
@@ -79,7 +83,10 @@ async def deactivate_promo_code(
     """Deactivate promo code."""
     success = service.deactivate_promo_code(promo_id)
     if not success:
-        raise HTTPException(status_code=404, detail="Promo code not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail=ERROR_MESSAGES.PROMO_CODE_NOT_FOUND
+        )
     return SuccessResponse(data={"deactivated": True})
 
 
@@ -91,7 +98,10 @@ async def get_promo_code_analytics(
     """Get promo code analytics."""
     analytics = service.get_promo_code_analytics(promo_id)
     if not analytics:
-        raise HTTPException(status_code=404, detail="Promo code not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail=ERROR_MESSAGES.PROMO_CODE_NOT_FOUND
+        )
     return SuccessResponse(data=analytics)
 
 

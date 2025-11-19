@@ -22,8 +22,9 @@ export function useRouteNavigation() {
     goToSettings: () => navigate({ to: ROUTES.SETTINGS, search: { section: 'general' } }),
     
     // Navigation with parameters
-    goToUserDetail: (userId: string) => 
-      navigate({ to: ROUTES.USER_DETAIL, params: { userId }, search: { tab: 'profile' } }),
+    // TODO: Fix route typing for dynamic user detail route
+    // goToUserDetail: (userId: string) => 
+    //   navigate({ to: ROUTES.USER_DETAIL, params: { userId }, search: { tab: 'profile' } }),
     
     // Navigation with search params
     goToUsersWithSearch: (searchParams?: {
@@ -43,7 +44,7 @@ export function useRouteNavigation() {
       dateTo?: string;
     }) => navigate({ to: ROUTES.BOOKINGS, search: { page: 1, limit: 10, ...searchParams } }),
     
-    goToSettingsSection: (section?: 'general' | 'security' | 'notifications' | 'integrations') => 
+    goToSettingsSection: (section?: 'general' | 'security' | 'notifications' | 'api') => 
       navigate({ to: ROUTES.SETTINGS, search: { section: section || 'general' } }),
     
     // Generic navigation with route constants

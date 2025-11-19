@@ -2,9 +2,10 @@
 
 from typing import Annotated, Optional
 from datetime import date
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import StreamingResponse
 
+from app.shared.constants import API_TAGS
 from app.shared.responses import SuccessResponse
 from app.shared.pagination import PaginationParams
 from .dependencies import get_analytics_service
@@ -15,7 +16,7 @@ from .schemas import (
     ComprehensiveReport, CustomReportListResponse, ReportPeriod
 )
 
-router = APIRouter(prefix="/analytics", tags=["Analytics & Reports"])
+router = APIRouter(prefix="/analytics", tags=[API_TAGS.ANALYTICS_REPORTS])
 
 
 @router.get("/overview", response_model=SuccessResponse[AnalyticsOverviewResponse])

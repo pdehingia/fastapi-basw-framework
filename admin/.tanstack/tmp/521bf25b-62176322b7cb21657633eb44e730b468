@@ -1,0 +1,39 @@
+/**
+ * User List Page Route
+ * User management list with search and filters
+ */
+
+import { createFileRoute } from '@tanstack/react-router';
+import { DashboardLayout } from '@/components/templates';
+import UserList from './UserList';
+
+function UserListWithLayout() {
+  return (
+    <DashboardLayout
+      navigationProps={{
+        title: 'User Management',
+        breadcrumbs: [
+          { id: 'home', label: 'Home', href: '/dashboard' },
+          { id: 'users', label: 'Users', current: true },
+        ],
+        actions: [
+          {
+            id: 'add-user',
+            label: 'Add User',
+            icon: 'PlusIcon',
+            variant: 'primary',
+            onClick: () => {
+              console.log('Add user clicked');
+            },
+          },
+        ],
+      }}
+    >
+      <UserList />
+    </DashboardLayout>
+  );
+}
+
+export const Route = createFileRoute('/UserList')({
+  component: UserListWithLayout,
+});

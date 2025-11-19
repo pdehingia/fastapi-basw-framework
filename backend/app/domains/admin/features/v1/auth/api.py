@@ -4,11 +4,12 @@ import logging
 from datetime import timedelta, datetime
 from typing import Any, Dict
 
-from fastapi import APIRouter, Depends, Request, Response, HTTPException, status
+from fastapi import APIRouter, Depends, Request, Response, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import (
@@ -34,7 +35,7 @@ logger = logging.getLogger(__name__)
 # OAuth2 scheme for admin authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/admin/auth/login")
 
-router = APIRouter(prefix="/auth", tags=["admin-auth"])
+router = APIRouter(prefix="/auth", tags=[API_TAGS.AUTHENTICATION])
 
 
 @router.post("/login")
@@ -98,13 +99,17 @@ async def admin_login(
             max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             httponly=True,  # CRITICAL: Prevent JavaScript access
             secure=True if settings.ENVIRONMENT == "production" else False,  # HTTPS only in production
-            samesite="lax"  # CSRF protection - using 'lax' for development compatibility
+            samesite="lax",  # CSRF protection - using 'lax' for development compatibility
+            domain="localhost" if settings.ENVIRONMENT == "development" else None  # Allow localhost cross-port sharing in dev
         )
         
         return success_response(
             data={
                 "user": AdminUserResponse.from_orm(user).dict(),
                 "login_time": datetime.now().isoformat(),
+                "access_token": access_token,  # Include JWT token for Bearer auth
+                "token_type": "bearer",
+                "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
                 "session_info": {
                     "device_type": "Mobile" if client_info.get("is_mobile") else "Tablet" if client_info.get("is_tablet") else "PC" if client_info.get("is_pc") else "Other",
                     "device_name": f"{client_info.get('browser', 'Unknown')} on {client_info.get('operating_system', 'Unknown')}",
@@ -139,8 +144,8 @@ async def admin_register(
         existing_user = await auth_service.get_user_by_email(user_data.email)
         if existing_user:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered"
+                status_code=HTTP_STATUS_CODES.BAD_REQUEST,
+                detail=ERROR_MESSAGES.ALREADY_EXISTS
             )
         
         # Create new admin user
@@ -149,9 +154,15 @@ async def admin_register(
         return AdminUserResponse.from_orm(user)
         
     except ValidationException as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
+            detail=str(e)
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Registration failed")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+            detail=ERROR_MESSAGES.INTERNAL_ERROR
+        )
 
 
 @router.post("/refresh")
@@ -178,7 +189,8 @@ async def refresh_token(
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         httponly=True,  # CRITICAL: Prevent JavaScript access
         secure=True if settings.ENVIRONMENT == "production" else False,  # HTTPS only in production
-        samesite="lax"  # CSRF protection - using 'lax' for development compatibility
+        samesite="lax",  # CSRF protection - using 'lax' for development compatibility
+        domain="localhost" if settings.ENVIRONMENT == "development" else None  # Allow localhost cross-port sharing in dev
     )
     
     return success_response(
@@ -197,7 +209,10 @@ async def get_current_admin_profile(
     
     user = await auth_service.get_user_by_id(current_user["id"])
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND,
+            detail=ERROR_MESSAGES.USER_NOT_FOUND
+        )
     
     return success_response(
         data=AdminUserResponse.from_orm(user).dict(),
@@ -212,8 +227,8 @@ async def get_current_admin_user(
 ) -> Dict[str, Any]:
     """Get current authenticated admin user."""
     credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        status_code=HTTP_STATUS_CODES.UNAUTHORIZED,
+        detail=ERROR_MESSAGES.INVALID_CREDENTIALS,
         headers={"WWW-Authenticate": "Bearer"},
     )
     
@@ -238,8 +253,8 @@ async def get_current_admin_user(
         
     if not user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Inactive user"
+            status_code=HTTP_STATUS_CODES.UNAUTHORIZED,
+            detail=ERROR_MESSAGES.UNAUTHORIZED
         )
     
     return {
@@ -285,7 +300,8 @@ async def admin_logout(
         key="access_token",
         httponly=True,
         secure=True if settings.ENVIRONMENT == "production" else False,
-        samesite="lax"
+        samesite="lax",
+        domain="localhost" if settings.ENVIRONMENT == "development" else None  # Match domain set during login
     )
     
     return success_response(
@@ -327,7 +343,8 @@ async def logout_all_sessions(
         key="access_token",
         httponly=True,
         secure=True if settings.ENVIRONMENT == "production" else False,
-        samesite="lax"
+        samesite="lax",
+        domain="localhost" if settings.ENVIRONMENT == "development" else None  # Match domain set during login
     )
     
     return success_response(

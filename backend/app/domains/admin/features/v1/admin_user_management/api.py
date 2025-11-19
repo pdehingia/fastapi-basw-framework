@@ -1,13 +1,17 @@
-"""Admin user management API endpoints."""
+"""Consolidated Admin user management API endpoints."""
 
 import io
 from datetime import datetime
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Dict, Any, List
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
 
-from app.shared.responses import SuccessResponse
-from app.shared.pagination import PaginationParams
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
+from app.shared.responses import SuccessResponse, success_response
+from app.shared.pagination import PaginationParams, PaginatedResponse, PageMetadata
+from app.core.database import get_db
 from .dependencies import get_admin_user_management_service
 from .service import AdminUserManagementService
 from .schemas import (
@@ -16,7 +20,32 @@ from .schemas import (
     BulkAdminAction, PermissionAssignment, AuditAction
 )
 
-router = APIRouter(prefix="/admin-users", tags=["Admin User Management"])
+# Import from the old user_management module that we're consolidating
+from app.domains.admin.features.v1.auth.schemas import AdminUserResponse, AdminUserUpdateRequest, AdminDashboardStats
+from app.domains.admin.features.v1.auth.service import AdminAuthService
+from app.domains.admin.features.v1.user_management.dependencies import require_user_management_access, require_system_admin_access
+
+router = APIRouter(prefix="/admin-users", tags=[API_TAGS.USER_MANAGEMENT])
+
+
+# ========================================
+# CONSOLIDATED ADMIN USER ENDPOINTS
+# Merged from user_management and admin_user_management modules
+# ========================================
+
+@router.get("/dashboard")
+async def get_dashboard_stats(
+    current_user: dict = Depends(require_user_management_access),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """Get admin dashboard statistics."""
+    auth_service = AdminAuthService(db)
+    stats = await auth_service.get_dashboard_stats()
+    
+    return success_response(
+        data=stats,
+        message="Dashboard statistics retrieved successfully"
+    )
 
 
 @router.get("/", response_model=SuccessResponse[AdminUsersList])
@@ -24,13 +53,29 @@ async def get_admin_users(
     service: Annotated[AdminUserManagementService, Depends(get_admin_user_management_service)],
     pagination: Annotated[PaginationParams, Depends()],
     filters: Annotated[AdminUserFilters, Depends()],
+    # Additional filters from old user_management module
+    role: Optional[str] = Query(None, description="Filter by role"),
+    is_active: Optional[bool] = Query(None, description="Filter by active status"),
+    search: Optional[str] = Query(None, description="Search by email, first_name, or last_name"),
+    current_user: dict = Depends(require_user_management_access),
+    db: Session = Depends(get_db)
 ) -> SuccessResponse[AdminUsersList]:
     """
     Get paginated list of admin users with filtering options.
     
-    Supports filtering by role, status, department, creation date,
-    last login date, and search in name/email fields.
+    Consolidated endpoint that supports filtering by role, status, department, 
+    creation date, last login date, and search in name/email fields.
     """
+    # Check permissions
+    if not current_user.get("is_superuser", False):
+        permissions = current_user.get("permissions", {})
+        if not permissions.get("can_manage_users", False):
+            raise HTTPException(
+                status_code=HTTP_STATUS_CODES.FORBIDDEN,
+                detail=ERROR_MESSAGES.ACCESS_DENIED
+            )
+    
+    # Use the service from admin_user_management
     admin_users = service.get_admin_users(
         filters=filters,
         skip=pagination.skip,
@@ -57,7 +102,10 @@ async def get_admin_user(
     admin_user = service.get_admin_user(admin_user_id)
     
     if not admin_user:
-        raise HTTPException(status_code=404, detail="Admin user not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail=ERROR_MESSAGES.ADMIN_USER_NOT_FOUND
+        )
     
     return SuccessResponse(
         data=admin_user,
@@ -119,7 +167,10 @@ async def delete_admin_user(
     success = service.delete_admin_user(admin_user_id)
     
     if not success:
-        raise HTTPException(status_code=400, detail="Failed to delete admin user")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.ADMIN_USER_DELETE_FAILED
+        )
     
     return SuccessResponse(
         data={"admin_user_id": admin_user_id, "deleted": True},
@@ -208,7 +259,10 @@ async def change_admin_password(
     success = service.change_password(admin_user_id, password_request)
     
     if not success:
-        raise HTTPException(status_code=400, detail="Failed to change password")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.PASSWORD_CHANGE_FAILED
+        )
     
     return SuccessResponse(
         data={"admin_user_id": admin_user_id, "password_changed": True},
@@ -230,7 +284,10 @@ async def assign_permissions(
     success = service.assign_permissions(assignment)
     
     if not success:
-        raise HTTPException(status_code=400, detail="Failed to assign permissions")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.PERMISSION_ASSIGNMENT_FAILED
+        )
     
     return SuccessResponse(
         data={
@@ -281,4 +338,127 @@ async def export_admin_users(
         io.BytesIO(file_content.getvalue()),
         media_type="text/plain",
         headers=headers
+    )
+
+
+# ========================================
+# ADDITIONAL ENDPOINTS FROM USER_MANAGEMENT MODULE
+# ========================================
+
+@router.get("/{admin_user_id}/sessions")
+async def get_admin_user_sessions(
+    admin_user_id: UUID,
+    current_user: dict = Depends(require_user_management_access),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """Get admin user sessions."""
+    # Users can view their own sessions, superusers can view any sessions
+    if str(current_user["id"]) != str(admin_user_id) and not current_user.get("is_superuser", False):
+        permissions = current_user.get("permissions", {})
+        if not permissions.get("can_manage_users", False):
+            raise HTTPException(
+                status_code=HTTP_STATUS_CODES.FORBIDDEN,
+                detail=ERROR_MESSAGES.ACCESS_DENIED
+            )
+    
+    auth_service = AdminAuthService(db)
+    sessions = await auth_service.get_user_sessions(admin_user_id)
+    
+    return success_response(
+        data=sessions,
+        message="User sessions retrieved successfully"
+    )
+
+
+@router.get("/{admin_user_id}/activity") 
+async def get_admin_user_activity(
+    admin_user_id: UUID,
+    current_user: dict = Depends(require_user_management_access),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """Get admin user activity log."""
+    # Users can view their own activity, superusers can view any activity
+    if str(current_user["id"]) != str(admin_user_id) and not current_user.get("is_superuser", False):
+        permissions = current_user.get("permissions", {})
+        if not permissions.get("can_manage_users", False):
+            raise HTTPException(
+                status_code=HTTP_STATUS_CODES.FORBIDDEN,
+                detail=ERROR_MESSAGES.ACCESS_DENIED
+            )
+    
+    auth_service = AdminAuthService(db)
+    activity = await auth_service.get_user_activity(admin_user_id)
+    
+    return success_response(
+        data=activity,
+        message="User activity retrieved successfully"
+    )
+
+
+@router.post("/{admin_user_id}/activate")
+async def activate_admin_user(
+    admin_user_id: UUID,
+    current_user: dict = Depends(require_system_admin_access),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """Activate admin user."""
+    # Only superusers and users with system admin access can activate users
+    if not current_user.get("is_superuser", False):
+        permissions = current_user.get("permissions", {})
+        if not permissions.get("can_manage_system", False):
+            raise HTTPException(
+                status_code=HTTP_STATUS_CODES.FORBIDDEN,
+                detail=ERROR_MESSAGES.ACCESS_DENIED
+            )
+    
+    auth_service = AdminAuthService(db)
+    user = await auth_service.activate_user(admin_user_id)
+    
+    if not user:
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND,
+            detail=ERROR_MESSAGES.USER_NOT_FOUND
+        )
+    
+    return success_response(
+        data=AdminUserResponse.from_orm(user).dict(),
+        message="User activated successfully"
+    )
+
+
+@router.post("/{admin_user_id}/deactivate")
+async def deactivate_admin_user(
+    admin_user_id: UUID,
+    current_user: dict = Depends(require_system_admin_access),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """Deactivate admin user."""
+    # Only superusers and users with system admin access can deactivate users
+    if not current_user.get("is_superuser", False):
+        permissions = current_user.get("permissions", {})
+        if not permissions.get("can_manage_system", False):
+            raise HTTPException(
+                status_code=HTTP_STATUS_CODES.FORBIDDEN,
+                detail=ERROR_MESSAGES.ACCESS_DENIED
+            )
+    
+    # Prevent self-deactivation
+    if str(current_user["id"]) == str(admin_user_id):
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
+            detail="Cannot deactivate your own account"
+        )
+    
+    auth_service = AdminAuthService(db)
+    user = await auth_service.deactivate_user(admin_user_id)
+    
+    if not user:
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND,
+            detail=ERROR_MESSAGES.USER_NOT_FOUND
+        )
+    
+    return success_response(
+        data=AdminUserResponse.from_orm(user).dict(),
+        message="User deactivated successfully"
     )

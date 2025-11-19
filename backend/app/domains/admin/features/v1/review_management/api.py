@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 from app.shared.responses import SuccessResponse
 from .dependencies import get_review_service
 from .service import ReviewManagementService
@@ -14,7 +15,7 @@ from .schemas import (
 )
 
 
-router = APIRouter(prefix="/review-management", tags=["Admin Review Management"])
+router = APIRouter(prefix="/review-management", tags=[API_TAGS.REVIEW_MANAGEMENT])
 
 
 @router.get("/reviews", response_model=SuccessResponse[ReviewListResponse])
@@ -79,7 +80,10 @@ async def get_reviews(
             message="Reviews retrieved successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve reviews: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.REVIEW_RETRIEVE_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/reviews/{review_id}", response_model=SuccessResponse[ReviewDetailResponse])
@@ -103,7 +107,10 @@ async def get_review_detail(
     review = review_service.get_review_detail(review_id)
     
     if not review:
-        raise HTTPException(status_code=404, detail="Review not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail=ERROR_MESSAGES.REVIEW_NOT_FOUND
+        )
     
     return SuccessResponse(
         data=review,
@@ -142,8 +149,8 @@ async def moderate_review(
     """
     if request.action in ["flag", "remove"] and not request.reason:
         raise HTTPException(
-            status_code=400, 
-            detail="Reason is required for flag or remove actions"
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.REVIEW_MODERATION_REASON_REQUIRED
         )
     
     try:
@@ -154,7 +161,10 @@ async def moderate_review(
             message=f"Review has been {request.action.value}ed"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to moderate review: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.REVIEW_MODERATION_FAILED}: {str(e)}"
+        )
 
 
 @router.post("/reviews/{review_id}/remove-images", response_model=SuccessResponse[str])
@@ -190,7 +200,10 @@ async def remove_review_images(
             message=f"Removed {len(request.image_urls)} image(s) from review"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to remove images: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.REVIEW_IMAGE_REMOVAL_FAILED}: {str(e)}"
+        )
 
 
 @router.post("/reviews/{review_id}/respond", response_model=SuccessResponse[str])
@@ -229,7 +242,10 @@ async def respond_to_review(
             message="Artist response has been posted to the review"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to post response: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.REVIEW_RESPONSE_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/reviews/flagged", response_model=SuccessResponse[FlaggedReviewsResponse])
@@ -269,7 +285,10 @@ async def get_flagged_reviews(
             message="Flagged reviews retrieved successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve flagged reviews: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.FLAGGED_REVIEWS_RETRIEVE_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/reviews/export")
@@ -314,4 +333,7 @@ async def export_reviews(
             headers={"Content-Disposition": "attachment; filename=reviews_export.xlsx"}
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to export reviews: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.REVIEW_EXPORT_FAILED}: {str(e)}"
+        )

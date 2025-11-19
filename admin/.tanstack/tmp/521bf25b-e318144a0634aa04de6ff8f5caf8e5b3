@@ -1,0 +1,38 @@
+/**
+ * Login Page Route
+ * Authentication route with redirect logic
+ */
+
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { useAuthStore } from '@/stores/authStore';
+import { AuthLayout } from '@/components/templates';
+import LoginPage from './LoginPage';
+
+function LoginWithLayout() {
+  return (
+    <AuthLayout
+      title="Welcome back"
+      subtitle="Sign in to your admin account"
+    >
+      <LoginPage />
+    </AuthLayout>
+  );
+}
+
+export const Route = createFileRoute('/LoginPage')({
+  component: LoginWithLayout,
+  beforeLoad: async () => {
+    // Check if user is already authenticated
+    const { user } = useAuthStore.getState();
+    if (user) {
+      throw redirect({
+        to: '/dashboard',
+      });
+    }
+  },
+  validateSearch: (search) => {
+    return {
+      redirect: search?.redirect as string,
+    };
+  },
+});

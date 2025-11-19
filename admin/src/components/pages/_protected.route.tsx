@@ -7,6 +7,7 @@ import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/authStore';
 import { Suspense } from 'react';
 import { Spinner } from '@/components/atoms';
+import { DashboardLayout } from '@/components/templates';
 import { ROUTES } from '@/config/routes';
 
 // Loading component for protected routes
@@ -102,7 +103,9 @@ export const Route = createFileRoute('/_protected')({
   
   component: () => (
     <Suspense fallback={<ProtectedPendingComponent />}>
-      <Outlet />
+      <DashboardLayout>
+        <Outlet />
+      </DashboardLayout>
     </Suspense>
   ),
   

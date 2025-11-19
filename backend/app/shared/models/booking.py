@@ -306,3 +306,125 @@ class PromoCode(BaseModel):
     applicable_user_types = Column(JSON, nullable=True)
     is_active = Column(Boolean, default=True)
     created_by = Column(Integer, nullable=False)
+
+
+class ReferralStatus(str, Enum):
+    """Referral status enumeration."""
+    PENDING = "pending"
+    QUALIFIED = "qualified"
+    REWARDED = "rewarded"
+    EXPIRED = "expired"
+
+
+class Referral(BaseModel):
+    """Referral model."""
+    
+    __tablename__ = "referrals"
+    
+    referrer_user_id = Column(UUID, nullable=False, index=True)
+    referrer_user_type = Column(String(20), nullable=False)  # 'admin', 'provider', 'customer'
+    referral_code = Column(String(50), nullable=False, unique=True, index=True)
+    referee_user_id = Column(UUID, nullable=True)
+    referee_user_type = Column(String(20), nullable=True)  # 'admin', 'provider', 'customer'
+    referee_phone = Column(String(20), nullable=True)
+    status = Column(SQLEnum(ReferralStatus), default=ReferralStatus.PENDING, nullable=False, index=True)
+    referee_first_booking_id = Column(UUID, ForeignKey('bookings.id'), nullable=True)
+    qualified_at = Column(DateTime(timezone=True), nullable=True)
+    referrer_reward_amount = Column(DECIMAL(10, 2), default=100.00, nullable=True)
+    referee_reward_amount = Column(DECIMAL(10, 2), default=50.00, nullable=True)
+    referrer_wallet_txn_id = Column(UUID, nullable=True)
+    referee_wallet_txn_id = Column(UUID, nullable=True)
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+
+
+class AdType(str, Enum):
+    """Ad type enumeration."""
+    BANNER = "banner"
+    VIDEO = "video"
+    NATIVE = "native"
+    INTERSTITIAL = "interstitial"
+    SPONSORED_POST = "sponsored_post"
+
+
+class AdStatus(str, Enum):
+    """Ad status enumeration."""
+    DRAFT = "draft"
+    PENDING_REVIEW = "pending_review"
+    APPROVED = "approved"
+    ACTIVE = "active"
+    PAUSED = "paused"
+    COMPLETED = "completed"
+    REJECTED = "rejected"
+
+
+class Ad(BaseModel):
+    """Advertisement model."""
+    
+    __tablename__ = "ads"
+    
+    advertiser_type = Column(String(20), nullable=False)  # 'business', 'platform', 'external'
+    advertiser_name = Column(String(200), nullable=True)
+    ad_type = Column(SQLEnum(AdType), nullable=False)
+    campaign_name = Column(String(200), nullable=True, index=True)
+    creative = Column(JSON, nullable=True)  # Image URLs, video URLs, text content
+    targeting = Column(JSON, nullable=True)  # Age, location, interests, etc.
+    placement = Column(JSON, nullable=True)  # Where ads appear (home, search, etc.)
+    budget = Column(JSON, nullable=True)  # Daily budget, total budget, etc.
+    pricing = Column(JSON, nullable=True)  # CPM, CPC, CPA pricing model
+    schedule = Column(JSON, nullable=True)  # Start/end dates, time slots
+    metrics = Column(JSON, nullable=True)  # Impressions, clicks, conversions
+    status = Column(SQLEnum(AdStatus), default=AdStatus.DRAFT, nullable=False, index=True)
+    approval = Column(JSON, nullable=True)  # Approval notes, reviewer, etc.
+
+
+class BankAccount(BaseModel):
+    """Bank account model for user bank accounts."""
+    
+    __tablename__ = "bank_accounts"
+    
+    user_id = Column(UUID, nullable=False, index=True)
+    user_type = Column(String(20), nullable=False)  # 'admin', 'provider', 'customer'
+    account_holder_name = Column(String(255), nullable=False)
+    account_number_encrypted = Column(Text, nullable=False)
+    account_number_hash = Column(String(64), nullable=False)
+    account_number_last4 = Column(String(4), nullable=False)
+    ifsc_code = Column(String(11), nullable=False)
+    bank_name = Column(String(255), nullable=False)
+    branch_name = Column(String(255), nullable=True)
+    account_type = Column(String(20), default="savings")
+    razorpay_fund_account_id = Column(String(255), nullable=True, unique=True)
+    razorpay_contact_id = Column(String(255), nullable=True)
+    is_verified = Column(Boolean, default=False)
+    verified_at = Column(DateTime(timezone=True), nullable=True)
+    verification_reference = Column(String(255), nullable=True)
+    is_primary = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
+
+
+class WalletTransactionType(str, Enum):
+    """Wallet transaction type enumeration."""
+    CREDIT = "credit"
+    DEBIT = "debit"
+    REFUND = "refund"
+    BONUS = "bonus"
+    PENALTY = "penalty"
+    WITHDRAWAL = "withdrawal"
+
+
+class WalletTransaction(BaseModel):
+    """Wallet transaction model for detailed wallet activity."""
+    
+    __tablename__ = "wallet_transactions"
+    
+    wallet_id = Column(UUID, ForeignKey('wallets.id'), nullable=False, index=True)
+    user_id = Column(UUID, nullable=False, index=True)
+    user_type = Column(String(20), nullable=False)  # 'admin', 'provider', 'customer'
+    transaction_type = Column(SQLEnum(WalletTransactionType), nullable=False)
+    amount = Column(DECIMAL(10, 2), nullable=False)
+    balance_before = Column(DECIMAL(10, 2), nullable=False)
+    balance_after = Column(DECIMAL(10, 2), nullable=False)
+    reference_type = Column(String(50), nullable=True)
+    reference_id = Column(UUID, nullable=True)
+    transaction_id = Column(UUID, ForeignKey('transactions.id'), nullable=True)
+    description = Column(Text, nullable=False)
+    wallet_metadata = Column("metadata", JSON, nullable=True)  # Renamed to avoid SQLAlchemy conflict

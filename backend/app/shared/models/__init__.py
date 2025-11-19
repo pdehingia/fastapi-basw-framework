@@ -7,6 +7,8 @@ from app.shared.models.user import (
     AdminUser, 
     ProviderUser,
     CustomerUser,
+    AdminUserSession,
+    CustomerUserSession,
     AdminAuditLog,
     ProviderAuditLog,
     CustomerAuditLog
@@ -31,7 +33,15 @@ from app.shared.models.booking import (
     WalletUserType,
     TransactionType,
     TransactionStatus,
-    DiscountType
+    DiscountType,
+    BankAccount,
+    WalletTransaction,
+    WalletTransactionType,
+    Referral,
+    ReferralStatus,
+    Ad,
+    AdType,
+    AdStatus
 )
 
 __all__ = [
@@ -40,6 +50,8 @@ __all__ = [
     "AdminUser",
     "ProviderUser", 
     "CustomerUser",
+    "AdminUserSession",
+    "CustomerUserSession",
     "AdminAuditLog",
     "ProviderAuditLog",
     "CustomerAuditLog",
@@ -51,18 +63,26 @@ __all__ = [
     "Review",
     "ModerationStatus",
     "SupportTicket",
-    "TicketMessage",
+    "SupportTicketMessage",
     "CannedResponse",
     "Wallet",
     "Transaction",
     "PromoCode",
+    "BankAccount",
+    "WalletTransaction",
+    "Referral",
+    "Ad",
     # Enums
     "UserTypeEnum",
     "TicketPriority",
     "TicketStatus",
     "SenderType",
     "WalletUserType",
+    "WalletTransactionType",
     "TransactionType",
     "TransactionStatus",
-    "DiscountType"
+    "DiscountType",
+    "ReferralStatus",
+    "AdType",
+    "AdStatus"
 ]

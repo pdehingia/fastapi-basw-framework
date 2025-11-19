@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { AuthService } from '@/services/api/auth';
+import { authService } from '@/services/api/auth';
 import type { 
   AuthStore, 
   AuthUser, 
@@ -21,6 +21,9 @@ const initialState = {
   error: null,
 };
 
+// Flag to prevent concurrent initialization
+let isInitializing = false;
+
 export const useAuthStore = create<AuthStore>()(
   // NO PERSISTENCE - httpOnly cookies handle all auth state
   (set, get) => ({
@@ -32,14 +35,14 @@ export const useAuthStore = create<AuthStore>()(
       set({ isLoading: true, error: null });
       
       try {
-        console.log('🏪 [AUTH STORE] Step 1: Calling AuthService.login...');
+        console.log('🏪 [AUTH STORE] Step 1: Calling authService.login...');
         // Step 1: Login - httpOnly cookies set by server
-        await AuthService.login(credentials);
+        await authService.login(credentials);
         console.log('🏪 [AUTH STORE] Step 1 completed - cookies should be set');
         
         console.log('🏪 [AUTH STORE] Step 2: Fetching user profile...');
         // Step 2: Fetch user profile to get complete user data
-        const profileResponse = await AuthService.getUserProfile();
+        const profileResponse = await authService.getProfile();
         console.log('🏪 [AUTH STORE] Step 2 completed - profile data received:', {
           userId: profileResponse.data.id,
           email: profileResponse.data.email
@@ -74,7 +77,7 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true });
         
         try {
-          await AuthService.logout();
+          await authService.logout();
         } catch (error) {
           // Log error but continue with logout
           console.error('Logout error:', error);
@@ -92,10 +95,13 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true, error: null });
         
         try {
-          const response = await AuthService.refresh();
+          await authService.refreshToken();
+          
+          // After refresh, get fresh profile data
+          const profileResponse = await authService.getProfile();
           
           set({
-            user: response.user,
+            user: profileResponse.data,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -170,20 +176,18 @@ export const useAuthStore = create<AuthStore>()(
         
         // Prevent double initialization
         const currentState = get();
-        if (currentState.isInitialized) {
-          console.log('🏪 [AUTH STORE] Already initialized, skipping...');
+        if (currentState.isInitialized || isInitializing) {
+          console.log('🏪 [AUTH STORE] Already initialized or initializing, skipping...');
           return;
         }
         
+        isInitializing = true;
         set({ isLoading: true });
-        
-        // Add small delay to ensure proper initialization timing
-        await new Promise(resolve => setTimeout(resolve, 100));
         
         try {
           console.log('🏪 [AUTH STORE] Attempting to get user profile from existing session...');
           // Try to get user profile - this will work if httpOnly cookies are valid
-          const profileResponse = await AuthService.getUserProfile();
+          const profileResponse = await authService.getProfile();
           console.log('🏪 [AUTH STORE] Profile retrieved successfully:', {
             userId: profileResponse.data.id,
             email: profileResponse.data.email
@@ -207,6 +211,8 @@ export const useAuthStore = create<AuthStore>()(
             error: null,
           });
           console.log('🏪 [AUTH STORE] initAuth completed - user is not authenticated');
+        } finally {
+          isInitializing = false;
         }
       },
     })

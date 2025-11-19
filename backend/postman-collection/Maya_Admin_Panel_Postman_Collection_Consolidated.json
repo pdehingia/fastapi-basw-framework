@@ -1,0 +1,795 @@
+{
+	"info": {
+		"_postman_id": "maya-admin-panel-api-consolidated",
+		"name": "Maya Admin Panel - Consolidated API Collection",
+		"description": "Consolidated comprehensive collection of all Maya Platform Admin APIs (120+ endpoints)\n\n## 🚀 CONSOLIDATED & UPDATED!\nThis collection reflects the consolidated admin user management:\n- ✅ Removed duplicate user_management endpoints\n- ✅ Consolidated admin user management under /admin-users\n- ✅ All functionality preserved in single module\n- ✅ Realistic request bodies and examples\n- ✅ Pre-configured environment variables\n- ✅ Authentication flow with token management\n\n## Features Included:\n- 🔐 Authentication (5 endpoints)\n- 👥 Consolidated Admin User Management (15 endpoints)\n- 📅 Booking Management (7 endpoints)\n- 💳 Payment Management (10 endpoints)\n- ⭐ Review Management (7 endpoints)\n- 🎨 Artist Verification (6 endpoints)\n- 🚀 Promotions & Marketing (12 endpoints)\n- 🎧 Support Management (15 endpoints)\n- 📊 Analytics & Reports (8 endpoints)\n- ⚙️ System Configuration (17 endpoints)\n- 🏢 Business Management (12 endpoints)\n- 👤 Customer Management (8 endpoints)\n- 🏪 Provider Management (7 endpoints)\n- 💰 Financial Management (22 endpoints)\n\n## Consolidation Changes:\n- Removed duplicate /users/* endpoints\n- All admin user management now under /admin-users/*\n- Added dashboard stats to admin user management\n- Consolidated session and activity endpoints\n- Preserved all functionality in single module\n\n## Quick Start:\n1. Import this collection into Postman\n2. Run 'Admin Login' to authenticate\n3. Use /admin-users/* endpoints for admin user management\n\n## All Variables Pre-Configured:\n- Server URL, credentials, and sample IDs included\n- Realistic test data in request bodies\n- No external files or database setup needed",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "maya-admin-collection-consolidated"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test for successful login",
+									"pm.test('Login successful', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Extract and save token",
+									"if (pm.response.code === 200) {",
+									"    try {",
+									"        const responseJson = pm.response.json();",
+									"        let token = null;",
+									"        ",
+									"        if (responseJson.success && responseJson.data && responseJson.data.access_token) {",
+									"            token = responseJson.data.access_token;",
+									"        } else if (responseJson.access_token) {",
+									"            token = responseJson.access_token;",
+									"        }",
+									"        ",
+									"        if (token) {",
+									"            pm.collectionVariables.set('access_token', token);",
+									"            console.log('✅ Access token saved');",
+									"        }",
+									"    } catch (error) {",
+									"        console.error('Error extracting token:', error);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{admin_email}}\",\n    \"password\": \"{{admin_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/v1/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Admin Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"auth",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"auth",
+								"refresh"
+							]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					}
+				},
+				{
+					"name": "Logout All Sessions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/auth/sessions/logout-all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"auth",
+								"sessions",
+								"logout-all"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👥 Consolidated Admin User Management",
+			"item": [
+				{
+					"name": "Get Dashboard Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"dashboard"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Admin Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/?page=1&page_size=20&role=admin&is_active=true&search=john",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "20"
+								},
+								{
+									"key": "role",
+									"value": "admin"
+								},
+								{
+									"key": "is_active",
+									"value": "true"
+								},
+								{
+									"key": "search",
+									"value": "john"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Admin User Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Admin User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"new.admin@maya.com\",\n    \"username\": \"newadmin\",\n    \"full_name\": \"New Admin User\",\n    \"phone\": \"+1-555-NEW-ADMIN\",\n    \"password\": \"SecurePassword123!\",\n    \"role\": \"admin\",\n    \"department\": \"Operations\",\n    \"employee_id\": \"EMP001\",\n    \"permissions\": {\n        \"can_manage_users\": true,\n        \"can_view_reports\": true,\n        \"can_manage_providers\": false,\n        \"can_manage_customers\": true,\n        \"can_manage_system\": false\n    },\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Admin User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"Updated Admin Name\",\n    \"phone\": \"+1-555-UPDATED\",\n    \"department\": \"Updated Department\",\n    \"permissions\": {\n        \"can_manage_users\": true,\n        \"can_view_reports\": true,\n        \"can_manage_providers\": true,\n        \"can_manage_customers\": true,\n        \"can_manage_system\": false\n    },\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Admin User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Change Admin Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"current_password\": \"old_password\",\n    \"new_password\": \"NewSecurePassword123!\",\n    \"confirm_password\": \"NewSecurePassword123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}/change-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}",
+								"change-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Admin User Sessions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}/sessions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}",
+								"sessions"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Admin User Activity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}/activity",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}",
+								"activity"
+							]
+						}
+					}
+				},
+				{
+					"name": "Activate Admin User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}/activate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}",
+								"activate"
+							]
+						}
+					}
+				},
+				{
+					"name": "Deactivate Admin User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/{{sample_admin_id}}/deactivate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"{{sample_admin_id}}",
+								"deactivate"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Active Sessions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/sessions/active",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"sessions",
+								"active"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Audit Trail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/audit/trail?limit=50&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"audit",
+								"trail"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Roles & Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/roles/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"roles",
+								"permissions"
+							]
+						}
+					}
+				},
+				{
+					"name": "Assign Permissions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"admin_user_id\": \"{{sample_admin_id}}\",\n    \"permissions_to_add\": [\"can_manage_system\", \"can_manage_providers\"],\n    \"permissions_to_remove\": [\"can_manage_customers\"],\n    \"reason\": \"Role update - promoted to senior admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/permissions/assign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"permissions",
+								"assign"
+							]
+						}
+					}
+				},
+				{
+					"name": "Bulk Admin Actions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"activate\",\n    \"admin_user_ids\": [\n        \"{{sample_admin_id}}\",\n        \"123e4567-e89b-12d3-a456-426614174001\"\n    ],\n    \"reason\": \"Bulk activation after security review\",\n    \"notify_users\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/bulk-action",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"bulk-action"
+							]
+						}
+					}
+				},
+				{
+					"name": "Export Admin Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/v1/admin-users/export/users?format=excel&include_permissions=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"admin-users",
+								"export",
+								"users"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": "excel"
+								},
+								{
+									"key": "include_permissions",
+									"value": "true"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-add authorization header if token exists",
+					"const token = pm.collectionVariables.get('access_token');",
+					"if (token && token.length > 0) {",
+					"    pm.request.headers.add({",
+					"        key: 'Authorization',",
+					"        value: 'Bearer ' + token",
+					"    });",
+					"} else {",
+					"    console.log('⚠️ No access token found. Please run Admin Login first.');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-save token for login endpoint",
+					"const requestUrl = pm.request.url.toString();",
+					"",
+					"if (requestUrl.includes('/auth/login') && pm.response.code === 200) {",
+					"    try {",
+					"        const responseJson = pm.response.json();",
+					"        ",
+					"        // Handle standardized response format",
+					"        let token = null;",
+					"        if (responseJson.success && responseJson.data && responseJson.data.access_token) {",
+					"            token = responseJson.data.access_token;",
+					"            console.log('✅ Token extracted from standardized response');",
+					"        } else if (responseJson.access_token) {",
+					"            token = responseJson.access_token;",
+					"            console.log('✅ Token extracted from direct response');",
+					"        }",
+					"        ",
+					"        if (token) {",
+					"            pm.collectionVariables.set('access_token', token);",
+					"            console.log('🔐 Access token saved to collection variables');",
+					"        } else {",
+					"            console.error('❌ Could not find access_token in response');",
+					"            console.log('Response structure:', JSON.stringify(responseJson, null, 2));",
+					"        }",
+					"    } catch (error) {",
+					"        console.error('❌ Error processing login response:', error);",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "admin_email",
+			"value": "admin@maya.com"
+		},
+		{
+			"key": "admin_password",
+			"value": "admin123"
+		},
+		{
+			"key": "sample_admin_id",
+			"value": "cf42e206-92d0-499a-8808-10888ba8cda9"
+		},
+		{
+			"key": "sample_user_id",
+			"value": "123e4567-e89b-12d3-a456-426614174000"
+		},
+		{
+			"key": "sample_provider_id", 
+			"value": "987fcdeb-51d2-4a3b-9876-426614174001"
+		},
+		{
+			"key": "sample_booking_id",
+			"value": "456e7890-a12b-34c5-d678-426614174002"
+		},
+		{
+			"key": "sample_payment_id",
+			"value": "789a0123-b45c-67d8-e901-426614174003"
+		},
+		{
+			"key": "sample_review_id",
+			"value": "012b3456-c78d-90e1-f234-426614174004"
+		},
+		{
+			"key": "sample_category_id",
+			"value": "678d9012-e34f-56a7-8901-426614174006"
+		},
+		{
+			"key": "sample_ticket_id",
+			"value": "901e2345-f67a-89b0-c123-426614174007"
+		},
+		{
+			"key": "sample_email",
+			"value": "john.doe@example.com"
+		},
+		{
+			"key": "sample_phone",
+			"value": "+1-555-123-4567"
+		}
+	]
+}

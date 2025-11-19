@@ -1,115 +1,82 @@
 /**
- * Authentication API service
- * Handles login, logout, refresh, and user verification
+ * Authentication API Service
+ * Handles login, logout, profile, and token management
  */
 
-import { apiClient, handleApiResponse, handleApiError } from './client';
 import { AUTH_ENDPOINTS } from '@/config/api';
+import { apiService } from './base';
 import type { 
-  LoginCredentials, 
+  ApiResponse,
+  LoginRequest, 
   LoginResponse, 
-  ProfileResponse,
-  RefreshResponse, 
-  AuthUser 
-} from '@/types/auth.types';
+  AdminProfile 
+} from '@/types/api.types';
 
 export class AuthService {
   /**
-   * Login user with username and password
-   * Returns token data that needs to be stored for subsequent requests
+   * Admin login with credentials
    */
-  static async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    try {
-      // Create form data for application/x-www-form-urlencoded
-      const formData = new URLSearchParams();
-      formData.append('username', credentials.username);
-      formData.append('password', credentials.password);
+  async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
+    console.log('🔑 [AUTH] Login request starting...', { username: credentials.username });
+    
+    // Maya API expects x-www-form-urlencoded for login
+    const formBody = new URLSearchParams();
+    formBody.append('username', credentials.username);
+    formBody.append('password', credentials.password);
 
-      const response = await apiClient.post<LoginResponse>(
-        AUTH_ENDPOINTS.LOGIN,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
+    console.log('🔑 [AUTH] Form body prepared:', formBody.toString());
+    
+    const response = await apiService.post<LoginResponse>(
+      AUTH_ENDPOINTS.LOGIN,
+      formBody.toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
         }
-      );
-      return handleApiResponse(response);
-    } catch (error) {
-      throw handleApiError(error);
-    }
+      }
+    );
+    
+    console.log('🔑 [AUTH] Login response received:', {
+      success: response.success,
+      hasData: !!response.data
+    });
+    
+    return response;
   }
 
   /**
-   * Get current authenticated user profile
-   * This updates last_login and fetches complete user data
+   * Get current admin user profile
    */
-  static async getUserProfile(): Promise<ProfileResponse> {
-    try {
-      const response = await apiClient.get<ProfileResponse>(
-        AUTH_ENDPOINTS.ME
-      );
-      return handleApiResponse(response);
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  }
-
-  /**
-   * Logout current user
-   */
-  static async logout(): Promise<{ message: string }> {
-    try {
-      const response = await apiClient.post<{ message: string }>(
-        AUTH_ENDPOINTS.LOGOUT
-      );
-      return handleApiResponse(response);
-    } catch (error) {
-      throw handleApiError(error);
-    }
+  async getProfile(): Promise<ApiResponse<AdminProfile>> {
+    console.log('👤 [AUTH] Getting profile...');
+    const response = await apiService.get<AdminProfile>(AUTH_ENDPOINTS.ME);
+    console.log('👤 [AUTH] Profile response:', {
+      success: response.success,
+      hasData: !!response.data
+    });
+    return response;
   }
 
   /**
    * Refresh authentication token
    */
-  static async refresh(): Promise<RefreshResponse> {
-    try {
-      const response = await apiClient.post<RefreshResponse>(
-        AUTH_ENDPOINTS.REFRESH
-      );
-      return handleApiResponse(response);
-    } catch (error) {
-      throw handleApiError(error);
-    }
+  async refreshToken(): Promise<ApiResponse<LoginResponse>> {
+    return await apiService.post<LoginResponse>(AUTH_ENDPOINTS.REFRESH);
   }
 
   /**
-   * Verify current authentication status
+   * Logout admin user
    */
-  static async verify(): Promise<{ user: AuthUser }> {
-    try {
-      const response = await apiClient.get<{ user: AuthUser }>(
-        AUTH_ENDPOINTS.VERIFY
-      );
-      return handleApiResponse(response);
-    } catch (error) {
-      throw handleApiError(error);
-    }
+  async logout(): Promise<ApiResponse<void>> {
+    return await apiService.post<void>(AUTH_ENDPOINTS.LOGOUT);
   }
 
   /**
-   * Get current authenticated user details
+   * Verify token validity
    */
-  static async me(): Promise<{ user: AuthUser }> {
-    try {
-      const response = await apiClient.get<{ user: AuthUser }>(
-        AUTH_ENDPOINTS.ME
-      );
-      return handleApiResponse(response);
-    } catch (error) {
-      throw handleApiError(error);
-    }
+  async verifyToken(): Promise<ApiResponse<{ valid: boolean }>> {
+    return await apiService.get<{ valid: boolean }>(AUTH_ENDPOINTS.VERIFY);
   }
 }
 
-export default AuthService;
+export const authService = new AuthService();

@@ -8,10 +8,12 @@ import { ButtonHTMLAttributes } from 'react';
 import { clsx } from 'clsx';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
-  children: React.ReactNode;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -20,6 +22,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     variant = 'primary', 
     size = 'md', 
     isLoading = false, 
+    leftIcon,
+    rightIcon,
     children, 
     disabled,
     ...props 
@@ -31,6 +35,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500",
       danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
       ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+      outline: "border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500",
     };
     
     const sizeClasses = {
@@ -72,7 +77,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             />
           </svg>
         )}
+        {!isLoading && leftIcon && (
+          <span className="mr-2">{leftIcon}</span>
+        )}
         {children}
+        {!isLoading && rightIcon && (
+          <span className="ml-2">{rightIcon}</span>
+        )}
       </button>
     );
   }

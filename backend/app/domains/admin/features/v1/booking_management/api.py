@@ -4,9 +4,10 @@ import io
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from fastapi import status as http_status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 
 from app.core.database import get_db
 from .dependencies import require_booking_management_access
@@ -22,7 +23,7 @@ from .service import BookingManagementService
 from app.shared.exceptions import ValidationException, NotFoundError
 from app.shared.pagination import PaginationParams, PaginatedResponse
 
-router = APIRouter(prefix="/bookings", tags=["admin-bookings"])
+router = APIRouter(prefix="/bookings", tags=[API_TAGS.BOOKING_MANAGEMENT])
 
 
 @router.get("/", response_model=PaginatedResponse[BookingResponse])
@@ -90,12 +91,12 @@ async def get_bookings_list(
 
     except ValidationException as e:
         raise HTTPException(
-            status_code=http_status.HTTP_400_BAD_REQUEST,
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
             detail=str(e)
         )
     except Exception as e:
         raise HTTPException(
-            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )
 
@@ -124,7 +125,7 @@ async def get_booking_statistics(
 
     except Exception as e:
         raise HTTPException(
-            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )
 
@@ -154,17 +155,17 @@ async def get_booking_detail(
 
     except NotFoundError as e:
         raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND,
+            status_code=HTTP_STATUS_CODES.NOT_FOUND,
             detail=str(e)
         )
     except ValidationException as e:
         raise HTTPException(
-            status_code=http_status.HTTP_400_BAD_REQUEST,
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
             detail=str(e)
         )
     except Exception as e:
         raise HTTPException(
-            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )
 
@@ -201,17 +202,17 @@ async def update_booking_status(
 
     except NotFoundError as e:
         raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND,
+            status_code=HTTP_STATUS_CODES.NOT_FOUND,
             detail=str(e)
         )
     except ValidationException as e:
         raise HTTPException(
-            status_code=http_status.HTTP_400_BAD_REQUEST,
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
             detail=str(e)
         )
     except Exception as e:
         raise HTTPException(
-            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )
 
@@ -241,8 +242,8 @@ async def resolve_booking_dispute(
         # Validate that only one refund method is provided
         if resolution.refund_percentage is not None and resolution.refund_amount is not None:
             raise HTTPException(
-                status_code=http_status.HTTP_400_BAD_REQUEST,
-                detail="Provide either refund_percentage or refund_amount, not both"
+                status_code=HTTP_STATUS_CODES.BAD_REQUEST,
+                detail=ERROR_MESSAGES.REFUND_METHOD_CONFLICT
             )
 
         booking_service = BookingManagementService(db)
@@ -255,17 +256,17 @@ async def resolve_booking_dispute(
 
     except NotFoundError as e:
         raise HTTPException(
-            status_code=http_status.HTTP_404_NOT_FOUND,
+            status_code=HTTP_STATUS_CODES.NOT_FOUND,
             detail=str(e)
         )
     except ValidationException as e:
         raise HTTPException(
-            status_code=http_status.HTTP_400_BAD_REQUEST,
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
             detail=str(e)
         )
     except Exception as e:
         raise HTTPException(
-            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )
 
@@ -334,11 +335,11 @@ async def export_bookings_csv(
 
     except ValidationException as e:
         raise HTTPException(
-            status_code=http_status.HTTP_400_BAD_REQUEST,
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
             detail=str(e)
         )
     except Exception as e:
         raise HTTPException(
-            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )

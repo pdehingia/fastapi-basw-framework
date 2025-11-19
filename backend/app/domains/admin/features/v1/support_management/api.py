@@ -5,6 +5,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.responses import StreamingResponse
 
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 from app.shared.responses import SuccessResponse
 from app.shared.pagination import PaginationParams
 from .dependencies import get_support_service
@@ -22,7 +23,7 @@ from .schemas import (
     CannedResponse
 )
 
-router = APIRouter(prefix="/support", tags=["Support Management"])
+router = APIRouter(prefix="/support", tags=[API_TAGS.SUPPORT_MANAGEMENT])
 
 
 @router.get("/tickets", response_model=SuccessResponse[list[TicketResponse]])
@@ -58,7 +59,7 @@ async def get_support_ticket(
     """Get specific support ticket."""
     ticket = service.get_ticket(ticket_id)
     if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
     return SuccessResponse(data=ticket)
 
 
@@ -71,7 +72,7 @@ async def reply_to_ticket(
     """Reply to support ticket."""
     success = service.reply_to_ticket(ticket_id, reply_data)
     if not success:
-        raise HTTPException(status_code=404, detail="Ticket not found")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
     return SuccessResponse(data={"replied": True})
 
 
@@ -84,7 +85,7 @@ async def update_support_ticket(
     """Update support ticket."""
     ticket = service.update_ticket(ticket_id, ticket_data)
     if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
     return SuccessResponse(data=ticket)
 
 
@@ -97,7 +98,7 @@ async def escalate_ticket(
     """Escalate support ticket."""
     success = service.escalate_ticket(ticket_id, escalation_data)
     if not success:
-        raise HTTPException(status_code=404, detail="Ticket not found")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
     return SuccessResponse(data={"escalated": True})
 
 
@@ -148,11 +149,11 @@ async def add_internal_note(
     """Add internal note to ticket (only visible to admin users)."""
     note = request.get("note", "")
     if not note or len(note.strip()) < 5:
-        raise HTTPException(status_code=400, detail="Note must be at least 5 characters long")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.BAD_REQUEST, detail=ERROR_MESSAGES.NOTE_TOO_SHORT)
     
     success = service.add_internal_note(ticket_id, note.strip())
     if not success:
-        raise HTTPException(status_code=404, detail="Ticket not found")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
     
     return SuccessResponse(
         data={"message": "Internal note added successfully", "ticket_id": ticket_id},
@@ -171,11 +172,11 @@ async def merge_tickets(
     merge_reason = request.get("merge_reason", "")
     
     if not primary_ticket_id:
-        raise HTTPException(status_code=400, detail="Primary ticket ID is required")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.BAD_REQUEST, detail=ERROR_MESSAGES.PRIMARY_TICKET_ID_REQUIRED)
     if not secondary_ticket_ids or len(secondary_ticket_ids) == 0:
-        raise HTTPException(status_code=400, detail="At least one secondary ticket ID is required")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.BAD_REQUEST, detail=ERROR_MESSAGES.SECONDARY_TICKET_IDS_REQUIRED)
     if not merge_reason or len(merge_reason.strip()) < 10:
-        raise HTTPException(status_code=400, detail="Merge reason must be at least 10 characters long")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.BAD_REQUEST, detail=ERROR_MESSAGES.MERGE_REASON_TOO_SHORT)
     
     result = service.merge_tickets(primary_ticket_id, secondary_ticket_ids, merge_reason.strip())
     
@@ -197,7 +198,7 @@ async def close_ticket(
     resolution_category = request.get("resolution_category")
     
     if not resolution_summary or len(resolution_summary.strip()) < 20:
-        raise HTTPException(status_code=400, detail="Resolution summary must be at least 20 characters long")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.BAD_REQUEST, detail=ERROR_MESSAGES.RESOLUTION_SUMMARY_TOO_SHORT)
     
     success = service.close_ticket(
         ticket_id, 
@@ -207,7 +208,7 @@ async def close_ticket(
     )
     
     if not success:
-        raise HTTPException(status_code=404, detail="Ticket not found")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.NOT_FOUND, detail=ERROR_MESSAGES.TICKET_NOT_FOUND)
     
     return SuccessResponse(
         data={
@@ -229,8 +230,8 @@ async def get_support_analytics(
     
     if timeframe not in valid_timeframes:
         raise HTTPException(
-            status_code=400, 
-            detail=f"Invalid timeframe. Must be one of: {', '.join(valid_timeframes)}"
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.INVALID_TIMEFRAME
         )
     
     analytics = service.get_support_analytics(timeframe)

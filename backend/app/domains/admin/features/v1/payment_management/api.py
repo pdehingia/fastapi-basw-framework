@@ -1,9 +1,11 @@
 """Payment and wallet management API endpoints."""
 
+import io
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 from app.shared.responses import SuccessResponse
 from .dependencies import get_payment_service
 from .service import PaymentManagementService
@@ -16,7 +18,7 @@ from .schemas import (
 )
 
 
-router = APIRouter(prefix="/payment-management", tags=["Admin Payment Management"])
+router = APIRouter(prefix="/payment-management", tags=[API_TAGS.PAYMENT_MANAGEMENT])
 
 
 @router.get("/transactions", response_model=SuccessResponse[TransactionListResponse])
@@ -68,7 +70,10 @@ async def get_transactions(
             message="Transactions retrieved successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve transactions: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.TRANSACTION_RETRIEVE_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/transactions/{transaction_id}", response_model=SuccessResponse[TransactionDetailResponse])
@@ -92,7 +97,10 @@ async def get_transaction_detail(
     transaction = payment_service.get_transaction_detail(transaction_id)
     
     if not transaction:
-        raise HTTPException(status_code=404, detail="Transaction not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail=ERROR_MESSAGES.TRANSACTION_NOT_FOUND
+        )
     
     return SuccessResponse(
         data=transaction,
@@ -143,7 +151,10 @@ async def get_wallets_overview(
             message="Wallets retrieved successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve wallets: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.WALLET_RETRIEVE_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/wallets/{wallet_id}/transactions", response_model=SuccessResponse[WalletTransactionListResponse])
@@ -220,7 +231,10 @@ async def get_withdrawal_requests(
             message="Withdrawal requests retrieved successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve withdrawal requests: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.WITHDRAWAL_RETRIEVE_FAILED}: {str(e)}"
+        )
 
 
 @router.post("/withdrawal-requests/{withdrawal_id}/process", response_model=SuccessResponse[str])
@@ -247,10 +261,16 @@ async def process_withdrawal_request(
     - Funds will be credited back to wallet
     """
     if request.action == "approve" and not request.utr_number:
-        raise HTTPException(status_code=400, detail="UTR number is required for approval")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.UTR_REQUIRED
+        )
     
     if request.action == "reject" and not request.rejection_reason:
-        raise HTTPException(status_code=400, detail="Rejection reason is required")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.REJECTION_REASON_REQUIRED
+        )
     
     try:
         withdrawal = payment_service.process_withdrawal_request(withdrawal_id, request)
@@ -261,7 +281,10 @@ async def process_withdrawal_request(
             message=f"Withdrawal request has been {action_message}"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process withdrawal: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.WITHDRAWAL_PROCESS_FAILED}: {str(e)}"
+        )
 
 
 @router.post("/wallets/{wallet_id}/adjust", response_model=SuccessResponse[WalletResponse])
@@ -298,7 +321,10 @@ async def manual_wallet_adjustment(
             message=f"Wallet balance {request.type.value}ed successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to adjust wallet balance: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.WALLET_ADJUSTMENT_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/transactions/export")
@@ -336,7 +362,10 @@ async def export_transactions(
             headers={"Content-Disposition": "attachment; filename=transactions_export.xlsx"}
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to export transactions: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.TRANSACTION_EXPORT_FAILED}: {str(e)}"
+        )
 
 
 # Add missing import

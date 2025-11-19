@@ -5,7 +5,7 @@ Common dependencies that can be used across the application.
 
 import uuid
 from typing import Optional, Union
-from fastapi import Depends, Header, HTTPException, status
+from fastapi import Depends, Header, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -167,6 +167,81 @@ async def get_current_admin_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid user ID in token"
+        )
+    
+    if not admin_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Admin account is deactivated"
+        )
+    
+    return admin_user
+
+
+async def get_current_user_id_from_cookie(
+    request: Request
+) -> str:
+    """
+    Extract user ID from httpOnly cookie JWT token.
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        User ID as UUID string
+
+    Raises:
+        UnauthorizedException: If token is invalid or missing
+    """
+    access_token = request.cookies.get("access_token")
+    
+    if not access_token:
+        raise UnauthorizedException("Could not validate credentials")
+
+    # Decode token
+    payload = decode_token(access_token)
+    if not payload:
+        raise UnauthorizedException("Could not validate credentials")
+
+    # Extract user ID
+    user_id = payload.get("sub")
+    if not user_id:
+        raise UnauthorizedException("Could not validate credentials")
+
+    # Validate UUID format
+    try:
+        uuid.UUID(user_id)  # This will raise ValueError if not a valid UUID
+        return user_id
+    except (ValueError, TypeError):
+        raise UnauthorizedException("Could not validate credentials")
+
+
+async def get_current_admin_user_from_cookie(
+    request: Request,
+    db: Session = Depends(get_db)
+) -> AdminUser:
+    """
+    Get current admin user from httpOnly cookie.
+
+    Args:
+        request: FastAPI request object
+        db: Database session
+
+    Returns:
+        AdminUser object
+
+    Raises:
+        HTTPException: If user is not found or not an admin
+    """
+    current_user_id = await get_current_user_id_from_cookie(request)
+    
+    admin_repo = AdminUserRepository(db)
+    admin_user = admin_repo.get(current_user_id)
+    
+    if not admin_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials"
         )
     
     if not admin_user.is_active:

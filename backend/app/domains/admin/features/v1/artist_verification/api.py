@@ -5,6 +5,7 @@ from typing import Annotated, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 from app.shared.responses import SuccessResponse
 from .dependencies import get_artist_verification_service
 from .service import ArtistVerificationService
@@ -16,7 +17,7 @@ from .schemas import (
 )
 
 
-router = APIRouter(prefix="/artist-verification", tags=["Admin Artist Verification"])
+router = APIRouter(prefix="/artist-verification", tags=[API_TAGS.ARTIST_VERIFICATION])
 
 
 @router.get("/verification-queue", response_model=SuccessResponse[VerificationQueueResponse])
@@ -79,7 +80,10 @@ async def get_verification_queue(
             message="Verification queue retrieved successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve verification queue: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.VERIFICATION_QUEUE_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/verification-queue/{request_id}", response_model=SuccessResponse[VerificationDetailResponse])
@@ -112,7 +116,10 @@ async def get_verification_detail(
     verification_detail = verification_service.get_verification_detail(request_id)
     
     if not verification_detail:
-        raise HTTPException(status_code=404, detail="Verification request not found")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.NOT_FOUND, 
+            detail=ERROR_MESSAGES.VERIFICATION_REQUEST_NOT_FOUND
+        )
     
     return SuccessResponse(
         data=verification_detail,
@@ -160,8 +167,8 @@ async def process_verification_decision(
     """
     if decision.decision.value == "reject" and not decision.rejection_reason:
         raise HTTPException(
-            status_code=400, 
-            detail="Rejection reason is required when rejecting verification"
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST, 
+            detail=ERROR_MESSAGES.VERIFICATION_REJECTION_REASON_REQUIRED
         )
     
     try:
@@ -173,7 +180,10 @@ async def process_verification_decision(
             message=f"Artist verification has been {action_message}"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process verification: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.VERIFICATION_PROCESS_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/portfolio/moderation-queue", response_model=SuccessResponse[PortfolioModerationResponse])
@@ -236,7 +246,10 @@ async def get_portfolio_moderation_queue(
             message="Portfolio moderation queue retrieved successfully"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve portfolio queue: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.PORTFOLIO_QUEUE_FAILED}: {str(e)}"
+        )
 
 
 @router.post("/portfolio/{image_id}/moderate", response_model=SuccessResponse[str])
@@ -271,8 +284,8 @@ async def moderate_portfolio_image(
     """
     if moderation.action.value in ["reject", "flag"] and not moderation.rejection_reason:
         raise HTTPException(
-            status_code=400,
-            detail="Rejection reason is required for reject or flag actions"
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
+            detail=ERROR_MESSAGES.PORTFOLIO_REJECTION_REASON_REQUIRED
         )
     
     try:
@@ -283,7 +296,10 @@ async def moderate_portfolio_image(
             message=f"Image has been {moderation.action.value}ed"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to moderate image: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.IMAGE_MODERATION_FAILED}: {str(e)}"
+        )
 
 
 @router.post("/portfolio/bulk-moderate", response_model=SuccessResponse[Dict[str, Any]])
@@ -319,14 +335,14 @@ async def bulk_moderate_portfolio(
     """
     if moderation.action.value in ["reject", "flag"] and not moderation.rejection_reason:
         raise HTTPException(
-            status_code=400,
-            detail="Rejection reason is required for reject or flag actions"
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
+            detail=ERROR_MESSAGES.PORTFOLIO_REJECTION_REASON_REQUIRED
         )
     
     if len(moderation.image_ids) > 50:
         raise HTTPException(
-            status_code=400,
-            detail="Maximum 50 images can be processed in a single request"
+            status_code=HTTP_STATUS_CODES.BAD_REQUEST,
+            detail=ERROR_MESSAGES.BULK_MODERATION_LIMIT
         )
     
     try:
@@ -337,7 +353,10 @@ async def bulk_moderate_portfolio(
             message=f"Bulk moderation completed: {result['successful_count']} images processed"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to bulk moderate images: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.BULK_MODERATION_FAILED}: {str(e)}"
+        )
 
 
 @router.get("/verification-queue/export")
@@ -389,4 +408,7 @@ async def export_verification_requests(
             headers={"Content-Disposition": "attachment; filename=verification_requests_export.xlsx"}
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to export verification requests: {str(e)}")
+        raise HTTPException(
+            status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR, 
+            detail=f"{ERROR_MESSAGES.VERIFICATION_EXPORT_FAILED}: {str(e)}"
+        )

@@ -4,7 +4,7 @@ from typing import Dict, Any
 
 from fastapi import Depends, HTTPException, status
 
-from app.domains.admin.features.auth.dependencies import get_current_admin_user
+from app.domains.admin.features.v1.auth.dependencies import get_current_admin_user
 
 
 async def require_admin_role(

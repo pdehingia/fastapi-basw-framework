@@ -1,0 +1,52 @@
+/**
+ * User Detail Page Route
+ * Individual user details and management
+ */
+
+import { createFileRoute } from '@tanstack/react-router';
+import { DashboardLayout } from '@/components/templates';
+import UserDetail from './UserDetail';
+
+function UserDetailWithLayout() {
+  const { userId } = Route.useParams();
+  
+  return (
+    <DashboardLayout
+      navigationProps={{
+        title: `User Details`,
+        breadcrumbs: [
+          { id: 'home', label: 'Home', href: '/dashboard' },
+          { id: 'users', label: 'Users', href: '/users' },
+          { id: 'user-detail', label: `User ${userId}`, current: true },
+        ],
+        actions: [
+          {
+            id: 'edit-user',
+            label: 'Edit User',
+            icon: 'PencilIcon',
+            variant: 'primary',
+            onClick: () => {
+              console.log('Edit user clicked');
+            },
+          },
+          {
+            id: 'delete-user',
+            label: 'Delete User',
+            icon: 'TrashIcon',
+            variant: 'danger',
+            onClick: () => {
+              console.log('Delete user clicked');
+            },
+          },
+        ],
+        showBackButton: true,
+      }}
+    >
+      <UserDetail />
+    </DashboardLayout>
+  );
+}
+
+export const Route = createFileRoute('/UserDetail')({
+  component: UserDetailWithLayout,
+});

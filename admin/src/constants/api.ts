@@ -53,7 +53,11 @@ export const REVIEW_ENDPOINTS = {
   LIST: `${API_VERSION.CURRENT}/reviews`,
   GET: (id: string) => `${API_VERSION.CURRENT}/reviews/${id}`,
   MODERATE: (id: string) => `${API_VERSION.CURRENT}/reviews/${id}/moderate`,
+  DELETE: (id: string) => `${API_VERSION.CURRENT}/reviews/${id}`,
   RESPOND: (id: string) => `${API_VERSION.CURRENT}/reviews/${id}/respond`,
+  ANALYTICS: `${API_VERSION.CURRENT}/reviews/analytics`,
+  BULK_MODERATE: `${API_VERSION.CURRENT}/reviews/bulk-moderate`,
+  FLAGGED: `${API_VERSION.CURRENT}/reviews/flagged`,
 } as const;
 
 // Analytics Endpoints

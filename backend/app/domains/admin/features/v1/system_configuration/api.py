@@ -6,6 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 
+from app.shared.constants import HTTP_STATUS_CODES, ERROR_MESSAGES, API_TAGS
 from app.shared.responses import SuccessResponse
 from .dependencies import get_system_config_service
 from .service import SystemConfigurationService
@@ -16,7 +17,7 @@ from .schemas import (
     BackupRequest, FeatureToggleUpdate
 )
 
-router = APIRouter(prefix="/system-config", tags=["System Configuration"])
+router = APIRouter(prefix="/system-config", tags=[API_TAGS.SYSTEM_CONFIGURATION])
 
 
 @router.get("/settings", response_model=SuccessResponse[SystemSettings])
@@ -309,7 +310,7 @@ async def update_feature_toggle(
     and scheduling for a specific feature.
     """
     if not feature_key.strip():
-        raise HTTPException(status_code=400, detail="Feature key cannot be empty")
+        raise HTTPException(status_code=HTTP_STATUS_CODES.BAD_REQUEST, detail=ERROR_MESSAGES.FEATURE_KEY_EMPTY)
     
     updated_feature = service.update_feature_toggle(feature_key, update)
     

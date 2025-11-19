@@ -1,0 +1,39 @@
+/**
+ * Settings Page Route
+ * Application settings and configuration
+ */
+
+import { createFileRoute } from '@tanstack/react-router';
+import { DashboardLayout } from '@/components/templates';
+import Settings from './Settings';
+
+function SettingsWithLayout() {
+  return (
+    <DashboardLayout
+      navigationProps={{
+        title: 'Settings',
+        breadcrumbs: [
+          { id: 'home', label: 'Home', href: '/dashboard' },
+          { id: 'settings', label: 'Settings', current: true },
+        ],
+        actions: [
+          {
+            id: 'save-settings',
+            label: 'Save Changes',
+            icon: 'CheckIcon',
+            variant: 'primary',
+            onClick: () => {
+              console.log('Save settings clicked');
+            },
+          },
+        ],
+      }}
+    >
+      <Settings />
+    </DashboardLayout>
+  );
+}
+
+export const Route = createFileRoute('/Settings')({
+  component: SettingsWithLayout,
+});
