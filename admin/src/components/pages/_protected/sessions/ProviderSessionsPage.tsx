@@ -236,7 +236,6 @@ const ProviderSessionsPage = () => {
                 placeholder="Search providers..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                icon={MagnifyingGlassIcon}
               />
             </div>
             <div className="w-40">

@@ -233,7 +233,6 @@ const CustomerSessionsPage = () => {
                 placeholder="Search customers..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                icon={MagnifyingGlassIcon}
               />
             </div>
             <div className="w-40">

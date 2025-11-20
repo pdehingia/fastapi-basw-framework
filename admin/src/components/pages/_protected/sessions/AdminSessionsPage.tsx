@@ -299,7 +299,6 @@ const AdminSessionsPage = () => {
                 placeholder="Search by name, email, or IP..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                icon={MagnifyingGlassIcon}
               />
             </div>
 

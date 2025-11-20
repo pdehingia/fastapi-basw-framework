@@ -164,7 +164,7 @@ const SystemConfigurationPage = () => {
       render: (_: any, flag: FeatureFlag) => (
         <div className="flex space-x-1">
           <Button
-            variant={flag.is_enabled ? 'warning' : 'success'}
+            variant={flag.is_enabled ? 'outline' : 'primary'}
             size="sm"
             onClick={() => toggleFlagMutation.mutate(flag.id)}
             title={flag.is_enabled ? 'Disable' : 'Enable'}
@@ -174,7 +174,7 @@ const SystemConfigurationPage = () => {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => toast.info('Edit feature coming soon')}
+            onClick={() => toast.success('Edit feature coming soon')}
             title="Edit"
           >
             <PencilIcon className="h-4 w-4" />
@@ -293,17 +293,17 @@ const SystemConfigurationPage = () => {
       title="System Configuration"
       subtitle="Manage system settings, feature flags, and notifications"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Settings', path: '/settings' },
-        { label: 'System Configuration', path: '/settings/system' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Settings', href: '/settings' },
+        { id: '3', label: 'System Configuration', href: '/settings/system', current: true },
       ]}
       actions={
         activeTab === 'flags' ? (
-          <Button variant="primary" onClick={() => toast.info('Create feature coming soon')} icon={PlusIcon}>
+          <Button variant="primary" onClick={() => toast.success('Create feature coming soon')}>
             New Feature Flag
           </Button>
         ) : activeTab === 'notifications' ? (
-          <Button variant="primary" onClick={() => toast.info('Create notification coming soon')} icon={PlusIcon}>
+          <Button variant="primary" onClick={() => toast.success('Create notification coming soon')}>
             New Notification
           </Button>
         ) : null
@@ -350,7 +350,7 @@ const SystemConfigurationPage = () => {
       {activeTab === 'flags' && (
         <Card>
           <CardHeader>
-            <Heading level={3}>Feature Flags</Heading>
+            <Heading size="lg">Feature Flags</Heading>
           </CardHeader>
           <CardBody>
             <Table
@@ -367,7 +367,7 @@ const SystemConfigurationPage = () => {
       {activeTab === 'notifications' && (
         <Card>
           <CardHeader>
-            <Heading level={3}>System Notifications</Heading>
+            <Heading size="lg">System Notifications</Heading>
           </CardHeader>
           <CardBody>
             <Table
@@ -388,7 +388,7 @@ const SystemConfigurationPage = () => {
             <Card>
               <CardBody>
                 <Text className="text-sm text-gray-500">Total OTPs Sent</Text>
-                <Heading level={3} className="mt-1">
+                <Heading size="lg" className="mt-1">
                   {otpStatsLoading ? '...' : otpStats?.total_sent?.toLocaleString() || '0'}
                 </Heading>
               </CardBody>
@@ -396,7 +396,7 @@ const SystemConfigurationPage = () => {
             <Card>
               <CardBody>
                 <Text className="text-sm text-gray-500">Total Verified</Text>
-                <Heading level={3} className="mt-1">
+                <Heading size="lg" className="mt-1">
                   {otpStatsLoading ? '...' : otpStats?.total_verified?.toLocaleString() || '0'}
                 </Heading>
               </CardBody>
@@ -404,7 +404,7 @@ const SystemConfigurationPage = () => {
             <Card>
               <CardBody>
                 <Text className="text-sm text-gray-500">Verification Rate</Text>
-                <Heading level={3} className="mt-1">
+                <Heading size="lg" className="mt-1">
                   {otpStatsLoading ? '...' : `${((otpStats?.verification_rate || 0) * 100).toFixed(1)}%`}
                 </Heading>
               </CardBody>
@@ -412,7 +412,7 @@ const SystemConfigurationPage = () => {
             <Card>
               <CardBody>
                 <Text className="text-sm text-gray-500">Failed Attempts</Text>
-                <Heading level={3} className="mt-1">
+                <Heading size="lg" className="mt-1">
                   {otpStatsLoading ? '...' : otpStats?.failed_attempts?.toLocaleString() || '0'}
                 </Heading>
               </CardBody>
@@ -422,7 +422,7 @@ const SystemConfigurationPage = () => {
           {/* OTP Configuration */}
           <Card>
             <CardHeader>
-              <Heading level={3}>OTP Configuration</Heading>
+              <Heading size="lg">OTP Configuration</Heading>
             </CardHeader>
             <CardBody>
               {otpSettingsLoading ? (
