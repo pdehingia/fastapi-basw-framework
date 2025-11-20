@@ -211,6 +211,7 @@ const PlatformAnalyticsPage = () => {
         { id: '3', label: 'Platform', href: '/analytics/platform', current: true },
       ]}
       primaryAction={{
+        id: 'export',
         label: 'Export',
         onClick: handleExport,
         variant: 'secondary',

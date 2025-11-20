@@ -125,8 +125,8 @@ const CampaignsListPage = () => {
     }
   };
 
-  const campaigns = campaignsData?.data?.data || [];
-  const metadata = campaignsData?.data?.meta;
+  const campaigns = campaignsData?.data?.items || [];
+  const metadata = campaignsData?.data?.metadata;
 
   // Table columns
   const columns = [
@@ -288,6 +288,7 @@ const CampaignsListPage = () => {
         { id: '3', label: 'Campaigns', href: '/marketing/campaigns', current: true },
       ]}
       primaryAction={{
+        id: 'new-campaign',
         label: 'New Campaign',
         onClick: () => navigate({ to: '/marketing/campaigns' }),
         variant: 'primary',
@@ -358,7 +359,7 @@ const CampaignsListPage = () => {
         <CardHeader>
           <div className="flex justify-between items-center">
             <Heading size="lg">All Campaigns</Heading>
-            <Text className="text-sm text-gray-500">{metadata?.total || 0} campaigns</Text>
+            <Text className="text-sm text-gray-500">{metadata?.total_items || 0} campaigns</Text>
           </div>
         </CardHeader>
         <CardBody>

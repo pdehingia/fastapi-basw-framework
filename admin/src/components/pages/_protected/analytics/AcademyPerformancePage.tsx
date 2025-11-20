@@ -217,6 +217,7 @@ const AcademyPerformancePage = () => {
         { id: '3', label: 'Academy Performance', href: '/analytics/academy', current: true },
       ]}
       primaryAction={{
+        id: 'export',
         label: 'Export',
         onClick: handleExport,
         variant: 'secondary',
