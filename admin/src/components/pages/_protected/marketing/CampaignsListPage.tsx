@@ -291,7 +291,6 @@ const CampaignsListPage = () => {
         <Button
           variant="primary"
           onClick={() => navigate({ to: '/marketing/campaigns' })}
-          icon={PlusIcon}
         >
           New Campaign
         </Button>
@@ -308,43 +307,44 @@ const CampaignsListPage = () => {
                 placeholder="Search campaigns..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                icon={MagnifyingGlassIcon}
               />
             </div>
             <div className="w-40">
               <label className="block text-sm font-medium mb-1">Status</label>
               <Select
                 value={filters.status || ''}
-                onChange={(e) => setFilters({ ...filters, status: e.target.value as any })}
-              >
-                <option value="">All Status</option>
-                <option value="draft">Draft</option>
-                <option value="active">Active</option>
-                <option value="paused">Paused</option>
-                <option value="completed">Completed</option>
-                <option value="archived">Archived</option>
-              </Select>
+                onChange={(value) => setFilters({ ...filters, status: value as any })}
+                options={[
+                  { value: '', label: 'All Status' },
+                  { value: 'draft', label: 'Draft' },
+                  { value: 'active', label: 'Active' },
+                  { value: 'paused', label: 'Paused' },
+                  { value: 'completed', label: 'Completed' },
+                  { value: 'archived', label: 'Archived' },
+                ]}
+              />
             </div>
             <div className="w-40">
               <label className="block text-sm font-medium mb-1">Type</label>
               <Select
                 value={filters.type || ''}
-                onChange={(e) => setFilters({ ...filters, type: e.target.value as any })}
-              >
-                <option value="">All Types</option>
-                <option value="email">Email</option>
-                <option value="social">Social</option>
-                <option value="referral">Referral</option>
-                <option value="promotional">Promotional</option>
-                <option value="seasonal">Seasonal</option>
-              </Select>
+                onChange={(value) => setFilters({ ...filters, type: value as any })}
+                options={[
+                  { value: '', label: 'All Types' },
+                  { value: 'email', label: 'Email' },
+                  { value: 'social', label: 'Social' },
+                  { value: 'referral', label: 'Referral' },
+                  { value: 'promotional', label: 'Promotional' },
+                  { value: 'seasonal', label: 'Seasonal' },
+                ]}
+              />
             </div>
             {selectedCampaigns.length > 0 && (
               <>
-                <Button variant="warning" onClick={() => handleBulkAction('pause')}>
+                <Button variant="outline" onClick={() => handleBulkAction('pause')}>
                   Pause Selected
                 </Button>
-                <Button variant="success" onClick={() => handleBulkAction('resume')}>
+                <Button variant="primary" onClick={() => handleBulkAction('resume')}>
                   Resume Selected
                 </Button>
                 <Button variant="secondary" onClick={() => handleBulkAction('archive')}>
@@ -360,8 +360,8 @@ const CampaignsListPage = () => {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>All Campaigns</Heading>
-            <Text className="text-sm text-gray-500">{metadata?.total_items || 0} campaigns</Text>
+            <Heading size="lg">All Campaigns</Heading>
+            <Text className="text-sm text-gray-500">{metadata?.total || 0} campaigns</Text>
           </div>
         </CardHeader>
         <CardBody>

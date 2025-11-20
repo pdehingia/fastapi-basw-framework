@@ -206,20 +206,24 @@ const PlatformAnalyticsPage = () => {
       title="Platform Analytics"
       subtitle="Comprehensive platform-wide insights and performance metrics"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Analytics', path: '/analytics' },
-        { label: 'Platform', path: '/analytics/platform' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Analytics', href: '/analytics' },
+        { id: '3', label: 'Platform', href: '/analytics/platform', current: true },
       ]}
       actions={
         <div className="flex gap-2">
-          <Select value={period} onChange={(e) => setPeriod(e.target.value as any)}>
-            <option value="day">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="quarter">This Quarter</option>
-            <option value="year">This Year</option>
-          </Select>
-          <Button variant="secondary" onClick={handleExport} icon={ArrowDownTrayIcon}>
+          <Select 
+            value={period} 
+            onChange={(value) => setPeriod(value as any)}
+            options={[
+              { value: 'day', label: 'Today' },
+              { value: 'week', label: 'This Week' },
+              { value: 'month', label: 'This Month' },
+              { value: 'quarter', label: 'This Quarter' },
+              { value: 'year', label: 'This Year' },
+            ]}
+          />
+          <Button variant="secondary" onClick={handleExport}>
             Export
           </Button>
         </div>
@@ -235,7 +239,7 @@ const PlatformAnalyticsPage = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Text className="text-sm text-gray-500">{metric.title}</Text>
-                    <Heading level={3} className="mt-1">
+                    <Heading size="lg" className="mt-1">
                       {analyticsLoading ? '...' : metric.value}
                     </Heading>
                     <div className="flex items-center mt-2 space-x-1">
@@ -266,14 +270,14 @@ const PlatformAnalyticsPage = () => {
       {/* Summary Metrics */}
       <Card className="mb-6">
         <CardHeader>
-          <Heading level={3}>Platform Summary</Heading>
+          <Heading size="lg">Platform Summary</Heading>
         </CardHeader>
         <CardBody>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {summaryMetrics.map((metric) => (
               <div key={metric.label} className="text-center">
                 <Text className="text-sm text-gray-500">{metric.label}</Text>
-                <Heading level={3} className="mt-2">
+                <Heading size="lg" className="mt-2">
                   {summaryLoading ? '...' : metric.value}
                 </Heading>
               </div>
@@ -286,16 +290,17 @@ const PlatformAnalyticsPage = () => {
       <Card className="mb-6">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>Trends</Heading>
+            <Heading size="lg">Trends</Heading>
             <Select
               value={trendMetric}
-              onChange={(e) => setTrendMetric(e.target.value)}
+              onChange={(value) => setTrendMetric(value)}
               className="w-48"
-            >
-              <option value="revenue">Revenue</option>
-              <option value="users">Users</option>
-              <option value="bookings">Bookings</option>
-            </Select>
+              options={[
+                { value: 'revenue', label: 'Revenue' },
+                { value: 'users', label: 'Users' },
+                { value: 'bookings', label: 'Bookings' },
+              ]}
+            />
           </div>
         </CardHeader>
         <CardBody>
@@ -326,7 +331,7 @@ const PlatformAnalyticsPage = () => {
         {/* Most Booked Services */}
         <Card>
           <CardHeader>
-            <Heading level={3}>Top Services</Heading>
+            <Heading size="lg">Top Services</Heading>
           </CardHeader>
           <CardBody>
             <Table
@@ -341,7 +346,7 @@ const PlatformAnalyticsPage = () => {
         {/* Top Revenue Providers */}
         <Card>
           <CardHeader>
-            <Heading level={3}>Top Providers</Heading>
+            <Heading size="lg">Top Providers</Heading>
           </CardHeader>
           <CardBody>
             <Table
@@ -356,7 +361,7 @@ const PlatformAnalyticsPage = () => {
         {/* Popular Locations */}
         <Card>
           <CardHeader>
-            <Heading level={3}>Popular Locations</Heading>
+            <Heading size="lg">Popular Locations</Heading>
           </CardHeader>
           <CardBody>
             <Table
