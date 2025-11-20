@@ -264,9 +264,9 @@ const AdminSessionsPage = () => {
       title="Admin Sessions"
       subtitle="Monitor and manage admin user sessions"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Sessions', path: '/sessions' },
-        { label: 'Admin Sessions', path: '/sessions/admin' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Sessions', href: '/sessions' },
+        { id: '3', label: 'Admin Sessions', href: '/sessions/admin', current: true },
       ]}
     >
       {/* Statistics Cards */}
@@ -277,7 +277,7 @@ const AdminSessionsPage = () => {
               <Text className="text-sm text-gray-500 dark:text-gray-400">
                 {stat.title}
               </Text>
-              <Heading level={3} className="mt-1">
+              <Heading size="lg" className="mt-1">
                 {statsLoading ? '...' : stat.value.toLocaleString()}
               </Heading>
             </CardBody>
@@ -310,17 +310,18 @@ const AdminSessionsPage = () => {
               </label>
               <Select
                 value={filters.is_active === undefined ? '' : filters.is_active ? 'active' : 'inactive'}
-                onChange={(e) =>
+                onChange={(value) =>
                   setFilters({
                     ...filters,
-                    is_active: e.target.value === '' ? undefined : e.target.value === 'active',
+                    is_active: value === '' ? undefined : value === 'active',
                   })
                 }
-              >
-                <option value="">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </Select>
+                options={[
+                  { value: '', label: 'All Status' },
+                  { value: 'active', label: 'Active' },
+                  { value: 'inactive', label: 'Inactive' },
+                ]}
+              />
             </div>
 
             {/* Device Type Filter */}
@@ -330,18 +331,19 @@ const AdminSessionsPage = () => {
               </label>
               <Select
                 value={filters.device_type || ''}
-                onChange={(e) =>
+                onChange={(value) =>
                   setFilters({
                     ...filters,
-                    device_type: e.target.value as any,
+                    device_type: value as any,
                   })
                 }
-              >
-                <option value="">All Devices</option>
-                <option value="desktop">Desktop</option>
-                <option value="mobile">Mobile</option>
-                <option value="tablet">Tablet</option>
-              </Select>
+                options={[
+                  { value: '', label: 'All Devices' },
+                  { value: 'desktop', label: 'Desktop' },
+                  { value: 'mobile', label: 'Mobile' },
+                  { value: 'tablet', label: 'Tablet' },
+                ]}
+              />
             </div>
 
             {/* Bulk Actions */}
@@ -362,7 +364,7 @@ const AdminSessionsPage = () => {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>Admin Sessions</Heading>
+            <Heading size="lg">Admin Sessions</Heading>
             <Text className="text-sm text-gray-500">
               {metadata?.total_items || 0} total sessions
             </Text>

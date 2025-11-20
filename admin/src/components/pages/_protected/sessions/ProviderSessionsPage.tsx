@@ -201,9 +201,9 @@ const ProviderSessionsPage = () => {
       title="Provider Sessions"
       subtitle="Monitor and manage provider user sessions"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Sessions', path: '/sessions' },
-        { label: 'Provider Sessions', path: '/sessions/provider' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Sessions', href: '/sessions' },
+        { id: '3', label: 'Provider Sessions', href: '/sessions/provider', current: true },
       ]}
     >
       {/* Statistics */}
@@ -217,7 +217,7 @@ const ProviderSessionsPage = () => {
           <Card key={stat.title}>
             <CardBody>
               <Text className="text-sm text-gray-500">{stat.title}</Text>
-              <Heading level={3} className="mt-1">
+              <Heading size="lg" className="mt-1">
                 {stat.value.toLocaleString()}
               </Heading>
             </CardBody>
@@ -243,29 +243,31 @@ const ProviderSessionsPage = () => {
               <label className="block text-sm font-medium mb-1">Status</label>
               <Select
                 value={filters.is_active === undefined ? '' : filters.is_active ? 'active' : 'inactive'}
-                onChange={(e) =>
+                onChange={(value) =>
                   setFilters({
                     ...filters,
-                    is_active: e.target.value === '' ? undefined : e.target.value === 'active',
+                    is_active: value === '' ? undefined : value === 'active',
                   })
                 }
-              >
-                <option value="">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </Select>
+                options={[
+                  { value: '', label: 'All Status' },
+                  { value: 'active', label: 'Active' },
+                  { value: 'inactive', label: 'Inactive' },
+                ]}
+              />
             </div>
             <div className="w-40">
               <label className="block text-sm font-medium mb-1">Device</label>
               <Select
                 value={filters.device_type || ''}
-                onChange={(e) => setFilters({ ...filters, device_type: e.target.value as any })}
-              >
-                <option value="">All Devices</option>
-                <option value="desktop">Desktop</option>
-                <option value="mobile">Mobile</option>
-                <option value="tablet">Tablet</option>
-              </Select>
+                onChange={(value) => setFilters({ ...filters, device_type: value as any })}
+                options={[
+                  { value: '', label: 'All Devices' },
+                  { value: 'desktop', label: 'Desktop' },
+                  { value: 'mobile', label: 'Mobile' },
+                  { value: 'tablet', label: 'Tablet' },
+                ]}
+              />
             </div>
             {selectedSessions.length > 0 && (
               <Button variant="danger" onClick={handleBulkRevoke}>
@@ -280,7 +282,7 @@ const ProviderSessionsPage = () => {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>Provider Sessions</Heading>
+            <Heading size="lg">Provider Sessions</Heading>
             <Text className="text-sm text-gray-500">{metadata?.total_items || 0} total</Text>
           </div>
         </CardHeader>

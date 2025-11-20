@@ -13,7 +13,6 @@ import {
   CurrencyDollarIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
-  PlusIcon,
 } from '@heroicons/react/24/outline';
 import { PageTemplate } from '@/components/templates';
 import { Button, Heading, Text, Badge } from '@/components/atoms';
@@ -23,22 +22,22 @@ import type { MarketingCampaign } from '@/services/api/marketing';
 
 const MarketingDashboard = () => {
   const navigate = useNavigate();
-  const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'quarter' | 'year'>('month');
+  const [_period, _setPeriod] = useState<'day' | 'week' | 'month' | 'quarter' | 'year'>('month');
 
   // Fetch marketing analytics
   const { data: analyticsData, isLoading: analyticsLoading } = useQuery({
-    queryKey: ['marketing-analytics', period],
-    queryFn: () => marketingService.getMarketingAnalytics({ period }),
+    queryKey: ['marketing-analytics', _period],
+    queryFn: () => marketingService.getMarketingAnalytics({ period: _period }),
   });
 
   // Fetch campaigns
   const { data: campaignsData, isLoading: campaignsLoading } = useQuery({
-    queryKey: ['marketing-campaigns', { page: 1, limit: 5 }],
-    queryFn: () => marketingService.getCampaigns({ page: 1, limit: 5, status: 'active' }),
+    queryKey: ['marketing-campaigns', { page: 1 }],
+    queryFn: () => marketingService.getCampaigns({ page: 1, status: 'active' }),
   });
 
   const analytics = analyticsData?.data;
-  const campaigns = campaignsData?.data?.items || [];
+  const campaigns = campaignsData?.data?.data || [];
 
   // Overview statistics
   const overviewStats = [
@@ -168,19 +167,18 @@ const MarketingDashboard = () => {
       title="Marketing Dashboard"
       subtitle="Manage campaigns, track performance, and analyze ROI"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Marketing', path: '/marketing' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Marketing', href: '/marketing', current: true },
       ]}
-      actions={
+    >
+      <div className="mb-6">
         <Button
           variant="primary"
-          onClick={() => navigate({ to: '/marketing/campaigns/new' })}
-          icon={PlusIcon}
+          onClick={() => navigate({ to: '/marketing/campaigns' })}
         >
           New Campaign
         </Button>
-      }
-    >
+      </div>
       {/* Overview Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         {overviewStats.map((stat) => {
@@ -193,7 +191,7 @@ const MarketingDashboard = () => {
                     <Text className="text-sm text-gray-500 dark:text-gray-400">
                       {stat.title}
                     </Text>
-                    <Heading level={3} className="mt-1">
+                    <Heading size="lg" className="mt-1">
                       {analyticsLoading ? '...' : stat.value}
                     </Heading>
                     <div className="flex items-center mt-2 space-x-1">
@@ -225,7 +223,7 @@ const MarketingDashboard = () => {
         {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <Heading level={3}>Quick Actions</Heading>
+            <Heading size="lg">Quick Actions</Heading>
           </CardHeader>
           <CardBody>
             <div className="space-y-3">
@@ -268,7 +266,7 @@ const MarketingDashboard = () => {
         {/* Campaign Performance */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <Heading level={3}>Campaign Performance</Heading>
+            <Heading size="lg">Campaign Performance</Heading>
           </CardHeader>
           <CardBody>
             {analytics?.campaign_performance?.top_performing && (
@@ -304,7 +302,7 @@ const MarketingDashboard = () => {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>Active Campaigns</Heading>
+            <Heading size="lg">Active Campaigns</Heading>
             <Button
               variant="secondary"
               size="sm"
@@ -330,7 +328,7 @@ const MarketingDashboard = () => {
           <Card>
             <CardBody>
               <Text className="text-sm text-gray-500">Customer Acquisition Cost</Text>
-              <Heading level={3} className="mt-1">
+              <Heading size="lg" className="mt-1">
                 ${analytics.customer_insights.acquisition_cost.toFixed(2)}
               </Heading>
             </CardBody>
@@ -338,7 +336,7 @@ const MarketingDashboard = () => {
           <Card>
             <CardBody>
               <Text className="text-sm text-gray-500">Lifetime Value</Text>
-              <Heading level={3} className="mt-1">
+              <Heading size="lg" className="mt-1">
                 ${analytics.customer_insights.lifetime_value.toFixed(2)}
               </Heading>
             </CardBody>
@@ -346,7 +344,7 @@ const MarketingDashboard = () => {
           <Card>
             <CardBody>
               <Text className="text-sm text-gray-500">Retention Rate</Text>
-              <Heading level={3} className="mt-1">
+              <Heading size="lg" className="mt-1">
                 {(analytics.customer_insights.retention_rate * 100).toFixed(1)}%
               </Heading>
             </CardBody>

@@ -58,8 +58,8 @@ const SessionsOverviewPage = () => {
       title="Session Management"
       subtitle="Monitor and manage user sessions across the platform"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Sessions', path: '/sessions' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Sessions', href: '/sessions', current: true },
       ]}
     >
       {/* Overall Statistics */}
@@ -71,7 +71,7 @@ const SessionsOverviewPage = () => {
                 <Text className="text-sm text-gray-500 dark:text-gray-400">
                   Total Sessions
                 </Text>
-                <Heading level={2} className="mt-1">
+                <Heading size="xl" className="mt-1">
                   {statsLoading ? '...' : stats?.total.total_sessions.toLocaleString() || '0'}
                 </Heading>
               </div>
@@ -87,7 +87,7 @@ const SessionsOverviewPage = () => {
                 <Text className="text-sm text-gray-500 dark:text-gray-400">
                   Active Sessions
                 </Text>
-                <Heading level={2} className="mt-1 text-green-600">
+                <Heading size="xl" className="mt-1 text-green-600">
                   {statsLoading ? '...' : stats?.total.active_sessions.toLocaleString() || '0'}
                 </Heading>
               </div>
@@ -103,7 +103,7 @@ const SessionsOverviewPage = () => {
                 <Text className="text-sm text-gray-500 dark:text-gray-400">
                   Unique Users
                 </Text>
-                <Heading level={2} className="mt-1">
+                <Heading size="xl" className="mt-1">
                   {statsLoading ? '...' : stats?.total.unique_users.toLocaleString() || '0'}
                 </Heading>
               </div>
@@ -127,7 +127,7 @@ const SessionsOverviewPage = () => {
                     <div className={`p-2 bg-${card.color}-100 dark:bg-${card.color}-900/20 rounded-lg`}>
                       <Icon className={`h-6 w-6 text-${card.color}-600 dark:text-${card.color}-400`} />
                     </div>
-                    <Heading level={3}>{card.title}</Heading>
+                    <Heading size="lg">{card.title}</Heading>
                   </div>
                 </div>
               </CardHeader>
@@ -179,7 +179,7 @@ const SessionsOverviewPage = () => {
       {stats?.admin?.top_devices && stats.admin.top_devices.length > 0 && (
         <Card className="mt-8">
           <CardHeader>
-            <Heading level={3}>Device Distribution</Heading>
+            <Heading size="lg">Device Distribution</Heading>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-3 gap-4">
