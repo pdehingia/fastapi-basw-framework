@@ -24,6 +24,7 @@ import { Route as ProtectedArtistVerificationIndexRouteRouteImport } from './com
 import { Route as ProtectedApiIntegrationsIndexRouteRouteImport } from './components/pages/_protected/api-integrations/index.route'
 import { Route as ProtectedAdvancedAnalyticsIndexRouteRouteImport } from './components/pages/_protected/advanced-analytics/index.route'
 import { Route as ProtectedAdminUsersIndexRouteRouteImport } from './components/pages/_protected/admin-users/index.route'
+import { Route as ProtectedSettingsSystemRouteRouteImport } from './components/pages/_protected/settings/system.route'
 import { Route as ProtectedSessionsProviderRouteRouteImport } from './components/pages/_protected/sessions/provider.route'
 import { Route as ProtectedSessionsCustomerRouteRouteImport } from './components/pages/_protected/sessions/customer.route'
 import { Route as ProtectedSessionsAdminRouteRouteImport } from './components/pages/_protected/sessions/admin.route'
@@ -35,6 +36,8 @@ import { Route as ProtectedMarketingPromotionsRouteRouteImport } from './compone
 import { Route as ProtectedMarketingCampaignsRouteRouteImport } from './components/pages/_protected/marketing/campaigns.route'
 import { Route as ProtectedMarketingAnalyticsRouteRouteImport } from './components/pages/_protected/marketing/analytics.route'
 import { Route as ProtectedArtistVerificationPortfolioRouteRouteImport } from './components/pages/_protected/artist-verification/portfolio.route'
+import { Route as ProtectedAnalyticsPlatformRouteRouteImport } from './components/pages/_protected/analytics/platform.route'
+import { Route as ProtectedAnalyticsAcademyRouteRouteImport } from './components/pages/_protected/analytics/academy.route'
 import { Route as ProtectedUsersUsersUserIdRouteRouteImport } from './components/pages/_protected/users/users.$userId.route'
 import { Route as ProtectedSupportTicketsSupportTicketsTicketIdRouteRouteImport } from './components/pages/_protected/support-tickets/support-tickets.$ticketId.route'
 import { Route as ProtectedReviewsReviewsReviewIdRouteRouteImport } from './components/pages/_protected/reviews/reviews.$reviewId.route'
@@ -129,6 +132,12 @@ const ProtectedAdminUsersIndexRouteRoute =
     path: '/admin-users',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedSettingsSystemRouteRoute =
+  ProtectedSettingsSystemRouteRouteImport.update({
+    id: '/settings/system',
+    path: '/settings/system',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedSessionsProviderRouteRoute =
   ProtectedSessionsProviderRouteRouteImport.update({
     id: '/sessions/provider',
@@ -195,6 +204,18 @@ const ProtectedArtistVerificationPortfolioRouteRoute =
     path: '/artist-verification/portfolio',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedAnalyticsPlatformRouteRoute =
+  ProtectedAnalyticsPlatformRouteRouteImport.update({
+    id: '/analytics/platform',
+    path: '/analytics/platform',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedAnalyticsAcademyRouteRoute =
+  ProtectedAnalyticsAcademyRouteRouteImport.update({
+    id: '/analytics/academy',
+    path: '/analytics/academy',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedUsersUsersUserIdRouteRoute =
   ProtectedUsersUsersUserIdRouteRouteImport.update({
     id: '/users/users/$userId',
@@ -236,6 +257,8 @@ const ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute =
 
 export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
+  '/analytics/academy': typeof ProtectedAnalyticsAcademyRouteRoute
+  '/analytics/platform': typeof ProtectedAnalyticsPlatformRouteRoute
   '/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
   '/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
   '/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
@@ -247,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
   '/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
   '/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
+  '/settings/system': typeof ProtectedSettingsSystemRouteRoute
   '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
   '/advanced-analytics': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   '/api-integrations': typeof ProtectedApiIntegrationsIndexRouteRoute
@@ -269,6 +293,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
+  '/analytics/academy': typeof ProtectedAnalyticsAcademyRouteRoute
+  '/analytics/platform': typeof ProtectedAnalyticsPlatformRouteRoute
   '/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
   '/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
   '/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
@@ -280,6 +306,7 @@ export interface FileRoutesByTo {
   '/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
   '/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
   '/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
+  '/settings/system': typeof ProtectedSettingsSystemRouteRoute
   '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
   '/advanced-analytics': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   '/api-integrations': typeof ProtectedApiIntegrationsIndexRouteRoute
@@ -304,6 +331,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
+  '/_protected/analytics/academy': typeof ProtectedAnalyticsAcademyRouteRoute
+  '/_protected/analytics/platform': typeof ProtectedAnalyticsPlatformRouteRoute
   '/_protected/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
   '/_protected/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
   '/_protected/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
@@ -315,6 +344,7 @@ export interface FileRoutesById {
   '/_protected/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
   '/_protected/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
   '/_protected/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
+  '/_protected/settings/system': typeof ProtectedSettingsSystemRouteRoute
   '/_protected/admin-users/': typeof ProtectedAdminUsersIndexRouteRoute
   '/_protected/advanced-analytics/': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   '/_protected/api-integrations/': typeof ProtectedApiIntegrationsIndexRouteRoute
@@ -339,6 +369,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth/login'
+    | '/analytics/academy'
+    | '/analytics/platform'
     | '/artist-verification/portfolio'
     | '/marketing/analytics'
     | '/marketing/campaigns'
@@ -350,6 +382,7 @@ export interface FileRouteTypes {
     | '/sessions/admin'
     | '/sessions/customer'
     | '/sessions/provider'
+    | '/settings/system'
     | '/admin-users'
     | '/advanced-analytics'
     | '/api-integrations'
@@ -372,6 +405,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth/login'
+    | '/analytics/academy'
+    | '/analytics/platform'
     | '/artist-verification/portfolio'
     | '/marketing/analytics'
     | '/marketing/campaigns'
@@ -383,6 +418,7 @@ export interface FileRouteTypes {
     | '/sessions/admin'
     | '/sessions/customer'
     | '/sessions/provider'
+    | '/settings/system'
     | '/admin-users'
     | '/advanced-analytics'
     | '/api-integrations'
@@ -406,6 +442,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_protected'
     | '/auth/login'
+    | '/_protected/analytics/academy'
+    | '/_protected/analytics/platform'
     | '/_protected/artist-verification/portfolio'
     | '/_protected/marketing/analytics'
     | '/_protected/marketing/campaigns'
@@ -417,6 +455,7 @@ export interface FileRouteTypes {
     | '/_protected/sessions/admin'
     | '/_protected/sessions/customer'
     | '/_protected/sessions/provider'
+    | '/_protected/settings/system'
     | '/_protected/admin-users/'
     | '/_protected/advanced-analytics/'
     | '/_protected/api-integrations/'
@@ -550,6 +589,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedAdminUsersIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/settings/system': {
+      id: '/_protected/settings/system'
+      path: '/settings/system'
+      fullPath: '/settings/system'
+      preLoaderRoute: typeof ProtectedSettingsSystemRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/sessions/provider': {
       id: '/_protected/sessions/provider'
       path: '/sessions/provider'
@@ -627,6 +673,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedArtistVerificationPortfolioRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/analytics/platform': {
+      id: '/_protected/analytics/platform'
+      path: '/analytics/platform'
+      fullPath: '/analytics/platform'
+      preLoaderRoute: typeof ProtectedAnalyticsPlatformRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/analytics/academy': {
+      id: '/_protected/analytics/academy'
+      path: '/analytics/academy'
+      fullPath: '/analytics/academy'
+      preLoaderRoute: typeof ProtectedAnalyticsAcademyRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/users/users/$userId': {
       id: '/_protected/users/users/$userId'
       path: '/users/users/$userId'
@@ -673,6 +733,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface ProtectedRouteRouteChildren {
+  ProtectedAnalyticsAcademyRouteRoute: typeof ProtectedAnalyticsAcademyRouteRoute
+  ProtectedAnalyticsPlatformRouteRoute: typeof ProtectedAnalyticsPlatformRouteRoute
   ProtectedArtistVerificationPortfolioRouteRoute: typeof ProtectedArtistVerificationPortfolioRouteRoute
   ProtectedMarketingAnalyticsRouteRoute: typeof ProtectedMarketingAnalyticsRouteRoute
   ProtectedMarketingCampaignsRouteRoute: typeof ProtectedMarketingCampaignsRouteRoute
@@ -684,6 +746,7 @@ interface ProtectedRouteRouteChildren {
   ProtectedSessionsAdminRouteRoute: typeof ProtectedSessionsAdminRouteRoute
   ProtectedSessionsCustomerRouteRoute: typeof ProtectedSessionsCustomerRouteRoute
   ProtectedSessionsProviderRouteRoute: typeof ProtectedSessionsProviderRouteRoute
+  ProtectedSettingsSystemRouteRoute: typeof ProtectedSettingsSystemRouteRoute
   ProtectedAdminUsersIndexRouteRoute: typeof ProtectedAdminUsersIndexRouteRoute
   ProtectedAdvancedAnalyticsIndexRouteRoute: typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   ProtectedApiIntegrationsIndexRouteRoute: typeof ProtectedApiIntegrationsIndexRouteRoute
@@ -706,6 +769,8 @@ interface ProtectedRouteRouteChildren {
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
+  ProtectedAnalyticsAcademyRouteRoute: ProtectedAnalyticsAcademyRouteRoute,
+  ProtectedAnalyticsPlatformRouteRoute: ProtectedAnalyticsPlatformRouteRoute,
   ProtectedArtistVerificationPortfolioRouteRoute:
     ProtectedArtistVerificationPortfolioRouteRoute,
   ProtectedMarketingAnalyticsRouteRoute: ProtectedMarketingAnalyticsRouteRoute,
@@ -719,6 +784,7 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedSessionsAdminRouteRoute: ProtectedSessionsAdminRouteRoute,
   ProtectedSessionsCustomerRouteRoute: ProtectedSessionsCustomerRouteRoute,
   ProtectedSessionsProviderRouteRoute: ProtectedSessionsProviderRouteRoute,
+  ProtectedSettingsSystemRouteRoute: ProtectedSettingsSystemRouteRoute,
   ProtectedAdminUsersIndexRouteRoute: ProtectedAdminUsersIndexRouteRoute,
   ProtectedAdvancedAnalyticsIndexRouteRoute:
     ProtectedAdvancedAnalyticsIndexRouteRoute,
