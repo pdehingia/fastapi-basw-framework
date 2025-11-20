@@ -11,12 +11,10 @@ import {
   BookOpenIcon,
   StarIcon,
   TrophyIcon,
-  ChartBarIcon,
   ArrowDownTrayIcon,
-  ArrowTrendingUpIcon,
 } from '@heroicons/react/24/outline';
 import { PageTemplate } from '@/components/templates';
-import { Button, Heading, Text, Select, Badge } from '@/components/atoms';
+import { Button, Heading, Text, Select } from '@/components/atoms';
 import { Card, CardHeader, CardBody, Table } from '@/components/molecules';
 import { academyPerformanceService } from '@/services/api/academy';
 import { toast } from '@/services/toast';
@@ -155,7 +153,7 @@ const AcademyPerformancePage = () => {
           size="sm"
           onClick={() => {
             // Navigate to academy detail
-            toast.info('Academy details coming soon');
+            toast.success('Academy details coming soon');
           }}
         >
           View Details
@@ -214,18 +212,22 @@ const AcademyPerformancePage = () => {
       title="Academy Performance"
       subtitle="Track academy performance, courses, and student progress"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Analytics', path: '/analytics' },
-        { label: 'Academy Performance', path: '/analytics/academy' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Analytics', href: '/analytics' },
+        { id: '3', label: 'Academy Performance', href: '/analytics/academy', current: true },
       ]}
       actions={
         <div className="flex gap-2">
-          <Select value={period} onChange={(e) => setPeriod(e.target.value as any)}>
-            <option value="day">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-          </Select>
-          <Button variant="secondary" onClick={handleExport} icon={ArrowDownTrayIcon}>
+          <Select 
+            value={period} 
+            onChange={(value) => setPeriod(value as any)}
+            options={[
+              { value: 'day', label: 'Today' },
+              { value: 'week', label: 'This Week' },
+              { value: 'month', label: 'This Month' },
+            ]}
+          />
+          <Button variant="secondary" onClick={handleExport}>
             Export
           </Button>
         </div>
@@ -241,7 +243,7 @@ const AcademyPerformancePage = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Text className="text-sm text-gray-500">{metric.title}</Text>
-                    <Heading level={3} className="mt-1">
+                    <Heading size="lg" className="mt-1">
                       {performanceLoading ? '...' : metric.value}
                     </Heading>
                   </div>
@@ -263,7 +265,7 @@ const AcademyPerformancePage = () => {
               <Text className="text-sm text-gray-500 mb-2">Average Rating Across All Academies</Text>
               <div className="flex items-center justify-center space-x-2">
                 <StarIcon className="h-12 w-12 text-yellow-500 fill-current" />
-                <Heading level={1} className="text-5xl">
+                <Heading size="4xl" className="text-5xl">
                   {performanceLoading ? '...' : (performance?.overview?.avg_rating || 0).toFixed(1)}
                 </Heading>
                 <Text className="text-2xl text-gray-400">/ 5.0</Text>
@@ -277,17 +279,18 @@ const AcademyPerformancePage = () => {
       <Card className="mb-6">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>Top Performing Academies</Heading>
+            <Heading size="lg">Top Performing Academies</Heading>
             <Select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(value) => setSortBy(value as any)}
               className="w-48"
-            >
-              <option value="students">By Students</option>
-              <option value="completion_rate">By Completion</option>
-              <option value="revenue">By Revenue</option>
-              <option value="rating">By Rating</option>
-            </Select>
+              options={[
+                { value: 'students', label: 'By Students' },
+                { value: 'completion_rate', label: 'By Completion' },
+                { value: 'revenue', label: 'By Revenue' },
+                { value: 'rating', label: 'By Rating' },
+              ]}
+            />
           </div>
         </CardHeader>
         <CardBody>
@@ -304,7 +307,7 @@ const AcademyPerformancePage = () => {
       {performance?.performance_by_category && performance.performance_by_category.length > 0 && (
         <Card>
           <CardHeader>
-            <Heading level={3}>Performance by Category</Heading>
+            <Heading size="lg">Performance by Category</Heading>
           </CardHeader>
           <CardBody>
             <Table

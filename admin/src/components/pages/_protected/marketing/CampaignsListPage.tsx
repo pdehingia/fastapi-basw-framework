@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import {
-  MegaphoneIcon,
   PlusIcon,
   PencilIcon,
   TrashIcon,
@@ -126,8 +125,8 @@ const CampaignsListPage = () => {
     }
   };
 
-  const campaigns = campaignsData?.data?.items || [];
-  const metadata = campaignsData?.data?.metadata;
+  const campaigns = campaignsData?.data?.data || [];
+  const metadata = campaignsData?.data?.pagination;
 
   // Table columns
   const columns = [
@@ -163,12 +162,12 @@ const CampaignsListPage = () => {
         <Badge
           variant={
             campaign.status === 'active'
-              ? 'success'
+              ? 'primary'
               : campaign.status === 'paused'
-              ? 'warning'
+              ? 'outline'
               : campaign.status === 'draft'
-              ? 'default'
-              : 'error'
+              ? 'secondary'
+              : 'danger'
           }
           size="sm"
         >
@@ -241,7 +240,7 @@ const CampaignsListPage = () => {
           </Button>
           {campaign.status === 'active' ? (
             <Button
-              variant="warning"
+              variant="outline"
               size="sm"
               onClick={() => pauseCampaignMutation.mutate(campaign.id)}
               title="Pause"
@@ -250,7 +249,7 @@ const CampaignsListPage = () => {
             </Button>
           ) : campaign.status === 'paused' ? (
             <Button
-              variant="success"
+              variant="primary"
               size="sm"
               onClick={() => resumeCampaignMutation.mutate(campaign.id)}
               title="Resume"
@@ -284,14 +283,14 @@ const CampaignsListPage = () => {
       title="Marketing Campaigns"
       subtitle="Create and manage marketing campaigns"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Marketing', path: '/marketing' },
-        { label: 'Campaigns', path: '/marketing/campaigns' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Marketing', href: '/marketing' },
+        { id: '3', label: 'Campaigns', href: '/marketing/campaigns', current: true },
       ]}
       actions={
         <Button
           variant="primary"
-          onClick={() => navigate({ to: '/marketing/campaigns/new' })}
+          onClick={() => navigate({ to: '/marketing/campaigns' })}
           icon={PlusIcon}
         >
           New Campaign
