@@ -84,6 +84,12 @@ export const ANALYTICS_ENDPOINTS = {
   ARTISTS_PERFORMANCE: `${API_VERSION.CURRENT}/analytics/artists/performance`,
   GENERATE_REPORT: `${API_VERSION.CURRENT}/analytics/reports/generate`,
   EXPORT: `${API_VERSION.CURRENT}/analytics/export`,
+  // Platform Analytics
+  PLATFORM: `${API_VERSION.CURRENT}/analytics/platform`,
+  PLATFORM_SUMMARY: `${API_VERSION.CURRENT}/analytics/platform/summary`,
+  PLATFORM_TRENDS: `${API_VERSION.CURRENT}/analytics/platform/trends`,
+  PLATFORM_CALCULATE: `${API_VERSION.CURRENT}/analytics/platform/calculate`,
+  PLATFORM_EXPORT: `${API_VERSION.CURRENT}/analytics/platform/export`,
 } as const;
 
 // Settings Endpoints
@@ -220,6 +226,39 @@ export const MARKETING_ENDPOINTS = {
   // Test Email
   TEST_EMAIL: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/test-email`,
   SCHEDULE_CAMPAIGN: (id: string) => `${API_VERSION.CURRENT}/marketing/campaigns/${id}/schedule`,
+} as const;
+
+// Academy Management Endpoints
+export const ACADEMY_ENDPOINTS = {
+  PERFORMANCE: `${API_VERSION.CURRENT}/academy-management/performance`,
+  ACADEMY_PERFORMANCE: (id: string) => `${API_VERSION.CURRENT}/academy-management/performance/academy/${id}`,
+  ACADEMY_TRENDS: (id: string) => `${API_VERSION.CURRENT}/academy-management/performance/academy/${id}/trends`,
+  TOP_PERFORMERS: `${API_VERSION.CURRENT}/academy-management/performance/top-performers`,
+  CALCULATE_PERFORMANCE: `${API_VERSION.CURRENT}/academy-management/performance/calculate`,
+  EXPORT_PERFORMANCE: `${API_VERSION.CURRENT}/academy-management/performance/export`,
+} as const;
+
+// System Configuration Endpoints
+export const CONFIG_ENDPOINTS = {
+  // Configuration
+  CONFIGURATION: `${API_VERSION.CURRENT}/system/configuration`,
+  CONFIG_DETAIL: (key: string) => `${API_VERSION.CURRENT}/system/configuration/${key}`,
+  
+  // Feature Flags
+  FEATURE_FLAGS: `${API_VERSION.CURRENT}/system/feature-flags`,
+  FEATURE_FLAG_DETAIL: (id: string) => `${API_VERSION.CURRENT}/system/feature-flags/${id}`,
+  TOGGLE_FLAG: (id: string) => `${API_VERSION.CURRENT}/system/feature-flags/${id}/toggle`,
+  
+  // System Notifications
+  SYSTEM_NOTIFICATIONS: `${API_VERSION.CURRENT}/system/notifications`,
+  NOTIFICATION_DETAIL: (id: string) => `${API_VERSION.CURRENT}/system/notifications/${id}`,
+  SEND_NOTIFICATION: `${API_VERSION.CURRENT}/system/notifications/send`,
+  
+  // OTP Management
+  OTP_SETTINGS: `${API_VERSION.CURRENT}/system/otp`,
+  OTP_STATS: `${API_VERSION.CURRENT}/system/otp/stats`,
+  OTP_VERIFY: `${API_VERSION.CURRENT}/system/otp/verify`,
+  OTP_RESEND: `${API_VERSION.CURRENT}/system/otp/resend`,
 } as const;
 
 // Common query parameters

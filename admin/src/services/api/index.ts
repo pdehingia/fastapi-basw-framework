@@ -13,6 +13,8 @@ export { PaymentService, paymentService } from './payments';
 export { AdminUserService, adminUserService } from './adminUsers';
 export { SupportTicketService, supportTicketService } from './supportTickets';
 export { SessionManagementService, sessionManagementService } from './sessions';
+export { AcademyPerformanceService, academyPerformanceService } from './academy';
+export { SystemConfigService, systemConfigService } from './systemConfig';
 
 // Legacy/Class-based services for compatibility
 export { DashboardService } from './dashboard';  
@@ -37,6 +39,8 @@ import { adminUserService } from './adminUsers';
 import { supportTicketService } from './supportTickets';
 import { sessionManagementService } from './sessions';
 import { marketingService } from './marketing';
+import { academyPerformanceService } from './academy';
+import { systemConfigService } from './systemConfig';
 
 // Service instances for direct import (recommended pattern)
 export const services = {
@@ -50,4 +54,6 @@ export const services = {
   supportTicket: supportTicketService,
   sessionManagement: sessionManagementService,
   marketing: marketingService,
+  academyPerformance: academyPerformanceService,
+  systemConfig: systemConfigService,
 } as const;

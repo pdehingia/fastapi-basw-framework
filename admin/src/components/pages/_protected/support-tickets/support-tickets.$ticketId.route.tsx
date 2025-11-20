@@ -17,7 +17,7 @@ function TicketDetailWrapper() {
   return <TicketDetailPage />;
 }
 
-export const Route = createFileRoute('/_protected/support-tickets/$ticketId')({
+export const Route = createFileRoute('/_protected/support-tickets/support-tickets/$ticketId')({
   component: TicketDetailWrapper,
   parseParams: (params) => ticketParamsSchema.parse(params),
 });
