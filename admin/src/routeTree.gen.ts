@@ -12,18 +12,31 @@ import { Route as rootRouteImport } from './components/pages/__root'
 import { Route as ProtectedRouteRouteImport } from './components/pages/_protected.route'
 import { Route as AuthLoginRouteImport } from './components/pages/auth/login'
 import { Route as ProtectedUsersIndexRouteRouteImport } from './components/pages/_protected/users/index.route'
+import { Route as ProtectedSupportTicketsIndexRouteRouteImport } from './components/pages/_protected/support-tickets/index.route'
 import { Route as ProtectedSettingsIndexRouteRouteImport } from './components/pages/_protected/settings/index.route'
+import { Route as ProtectedSessionsIndexRouteRouteImport } from './components/pages/_protected/sessions/index.route'
 import { Route as ProtectedReviewsIndexRouteRouteImport } from './components/pages/_protected/reviews/index.route'
 import { Route as ProtectedPaymentsIndexRouteRouteImport } from './components/pages/_protected/payments/index.route'
+import { Route as ProtectedMarketingIndexRouteRouteImport } from './components/pages/_protected/marketing/index.route'
 import { Route as ProtectedDashboardIndexRouteRouteImport } from './components/pages/_protected/dashboard/index.route'
 import { Route as ProtectedBookingsIndexRouteRouteImport } from './components/pages/_protected/bookings/index.route'
 import { Route as ProtectedArtistVerificationIndexRouteRouteImport } from './components/pages/_protected/artist-verification/index.route'
+import { Route as ProtectedApiIntegrationsIndexRouteRouteImport } from './components/pages/_protected/api-integrations/index.route'
+import { Route as ProtectedAdvancedAnalyticsIndexRouteRouteImport } from './components/pages/_protected/advanced-analytics/index.route'
 import { Route as ProtectedAdminUsersIndexRouteRouteImport } from './components/pages/_protected/admin-users/index.route'
+import { Route as ProtectedSessionsProviderRouteRouteImport } from './components/pages/_protected/sessions/provider.route'
+import { Route as ProtectedSessionsCustomerRouteRouteImport } from './components/pages/_protected/sessions/customer.route'
+import { Route as ProtectedSessionsAdminRouteRouteImport } from './components/pages/_protected/sessions/admin.route'
 import { Route as ProtectedReviewsFlaggedRouteRouteImport } from './components/pages/_protected/reviews/flagged.route'
 import { Route as ProtectedReviewsAnalyticsRouteRouteImport } from './components/pages/_protected/reviews/analytics.route'
 import { Route as ProtectedPaymentsDisputesRouteRouteImport } from './components/pages/_protected/payments/disputes.route'
+import { Route as ProtectedMarketingSegmentsRouteRouteImport } from './components/pages/_protected/marketing/segments.route'
+import { Route as ProtectedMarketingPromotionsRouteRouteImport } from './components/pages/_protected/marketing/promotions.route'
+import { Route as ProtectedMarketingCampaignsRouteRouteImport } from './components/pages/_protected/marketing/campaigns.route'
+import { Route as ProtectedMarketingAnalyticsRouteRouteImport } from './components/pages/_protected/marketing/analytics.route'
 import { Route as ProtectedArtistVerificationPortfolioRouteRouteImport } from './components/pages/_protected/artist-verification/portfolio.route'
 import { Route as ProtectedUsersUsersUserIdRouteRouteImport } from './components/pages/_protected/users/users.$userId.route'
+import { Route as ProtectedSupportTicketsSupportTicketsTicketIdRouteRouteImport } from './components/pages/_protected/support-tickets/support-tickets.$ticketId.route'
 import { Route as ProtectedReviewsReviewsReviewIdRouteRouteImport } from './components/pages/_protected/reviews/reviews.$reviewId.route'
 import { Route as ProtectedPaymentsPaymentsPaymentIdRouteRouteImport } from './components/pages/_protected/payments/payments.$paymentId.route'
 import { Route as ProtectedArtistVerificationArtistVerificationRequestIdRouteRouteImport } from './components/pages/_protected/artist-verification/artist-verification.$requestId.route'
@@ -44,10 +57,22 @@ const ProtectedUsersIndexRouteRoute =
     path: '/users',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedSupportTicketsIndexRouteRoute =
+  ProtectedSupportTicketsIndexRouteRouteImport.update({
+    id: '/support-tickets/',
+    path: '/support-tickets',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedSettingsIndexRouteRoute =
   ProtectedSettingsIndexRouteRouteImport.update({
     id: '/settings/',
     path: '/settings',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedSessionsIndexRouteRoute =
+  ProtectedSessionsIndexRouteRouteImport.update({
+    id: '/sessions/',
+    path: '/sessions',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedReviewsIndexRouteRoute =
@@ -60,6 +85,12 @@ const ProtectedPaymentsIndexRouteRoute =
   ProtectedPaymentsIndexRouteRouteImport.update({
     id: '/payments/',
     path: '/payments',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedMarketingIndexRouteRoute =
+  ProtectedMarketingIndexRouteRouteImport.update({
+    id: '/marketing/',
+    path: '/marketing',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedDashboardIndexRouteRoute =
@@ -80,10 +111,40 @@ const ProtectedArtistVerificationIndexRouteRoute =
     path: '/artist-verification',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedApiIntegrationsIndexRouteRoute =
+  ProtectedApiIntegrationsIndexRouteRouteImport.update({
+    id: '/api-integrations/',
+    path: '/api-integrations',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedAdvancedAnalyticsIndexRouteRoute =
+  ProtectedAdvancedAnalyticsIndexRouteRouteImport.update({
+    id: '/advanced-analytics/',
+    path: '/advanced-analytics',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedAdminUsersIndexRouteRoute =
   ProtectedAdminUsersIndexRouteRouteImport.update({
     id: '/admin-users/',
     path: '/admin-users',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedSessionsProviderRouteRoute =
+  ProtectedSessionsProviderRouteRouteImport.update({
+    id: '/sessions/provider',
+    path: '/sessions/provider',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedSessionsCustomerRouteRoute =
+  ProtectedSessionsCustomerRouteRouteImport.update({
+    id: '/sessions/customer',
+    path: '/sessions/customer',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedSessionsAdminRouteRoute =
+  ProtectedSessionsAdminRouteRouteImport.update({
+    id: '/sessions/admin',
+    path: '/sessions/admin',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedReviewsFlaggedRouteRoute =
@@ -104,6 +165,30 @@ const ProtectedPaymentsDisputesRouteRoute =
     path: '/payments/disputes',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedMarketingSegmentsRouteRoute =
+  ProtectedMarketingSegmentsRouteRouteImport.update({
+    id: '/marketing/segments',
+    path: '/marketing/segments',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedMarketingPromotionsRouteRoute =
+  ProtectedMarketingPromotionsRouteRouteImport.update({
+    id: '/marketing/promotions',
+    path: '/marketing/promotions',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedMarketingCampaignsRouteRoute =
+  ProtectedMarketingCampaignsRouteRouteImport.update({
+    id: '/marketing/campaigns',
+    path: '/marketing/campaigns',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedMarketingAnalyticsRouteRoute =
+  ProtectedMarketingAnalyticsRouteRouteImport.update({
+    id: '/marketing/analytics',
+    path: '/marketing/analytics',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedArtistVerificationPortfolioRouteRoute =
   ProtectedArtistVerificationPortfolioRouteRouteImport.update({
     id: '/artist-verification/portfolio',
@@ -114,6 +199,12 @@ const ProtectedUsersUsersUserIdRouteRoute =
   ProtectedUsersUsersUserIdRouteRouteImport.update({
     id: '/users/users/$userId',
     path: '/users/users/$userId',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute =
+  ProtectedSupportTicketsSupportTicketsTicketIdRouteRouteImport.update({
+    id: '/support-tickets/support-tickets/$ticketId',
+    path: '/support-tickets/support-tickets/$ticketId',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedReviewsReviewsReviewIdRouteRoute =
@@ -146,41 +237,67 @@ const ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute =
 export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
+  '/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
+  '/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
+  '/marketing/promotions': typeof ProtectedMarketingPromotionsRouteRoute
+  '/marketing/segments': typeof ProtectedMarketingSegmentsRouteRoute
   '/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
+  '/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
+  '/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
   '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
+  '/advanced-analytics': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
+  '/api-integrations': typeof ProtectedApiIntegrationsIndexRouteRoute
   '/artist-verification': typeof ProtectedArtistVerificationIndexRouteRoute
   '/bookings': typeof ProtectedBookingsIndexRouteRoute
   '/dashboard': typeof ProtectedDashboardIndexRouteRoute
+  '/marketing': typeof ProtectedMarketingIndexRouteRoute
   '/payments': typeof ProtectedPaymentsIndexRouteRoute
   '/reviews': typeof ProtectedReviewsIndexRouteRoute
+  '/sessions': typeof ProtectedSessionsIndexRouteRoute
   '/settings': typeof ProtectedSettingsIndexRouteRoute
+  '/support-tickets': typeof ProtectedSupportTicketsIndexRouteRoute
   '/users': typeof ProtectedUsersIndexRouteRoute
   '/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   '/artist-verification/artist-verification/$requestId': typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   '/payments/payments/$paymentId': typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   '/reviews/reviews/$reviewId': typeof ProtectedReviewsReviewsReviewIdRouteRoute
+  '/support-tickets/support-tickets/$ticketId': typeof ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute
   '/users/users/$userId': typeof ProtectedUsersUsersUserIdRouteRoute
 }
 export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
+  '/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
+  '/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
+  '/marketing/promotions': typeof ProtectedMarketingPromotionsRouteRoute
+  '/marketing/segments': typeof ProtectedMarketingSegmentsRouteRoute
   '/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
+  '/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
+  '/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
   '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
+  '/advanced-analytics': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
+  '/api-integrations': typeof ProtectedApiIntegrationsIndexRouteRoute
   '/artist-verification': typeof ProtectedArtistVerificationIndexRouteRoute
   '/bookings': typeof ProtectedBookingsIndexRouteRoute
   '/dashboard': typeof ProtectedDashboardIndexRouteRoute
+  '/marketing': typeof ProtectedMarketingIndexRouteRoute
   '/payments': typeof ProtectedPaymentsIndexRouteRoute
   '/reviews': typeof ProtectedReviewsIndexRouteRoute
+  '/sessions': typeof ProtectedSessionsIndexRouteRoute
   '/settings': typeof ProtectedSettingsIndexRouteRoute
+  '/support-tickets': typeof ProtectedSupportTicketsIndexRouteRoute
   '/users': typeof ProtectedUsersIndexRouteRoute
   '/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   '/artist-verification/artist-verification/$requestId': typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   '/payments/payments/$paymentId': typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   '/reviews/reviews/$reviewId': typeof ProtectedReviewsReviewsReviewIdRouteRoute
+  '/support-tickets/support-tickets/$ticketId': typeof ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute
   '/users/users/$userId': typeof ProtectedUsersUsersUserIdRouteRoute
 }
 export interface FileRoutesById {
@@ -188,21 +305,34 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/_protected/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
+  '/_protected/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
+  '/_protected/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
+  '/_protected/marketing/promotions': typeof ProtectedMarketingPromotionsRouteRoute
+  '/_protected/marketing/segments': typeof ProtectedMarketingSegmentsRouteRoute
   '/_protected/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/_protected/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/_protected/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/_protected/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
+  '/_protected/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
+  '/_protected/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
   '/_protected/admin-users/': typeof ProtectedAdminUsersIndexRouteRoute
+  '/_protected/advanced-analytics/': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
+  '/_protected/api-integrations/': typeof ProtectedApiIntegrationsIndexRouteRoute
   '/_protected/artist-verification/': typeof ProtectedArtistVerificationIndexRouteRoute
   '/_protected/bookings/': typeof ProtectedBookingsIndexRouteRoute
   '/_protected/dashboard/': typeof ProtectedDashboardIndexRouteRoute
+  '/_protected/marketing/': typeof ProtectedMarketingIndexRouteRoute
   '/_protected/payments/': typeof ProtectedPaymentsIndexRouteRoute
   '/_protected/reviews/': typeof ProtectedReviewsIndexRouteRoute
+  '/_protected/sessions/': typeof ProtectedSessionsIndexRouteRoute
   '/_protected/settings/': typeof ProtectedSettingsIndexRouteRoute
+  '/_protected/support-tickets/': typeof ProtectedSupportTicketsIndexRouteRoute
   '/_protected/users/': typeof ProtectedUsersIndexRouteRoute
   '/_protected/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   '/_protected/artist-verification/artist-verification/$requestId': typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   '/_protected/payments/payments/$paymentId': typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   '/_protected/reviews/reviews/$reviewId': typeof ProtectedReviewsReviewsReviewIdRouteRoute
+  '/_protected/support-tickets/support-tickets/$ticketId': typeof ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute
   '/_protected/users/users/$userId': typeof ProtectedUsersUsersUserIdRouteRoute
 }
 export interface FileRouteTypes {
@@ -210,62 +340,101 @@ export interface FileRouteTypes {
   fullPaths:
     | '/auth/login'
     | '/artist-verification/portfolio'
+    | '/marketing/analytics'
+    | '/marketing/campaigns'
+    | '/marketing/promotions'
+    | '/marketing/segments'
     | '/payments/disputes'
     | '/reviews/analytics'
     | '/reviews/flagged'
+    | '/sessions/admin'
+    | '/sessions/customer'
+    | '/sessions/provider'
     | '/admin-users'
+    | '/advanced-analytics'
+    | '/api-integrations'
     | '/artist-verification'
     | '/bookings'
     | '/dashboard'
+    | '/marketing'
     | '/payments'
     | '/reviews'
+    | '/sessions'
     | '/settings'
+    | '/support-tickets'
     | '/users'
     | '/admin-users/admin-users/$adminUserId'
     | '/artist-verification/artist-verification/$requestId'
     | '/payments/payments/$paymentId'
     | '/reviews/reviews/$reviewId'
+    | '/support-tickets/support-tickets/$ticketId'
     | '/users/users/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth/login'
     | '/artist-verification/portfolio'
+    | '/marketing/analytics'
+    | '/marketing/campaigns'
+    | '/marketing/promotions'
+    | '/marketing/segments'
     | '/payments/disputes'
     | '/reviews/analytics'
     | '/reviews/flagged'
+    | '/sessions/admin'
+    | '/sessions/customer'
+    | '/sessions/provider'
     | '/admin-users'
+    | '/advanced-analytics'
+    | '/api-integrations'
     | '/artist-verification'
     | '/bookings'
     | '/dashboard'
+    | '/marketing'
     | '/payments'
     | '/reviews'
+    | '/sessions'
     | '/settings'
+    | '/support-tickets'
     | '/users'
     | '/admin-users/admin-users/$adminUserId'
     | '/artist-verification/artist-verification/$requestId'
     | '/payments/payments/$paymentId'
     | '/reviews/reviews/$reviewId'
+    | '/support-tickets/support-tickets/$ticketId'
     | '/users/users/$userId'
   id:
     | '__root__'
     | '/_protected'
     | '/auth/login'
     | '/_protected/artist-verification/portfolio'
+    | '/_protected/marketing/analytics'
+    | '/_protected/marketing/campaigns'
+    | '/_protected/marketing/promotions'
+    | '/_protected/marketing/segments'
     | '/_protected/payments/disputes'
     | '/_protected/reviews/analytics'
     | '/_protected/reviews/flagged'
+    | '/_protected/sessions/admin'
+    | '/_protected/sessions/customer'
+    | '/_protected/sessions/provider'
     | '/_protected/admin-users/'
+    | '/_protected/advanced-analytics/'
+    | '/_protected/api-integrations/'
     | '/_protected/artist-verification/'
     | '/_protected/bookings/'
     | '/_protected/dashboard/'
+    | '/_protected/marketing/'
     | '/_protected/payments/'
     | '/_protected/reviews/'
+    | '/_protected/sessions/'
     | '/_protected/settings/'
+    | '/_protected/support-tickets/'
     | '/_protected/users/'
     | '/_protected/admin-users/admin-users/$adminUserId'
     | '/_protected/artist-verification/artist-verification/$requestId'
     | '/_protected/payments/payments/$paymentId'
     | '/_protected/reviews/reviews/$reviewId'
+    | '/_protected/support-tickets/support-tickets/$ticketId'
     | '/_protected/users/users/$userId'
   fileRoutesById: FileRoutesById
 }
@@ -297,11 +466,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedUsersIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/support-tickets/': {
+      id: '/_protected/support-tickets/'
+      path: '/support-tickets'
+      fullPath: '/support-tickets'
+      preLoaderRoute: typeof ProtectedSupportTicketsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/settings/': {
       id: '/_protected/settings/'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof ProtectedSettingsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/sessions/': {
+      id: '/_protected/sessions/'
+      path: '/sessions'
+      fullPath: '/sessions'
+      preLoaderRoute: typeof ProtectedSessionsIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/reviews/': {
@@ -316,6 +499,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/payments'
       preLoaderRoute: typeof ProtectedPaymentsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/marketing/': {
+      id: '/_protected/marketing/'
+      path: '/marketing'
+      fullPath: '/marketing'
+      preLoaderRoute: typeof ProtectedMarketingIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/dashboard/': {
@@ -339,11 +529,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedArtistVerificationIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/api-integrations/': {
+      id: '/_protected/api-integrations/'
+      path: '/api-integrations'
+      fullPath: '/api-integrations'
+      preLoaderRoute: typeof ProtectedApiIntegrationsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/advanced-analytics/': {
+      id: '/_protected/advanced-analytics/'
+      path: '/advanced-analytics'
+      fullPath: '/advanced-analytics'
+      preLoaderRoute: typeof ProtectedAdvancedAnalyticsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/admin-users/': {
       id: '/_protected/admin-users/'
       path: '/admin-users'
       fullPath: '/admin-users'
       preLoaderRoute: typeof ProtectedAdminUsersIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/sessions/provider': {
+      id: '/_protected/sessions/provider'
+      path: '/sessions/provider'
+      fullPath: '/sessions/provider'
+      preLoaderRoute: typeof ProtectedSessionsProviderRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/sessions/customer': {
+      id: '/_protected/sessions/customer'
+      path: '/sessions/customer'
+      fullPath: '/sessions/customer'
+      preLoaderRoute: typeof ProtectedSessionsCustomerRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/sessions/admin': {
+      id: '/_protected/sessions/admin'
+      path: '/sessions/admin'
+      fullPath: '/sessions/admin'
+      preLoaderRoute: typeof ProtectedSessionsAdminRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/reviews/flagged': {
@@ -367,6 +592,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedPaymentsDisputesRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/marketing/segments': {
+      id: '/_protected/marketing/segments'
+      path: '/marketing/segments'
+      fullPath: '/marketing/segments'
+      preLoaderRoute: typeof ProtectedMarketingSegmentsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/marketing/promotions': {
+      id: '/_protected/marketing/promotions'
+      path: '/marketing/promotions'
+      fullPath: '/marketing/promotions'
+      preLoaderRoute: typeof ProtectedMarketingPromotionsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/marketing/campaigns': {
+      id: '/_protected/marketing/campaigns'
+      path: '/marketing/campaigns'
+      fullPath: '/marketing/campaigns'
+      preLoaderRoute: typeof ProtectedMarketingCampaignsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/marketing/analytics': {
+      id: '/_protected/marketing/analytics'
+      path: '/marketing/analytics'
+      fullPath: '/marketing/analytics'
+      preLoaderRoute: typeof ProtectedMarketingAnalyticsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/artist-verification/portfolio': {
       id: '/_protected/artist-verification/portfolio'
       path: '/artist-verification/portfolio'
@@ -379,6 +632,13 @@ declare module '@tanstack/react-router' {
       path: '/users/users/$userId'
       fullPath: '/users/users/$userId'
       preLoaderRoute: typeof ProtectedUsersUsersUserIdRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/support-tickets/support-tickets/$ticketId': {
+      id: '/_protected/support-tickets/support-tickets/$ticketId'
+      path: '/support-tickets/support-tickets/$ticketId'
+      fullPath: '/support-tickets/support-tickets/$ticketId'
+      preLoaderRoute: typeof ProtectedSupportTicketsSupportTicketsTicketIdRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/reviews/reviews/$reviewId': {
@@ -414,38 +674,67 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedRouteRouteChildren {
   ProtectedArtistVerificationPortfolioRouteRoute: typeof ProtectedArtistVerificationPortfolioRouteRoute
+  ProtectedMarketingAnalyticsRouteRoute: typeof ProtectedMarketingAnalyticsRouteRoute
+  ProtectedMarketingCampaignsRouteRoute: typeof ProtectedMarketingCampaignsRouteRoute
+  ProtectedMarketingPromotionsRouteRoute: typeof ProtectedMarketingPromotionsRouteRoute
+  ProtectedMarketingSegmentsRouteRoute: typeof ProtectedMarketingSegmentsRouteRoute
   ProtectedPaymentsDisputesRouteRoute: typeof ProtectedPaymentsDisputesRouteRoute
   ProtectedReviewsAnalyticsRouteRoute: typeof ProtectedReviewsAnalyticsRouteRoute
   ProtectedReviewsFlaggedRouteRoute: typeof ProtectedReviewsFlaggedRouteRoute
+  ProtectedSessionsAdminRouteRoute: typeof ProtectedSessionsAdminRouteRoute
+  ProtectedSessionsCustomerRouteRoute: typeof ProtectedSessionsCustomerRouteRoute
+  ProtectedSessionsProviderRouteRoute: typeof ProtectedSessionsProviderRouteRoute
   ProtectedAdminUsersIndexRouteRoute: typeof ProtectedAdminUsersIndexRouteRoute
+  ProtectedAdvancedAnalyticsIndexRouteRoute: typeof ProtectedAdvancedAnalyticsIndexRouteRoute
+  ProtectedApiIntegrationsIndexRouteRoute: typeof ProtectedApiIntegrationsIndexRouteRoute
   ProtectedArtistVerificationIndexRouteRoute: typeof ProtectedArtistVerificationIndexRouteRoute
   ProtectedBookingsIndexRouteRoute: typeof ProtectedBookingsIndexRouteRoute
   ProtectedDashboardIndexRouteRoute: typeof ProtectedDashboardIndexRouteRoute
+  ProtectedMarketingIndexRouteRoute: typeof ProtectedMarketingIndexRouteRoute
   ProtectedPaymentsIndexRouteRoute: typeof ProtectedPaymentsIndexRouteRoute
   ProtectedReviewsIndexRouteRoute: typeof ProtectedReviewsIndexRouteRoute
+  ProtectedSessionsIndexRouteRoute: typeof ProtectedSessionsIndexRouteRoute
   ProtectedSettingsIndexRouteRoute: typeof ProtectedSettingsIndexRouteRoute
+  ProtectedSupportTicketsIndexRouteRoute: typeof ProtectedSupportTicketsIndexRouteRoute
   ProtectedUsersIndexRouteRoute: typeof ProtectedUsersIndexRouteRoute
   ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute: typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
   ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute: typeof ProtectedArtistVerificationArtistVerificationRequestIdRouteRoute
   ProtectedPaymentsPaymentsPaymentIdRouteRoute: typeof ProtectedPaymentsPaymentsPaymentIdRouteRoute
   ProtectedReviewsReviewsReviewIdRouteRoute: typeof ProtectedReviewsReviewsReviewIdRouteRoute
+  ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute: typeof ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute
   ProtectedUsersUsersUserIdRouteRoute: typeof ProtectedUsersUsersUserIdRouteRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedArtistVerificationPortfolioRouteRoute:
     ProtectedArtistVerificationPortfolioRouteRoute,
+  ProtectedMarketingAnalyticsRouteRoute: ProtectedMarketingAnalyticsRouteRoute,
+  ProtectedMarketingCampaignsRouteRoute: ProtectedMarketingCampaignsRouteRoute,
+  ProtectedMarketingPromotionsRouteRoute:
+    ProtectedMarketingPromotionsRouteRoute,
+  ProtectedMarketingSegmentsRouteRoute: ProtectedMarketingSegmentsRouteRoute,
   ProtectedPaymentsDisputesRouteRoute: ProtectedPaymentsDisputesRouteRoute,
   ProtectedReviewsAnalyticsRouteRoute: ProtectedReviewsAnalyticsRouteRoute,
   ProtectedReviewsFlaggedRouteRoute: ProtectedReviewsFlaggedRouteRoute,
+  ProtectedSessionsAdminRouteRoute: ProtectedSessionsAdminRouteRoute,
+  ProtectedSessionsCustomerRouteRoute: ProtectedSessionsCustomerRouteRoute,
+  ProtectedSessionsProviderRouteRoute: ProtectedSessionsProviderRouteRoute,
   ProtectedAdminUsersIndexRouteRoute: ProtectedAdminUsersIndexRouteRoute,
+  ProtectedAdvancedAnalyticsIndexRouteRoute:
+    ProtectedAdvancedAnalyticsIndexRouteRoute,
+  ProtectedApiIntegrationsIndexRouteRoute:
+    ProtectedApiIntegrationsIndexRouteRoute,
   ProtectedArtistVerificationIndexRouteRoute:
     ProtectedArtistVerificationIndexRouteRoute,
   ProtectedBookingsIndexRouteRoute: ProtectedBookingsIndexRouteRoute,
   ProtectedDashboardIndexRouteRoute: ProtectedDashboardIndexRouteRoute,
+  ProtectedMarketingIndexRouteRoute: ProtectedMarketingIndexRouteRoute,
   ProtectedPaymentsIndexRouteRoute: ProtectedPaymentsIndexRouteRoute,
   ProtectedReviewsIndexRouteRoute: ProtectedReviewsIndexRouteRoute,
+  ProtectedSessionsIndexRouteRoute: ProtectedSessionsIndexRouteRoute,
   ProtectedSettingsIndexRouteRoute: ProtectedSettingsIndexRouteRoute,
+  ProtectedSupportTicketsIndexRouteRoute:
+    ProtectedSupportTicketsIndexRouteRoute,
   ProtectedUsersIndexRouteRoute: ProtectedUsersIndexRouteRoute,
   ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute:
     ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute,
@@ -455,6 +744,8 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
     ProtectedPaymentsPaymentsPaymentIdRouteRoute,
   ProtectedReviewsReviewsReviewIdRouteRoute:
     ProtectedReviewsReviewsReviewIdRouteRoute,
+  ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute:
+    ProtectedSupportTicketsSupportTicketsTicketIdRouteRoute,
   ProtectedUsersUsersUserIdRouteRoute: ProtectedUsersUsersUserIdRouteRoute,
 }
 
