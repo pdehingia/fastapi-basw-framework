@@ -146,10 +146,10 @@ const BulkOperationsToolbar: React.FC<BulkOperationsToolbarProps> = ({
   };
 
   // Get operation variant based on type
-  const getOperationVariant = (operationId: string) => {
+  const getOperationVariant = (operationId: string): 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline' => {
     switch (operationId) {
       case 'delete':
-        return 'destructive' as const;
+        return 'danger' as const;
       case 'export':
         return 'primary' as const;
       default:
@@ -325,7 +325,7 @@ const BulkOperationsToolbar: React.FC<BulkOperationsToolbarProps> = ({
                   Cancel
                 </Button>
                 <Button
-                  variant={confirmDialog.operation.id === 'delete' ? 'destructive' : 'primary'}
+                  variant={confirmDialog.operation.id === 'delete' ? 'danger' : 'primary'}
                   onClick={confirmOperation}
                 >
                   {confirmDialog.operation.label}

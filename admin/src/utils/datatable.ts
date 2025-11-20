@@ -6,6 +6,10 @@
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
+import type { TableColumn } from '@/types';
+
+// Re-export TableColumn for convenience
+export type { TableColumn };
 
 export type FilterType = 
   | 'text' 
@@ -15,6 +19,20 @@ export type FilterType =
   | 'multiselect' 
   | 'boolean' 
   | 'range';
+
+export type ExportFormat = 'csv' | 'xlsx' | 'json';
+
+export interface SortConfig {
+  column: string;
+  direction: 'asc' | 'desc';
+}
+
+export interface ExportProgress {
+  status: 'idle' | 'preparing' | 'exporting' | 'complete' | 'error';
+  progress: number;
+  message?: string;
+  error?: string;
+}
 
 export type FilterOperator = 
   | 'equals' 
@@ -37,11 +55,10 @@ export interface AdvancedFilter {
 }
 
 export interface ColumnCustomization {
-  key: string;
-  visible: boolean;
-  order: number;
-  width?: number;
-  pinned?: 'left' | 'right' | false;
+  columnOrder: string[];
+  hiddenColumns: string[];
+  pinnedColumns: string[];
+  columnWidths: Record<string, number>;
 }
 
 export interface ExportOptions {
@@ -49,6 +66,7 @@ export interface ExportOptions {
   filename?: string;
   includeHeaders?: boolean;
   selectedRowsOnly?: boolean;
+  selectedColumnsOnly?: boolean;
   columns?: string[];
 }
 
@@ -59,6 +77,7 @@ export interface BulkOperation<T = any> {
   action: (selectedRows: T[]) => Promise<void> | void;
   variant?: 'primary' | 'secondary' | 'danger';
   confirmMessage?: string;
+  requiresConfirmation?: boolean;
   disabled?: (selectedRows: T[]) => boolean;
 }
 
@@ -325,7 +344,7 @@ export class ColumnManager {
   /**
    * Save column customization to localStorage
    */
-  static saveColumnConfig(tableId: string, config: ColumnCustomization[]): void {
+  static saveConfiguration(tableId: string, config: ColumnCustomization): void {
     try {
       localStorage.setItem(`datatable_columns_${tableId}`, JSON.stringify(config));
     } catch (error) {
@@ -336,7 +355,7 @@ export class ColumnManager {
   /**
    * Load column customization from localStorage
    */
-  static loadColumnConfig(tableId: string): ColumnCustomization[] | null {
+  static loadConfiguration(tableId: string): ColumnCustomization | null {
     try {
       const stored = localStorage.getItem(`datatable_columns_${tableId}`);
       return stored ? JSON.parse(stored) : null;
@@ -345,6 +364,22 @@ export class ColumnManager {
       return null;
     }
   }
+
+  /**
+   * Get default column configuration
+   */
+  static getDefaultConfiguration(): ColumnCustomization {
+    return {
+      columnOrder: [],
+      hiddenColumns: [],
+      pinnedColumns: [],
+      columnWidths: {},
+    };
+  }
+
+  // Legacy methods for backward compatibility
+  static saveColumnConfig = this.saveConfiguration;
+  static loadColumnConfig = this.loadConfiguration;
 
   /**
    * Apply column customization to columns array

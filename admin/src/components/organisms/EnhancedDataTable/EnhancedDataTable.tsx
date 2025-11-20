@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import { FixedSizeList } from 'react-window';
 import { 
   ChevronUp, 
   ChevronDown, 

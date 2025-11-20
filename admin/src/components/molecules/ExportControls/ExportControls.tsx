@@ -73,8 +73,6 @@ const ExportControls: React.FC<ExportControlsProps> = ({
     isExporting: false,
   });
 
-  const exporter = useMemo(() => new DataTableExporter(), []);
-
   // Get export data based on options
   const exportData = useMemo(() => {
     let baseData = filteredData || data;
@@ -126,14 +124,15 @@ const ExportControls: React.FC<ExportControlsProps> = ({
       };
 
       // Perform export
-      await exporter.exportData(
+      await DataTableExporter.exportData(
         exportData,
         exportColumns,
-        exportState.format,
         {
-          ...exportState.options,
+          format: exportState.format,
           filename,
-          onProgress,
+          includeHeaders: exportState.options.includeHeaders,
+          selectedRowsOnly: exportState.options.selectedRowsOnly,
+          columns: exportColumns.map(c => c.key as string),
         }
       );
 
