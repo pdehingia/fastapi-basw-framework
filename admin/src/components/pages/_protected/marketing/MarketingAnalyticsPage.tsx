@@ -25,11 +25,10 @@ const MarketingAnalyticsPage = () => {
 
   // Fetch analytics
   const { data: analyticsData, isLoading } = useQuery({
-    queryKey: ['marketing-analytics', period, channel],
+    queryKey: ['marketing-analytics', period],
     queryFn: () =>
       marketingService.getMarketingAnalytics({
         period,
-        channel: channel || undefined,
       }),
   });
 
@@ -168,23 +167,41 @@ const MarketingAnalyticsPage = () => {
       title="Marketing Analytics"
       subtitle="Comprehensive marketing performance insights and trends"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Marketing', path: '/marketing' },
-        { label: 'Analytics', path: '/marketing/analytics' },
+        { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
+        { id: 'marketing', label: 'Marketing', href: '/marketing/campaigns' },
+        { id: 'analytics', label: 'Analytics', href: '/marketing/analytics', current: true },
       ]}
-      actions={
-        <div className="flex gap-2">
-          <Select value={period} onChange={(e) => setPeriod(e.target.value as any)}>
-            <option value="day">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="quarter">This Quarter</option>
-            <option value="year">This Year</option>
-          </Select>
-          <Button variant="secondary">Export Report</Button>
-        </div>
-      }
+      secondaryActions={[
+        {
+          id: 'export-report',
+          label: 'Export Report',
+          onClick: () => console.log('Export report'),
+          variant: 'secondary' as const,
+        },
+      ]}
     >
+      {/* Period Filter */}
+      <div className="mb-6">
+        <Card>
+          <CardBody>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">Time Period:</label>
+              <Select 
+                value={period} 
+                onChange={(value) => setPeriod(value as any)}
+                options={[
+                  { value: 'day', label: 'Today' },
+                  { value: 'week', label: 'This Week' },
+                  { value: 'month', label: 'This Month' },
+                  { value: 'quarter', label: 'This Quarter' },
+                  { value: 'year', label: 'This Year' },
+                ]}
+              />
+            </div>
+          </CardBody>
+        </Card>
+      </div>
+
       {/* Overview Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         {overviewMetrics.map((metric) => {
@@ -195,7 +212,7 @@ const MarketingAnalyticsPage = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Text className="text-sm text-gray-500">{metric.title}</Text>
-                    <Heading level={3} className="mt-1">
+                    <Heading size="lg" className="mt-1">
                       {isLoading ? '...' : metric.value}
                     </Heading>
                     <div className="flex items-center mt-2 space-x-1">
@@ -228,14 +245,14 @@ const MarketingAnalyticsPage = () => {
         {analytics?.customer_insights && (
           <Card>
             <CardHeader>
-              <Heading level={3}>Customer Insights</Heading>
+              <Heading size="lg">Customer Insights</Heading>
             </CardHeader>
             <CardBody>
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
                   <div>
                     <Text className="text-sm text-gray-500">Acquisition Cost</Text>
-                    <Heading level={4}>
+                    <Heading size="md">
                       ${analytics.customer_insights.acquisition_cost.toFixed(2)}
                     </Heading>
                   </div>
@@ -244,7 +261,7 @@ const MarketingAnalyticsPage = () => {
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
                   <div>
                     <Text className="text-sm text-gray-500">Lifetime Value</Text>
-                    <Heading level={4}>
+                    <Heading size="md">
                       ${analytics.customer_insights.lifetime_value.toFixed(2)}
                     </Heading>
                   </div>
@@ -253,7 +270,7 @@ const MarketingAnalyticsPage = () => {
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
                   <div>
                     <Text className="text-sm text-gray-500">Retention Rate</Text>
-                    <Heading level={4}>
+                    <Heading size="md">
                       {(analytics.customer_insights.retention_rate * 100).toFixed(1)}%
                     </Heading>
                   </div>
@@ -265,24 +282,24 @@ const MarketingAnalyticsPage = () => {
         )}
 
         {/* Revenue Attribution */}
-        {analytics?.revenue_attribution && (
+        {analytics?.campaign_performance?.by_channel && (
           <Card>
             <CardHeader>
-              <Heading level={3}>Revenue Attribution</Heading>
+              <Heading size="lg">Revenue Attribution</Heading>
             </CardHeader>
             <CardBody>
               <div className="space-y-3">
-                {Object.entries(analytics.revenue_attribution).map(([channel, revenue]: [string, any]) => (
+                {Object.entries(analytics.campaign_performance.by_channel).map(([channel, data]: [string, any]) => (
                   <div key={channel} className="space-y-1">
                     <div className="flex justify-between text-sm">
                       <span className="capitalize">{channel}</span>
-                      <span className="font-semibold">${revenue.toLocaleString()}</span>
+                      <span className="font-semibold">ROI: {data.roi.toFixed(2)}x</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className="bg-blue-600 h-2 rounded-full"
                         style={{
-                          width: `${(revenue / analytics.overview.total_budget * 100)}%`,
+                          width: `${Math.min(data.roi * 20, 100)}%`,
                         }}
                       ></div>
                     </div>
@@ -295,14 +312,20 @@ const MarketingAnalyticsPage = () => {
       </div>
 
       {/* Channel Performance */}
-      {analytics?.channel_performance && (
+      {analytics?.campaign_performance?.by_channel && (
         <Card className="mb-6">
           <CardHeader>
-            <Heading level={3}>Channel Performance</Heading>
+            <Heading size="lg">Channel Performance</Heading>
           </CardHeader>
           <CardBody>
             <Table
-              data={analytics.channel_performance}
+              data={Object.entries(analytics.campaign_performance.by_channel).map(([channel, data]) => ({
+                channel,
+                ...data,
+                campaigns: 0,
+                spend: 0,
+                ctr: data.clicks / Math.max(data.impressions, 1) * 100,
+              }))}
               columns={channelColumns}
               loading={isLoading}
               emptyMessage="No channel data available"
@@ -315,7 +338,7 @@ const MarketingAnalyticsPage = () => {
       {analytics?.campaign_performance?.top_performing && (
         <Card>
           <CardHeader>
-            <Heading level={3}>Top Performing Campaigns</Heading>
+            <Heading size="lg">Top Performing Campaigns</Heading>
           </CardHeader>
           <CardBody>
             <Table

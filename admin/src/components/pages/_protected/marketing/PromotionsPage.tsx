@@ -20,7 +20,7 @@ import { Button, Heading, Text, Badge, Input, Select } from '@/components/atoms'
 import { Card, CardHeader, CardBody, Table } from '@/components/molecules';
 import { marketingService } from '@/services/api';
 import { toast } from '@/services/toast';
-import type { Promotion, Coupon } from '@/services/api/marketing';
+import type { PromotionCampaign, CouponCode } from '@/types';
 
 const PromotionsPage = () => {
   const navigate = useNavigate();
@@ -34,26 +34,24 @@ const PromotionsPage = () => {
 
   // Fetch promotions
   const { data: promotionsData, isLoading: promotionsLoading } = useQuery({
-    queryKey: ['marketing-promotions', page, search, statusFilter],
+    queryKey: ['marketing-promotions', page, search],
     queryFn: () =>
       marketingService.getPromotions({
         page,
         page_size: 20,
         search: search || undefined,
-        status: statusFilter || undefined,
       }),
     enabled: activeTab === 'promotions',
   });
 
   // Fetch coupons
   const { data: couponsData, isLoading: couponsLoading } = useQuery({
-    queryKey: ['marketing-coupons', page, search, statusFilter],
+    queryKey: ['marketing-coupons', page, search],
     queryFn: () =>
       marketingService.getCoupons({
         page,
         page_size: 20,
         search: search || undefined,
-        is_active: statusFilter === 'active' ? true : statusFilter === 'inactive' ? false : undefined,
       }),
     enabled: activeTab === 'coupons',
   });
@@ -78,11 +76,11 @@ const PromotionsPage = () => {
   });
 
   const generateCouponsMutation = useMutation({
-    mutationFn: ({ promotionId, count, prefix }: { promotionId: string; count: number; prefix?: string }) =>
-      marketingService.generateCouponCodes(promotionId, count, prefix),
+    mutationFn: (params: { count: number; prefix?: string; discount_type: 'percentage' | 'fixed'; discount_value: number }) =>
+      marketingService.generateCouponCodes(params),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['marketing-coupons'] });
-      toast.success(`Generated ${response.data.generated_count} coupon codes`);
+      toast.success(`Generated ${response.data?.length || 0} coupon codes`);
     },
     onError: () => toast.error('Failed to generate coupons'),
   });
@@ -100,21 +98,22 @@ const PromotionsPage = () => {
     }
   };
 
-  const handleGenerateCoupons = (promotion: Promotion) => {
+  const handleGenerateCoupons = (promotion: PromotionCampaign) => {
     const count = prompt('How many coupon codes to generate?', '10');
     if (count && !isNaN(parseInt(count))) {
-      const prefix = prompt('Enter prefix for codes (optional):', promotion.code);
+      const prefix = prompt('Enter prefix for codes (optional):', 'PROMO');
       generateCouponsMutation.mutate({
-        promotionId: promotion.id,
         count: parseInt(count),
         prefix: prefix || undefined,
+        discount_type: 'percentage',
+        discount_value: 10,
       });
     }
   };
 
-  const promotions = promotionsData?.data?.items || [];
-  const coupons = couponsData?.data?.items || [];
-  const metadata = activeTab === 'promotions' ? promotionsData?.data?.metadata : couponsData?.data?.metadata;
+  const promotions = promotionsData?.data?.data || [];
+  const coupons = couponsData?.data?.data || [];
+  const pagination = activeTab === 'promotions' ? promotionsData?.data : couponsData?.data;
   const isLoading = activeTab === 'promotions' ? promotionsLoading : couponsLoading;
 
   // Promotion columns
@@ -122,10 +121,10 @@ const PromotionsPage = () => {
     {
       key: 'promotion',
       header: 'Promotion',
-      render: (_: any, promotion: Promotion) => (
+      render: (_: any, promotion: PromotionCampaign) => (
         <div>
           <div className="font-medium">{promotion.name}</div>
-          <div className="text-sm text-gray-500">{promotion.code}</div>
+          <div className="text-sm text-gray-500">{promotion.promo_code || 'N/A'}</div>
           {promotion.description && (
             <div className="text-xs text-gray-400 mt-1">{promotion.description}</div>
           )}
@@ -135,49 +134,30 @@ const PromotionsPage = () => {
     {
       key: 'discount',
       header: 'Discount',
-      render: (_: any, promotion: Promotion) => (
+      render: (_: any, promotion: PromotionCampaign) => (
         <div>
           <div className="font-semibold">
-            {promotion.discount_type === 'percentage'
-              ? `${promotion.discount_value}%`
-              : `$${promotion.discount_value}`}
+            {promotion.discount_percentage ? `${promotion.discount_percentage}%` : 'N/A'}
           </div>
-          {promotion.max_discount_amount && (
-            <div className="text-xs text-gray-500">
-              Max: ${promotion.max_discount_amount}
-            </div>
-          )}
-          {promotion.min_purchase_amount && (
-            <div className="text-xs text-gray-500">
-              Min: ${promotion.min_purchase_amount}
-            </div>
-          )}
+          <div className="text-xs text-gray-500 capitalize">
+            {promotion.type}
+          </div>
         </div>
       ),
     },
     {
       key: 'usage',
-      header: 'Usage',
-      render: (_: any, promotion: Promotion) => (
-        <div className="space-y-1">
-          <div className="text-sm">
-            Used: {promotion.used_count} / {promotion.max_usage || '∞'}
-          </div>
-          {promotion.max_usage && (
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
-              <div
-                className="bg-blue-600 h-1.5 rounded-full"
-                style={{ width: `${Math.min((promotion.used_count / promotion.max_usage) * 100, 100)}%` }}
-              ></div>
-            </div>
-          )}
+      header: 'Usage Limit',
+      render: (_: any, promotion: PromotionCampaign) => (
+        <div className="text-sm">
+          {promotion.usage_limit > 0 ? promotion.usage_limit : 'Unlimited'}
         </div>
       ),
     },
     {
       key: 'validity',
       header: 'Validity',
-      render: (_: any, promotion: Promotion) => (
+      render: (_: any, promotion: PromotionCampaign) => (
         <div className="text-sm">
           <div>Start: {new Date(promotion.start_date).toLocaleDateString()}</div>
           <div>End: {new Date(promotion.end_date).toLocaleDateString()}</div>
@@ -187,7 +167,7 @@ const PromotionsPage = () => {
     {
       key: 'status',
       header: 'Status',
-      render: (_: any, promotion: Promotion) => (
+      render: (_: any, promotion: PromotionCampaign) => (
         <Badge
           variant={
             promotion.is_active && new Date(promotion.end_date) > new Date()
@@ -203,7 +183,7 @@ const PromotionsPage = () => {
     {
       key: 'actions',
       header: 'Actions',
-      render: (_: any, promotion: Promotion) => (
+      render: (_: any, promotion: PromotionCampaign) => (
         <div className="flex space-x-1">
           <Button
             variant="secondary"
@@ -214,7 +194,7 @@ const PromotionsPage = () => {
             <PencilIcon className="h-4 w-4" />
           </Button>
           <Button
-            variant="success"
+            variant="secondary"
             size="sm"
             onClick={() => handleGenerateCoupons(promotion)}
             title="Generate Coupons"
@@ -239,11 +219,11 @@ const PromotionsPage = () => {
     {
       key: 'code',
       header: 'Coupon Code',
-      render: (_: any, coupon: Coupon) => (
+      render: (_: any, coupon: CouponCode) => (
         <div>
           <div className="font-mono font-bold text-lg">{coupon.code}</div>
-          {coupon.promotion && (
-            <div className="text-sm text-gray-500">{coupon.promotion.name}</div>
+          {coupon.description && (
+            <div className="text-sm text-gray-500">{coupon.description}</div>
           )}
         </div>
       ),
@@ -251,7 +231,7 @@ const PromotionsPage = () => {
     {
       key: 'discount',
       header: 'Discount',
-      render: (_: any, coupon: Coupon) => (
+      render: (_: any, coupon: CouponCode) => (
         <div className="font-semibold">
           {coupon.discount_type === 'percentage'
             ? `${coupon.discount_value}%`
@@ -262,51 +242,47 @@ const PromotionsPage = () => {
     {
       key: 'usage',
       header: 'Usage',
-      render: (_: any, coupon: Coupon) => (
+      render: (_: any, coupon: CouponCode) => (
         <div className="text-sm">
-          <div>Used: {coupon.usage_count}</div>
-          {coupon.max_uses && <div>Max: {coupon.max_uses}</div>}
+          <div>Limit: {coupon.usage_limit > 0 ? coupon.usage_limit : 'Unlimited'}</div>
+          <div>Per User: {coupon.per_user_limit}</div>
         </div>
       ),
     },
     {
-      key: 'customer',
-      header: 'Customer',
-      render: (_: any, coupon: Coupon) => (
+      key: 'minimum',
+      header: 'Min Amount',
+      render: (_: any, coupon: CouponCode) => (
         <div className="text-sm">
-          {coupon.assigned_to_customer ? (
-            <Badge variant="info" size="sm">Assigned</Badge>
-          ) : (
-            <Badge variant="default" size="sm">Public</Badge>
-          )}
+          ${coupon.minimum_amount.toFixed(2)}
         </div>
       ),
     },
     {
       key: 'validity',
       header: 'Valid Until',
-      render: (_: any, coupon: Coupon) => (
+      render: (_: any, coupon: CouponCode) => (
         <div className="text-sm">
-          {coupon.expires_at ? new Date(coupon.expires_at).toLocaleDateString() : 'No expiry'}
+          {new Date(coupon.valid_until).toLocaleDateString()}
         </div>
       ),
     },
     {
       key: 'status',
       header: 'Status',
-      render: (_: any, coupon: Coupon) => (
+      render: (_: any, coupon: CouponCode) => (
         <Badge
-          variant={coupon.is_active ? 'success' : 'default'}
+          variant={new Date(coupon.valid_until) > new Date() ? 'success' : 'default'}
           size="sm"
         >
-          {coupon.is_active ? 'Active' : 'Inactive'}
+          {new Date(coupon.valid_until) > new Date() ? 'Active' : 'Expired'}
         </Badge>
       ),
     },
     {
       key: 'actions',
       header: 'Actions',
-      render: (_: any, coupon: Coupon) => (
+      render: (_: any, coupon: CouponCode) => (
         <div className="flex space-x-1">
           <Button
             variant="danger"
@@ -326,19 +302,16 @@ const PromotionsPage = () => {
       title="Promotions & Coupons"
       subtitle="Create promotional offers and manage coupon codes"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Marketing', path: '/marketing' },
-        { label: 'Promotions', path: '/marketing/promotions' },
+        { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
+        { id: 'marketing', label: 'Marketing', href: '/marketing/campaigns' },
+        { id: 'promotions', label: 'Promotions', href: '/marketing/promotions', current: true },
       ]}
-      actions={
-        <Button
-          variant="primary"
-          onClick={() => navigate({ to: '/marketing/promotions/new' })}
-          icon={PlusIcon}
-        >
-          New Promotion
-        </Button>
-      }
+      primaryAction={{
+        id: 'new-promotion',
+        label: 'New Promotion',
+        onClick: () => navigate({ to: '/marketing/promotions' }),
+        variant: 'primary' as const,
+      }}
     >
       {/* Tabs */}
       <div className="flex space-x-1 mb-6 border-b">
@@ -381,19 +354,19 @@ const PromotionsPage = () => {
                 placeholder={`Search ${activeTab}...`}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                icon={MagnifyingGlassIcon}
               />
             </div>
             <div className="w-40">
               <label className="block text-sm font-medium mb-1">Status</label>
               <Select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </Select>
+                onChange={(value) => setStatusFilter(value)}
+                options={[
+                  { value: '', label: 'All Status' },
+                  { value: 'active', label: 'Active' },
+                  { value: 'inactive', label: 'Inactive' },
+                ]}
+              />
             </div>
           </div>
         </CardBody>
@@ -403,32 +376,32 @@ const PromotionsPage = () => {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>
+            <Heading size="lg">
               {activeTab === 'promotions' ? 'All Promotions' : 'All Coupons'}
             </Heading>
             <Text className="text-sm text-gray-500">
-              {metadata?.total_items || 0} {activeTab}
+              {pagination?.total || 0} {activeTab}
             </Text>
           </div>
         </CardHeader>
         <CardBody>
           <Table
-            data={activeTab === 'promotions' ? promotions : coupons}
-            columns={activeTab === 'promotions' ? promotionColumns : couponColumns}
+            data={(activeTab === 'promotions' ? promotions : coupons) as any[]}
+            columns={(activeTab === 'promotions' ? promotionColumns : couponColumns) as any[]}
             loading={isLoading}
             emptyMessage={`No ${activeTab} found`}
           />
-          {metadata && metadata.total_pages > 1 && (
+          {pagination && pagination.total_pages && pagination.total_pages > 1 && (
             <div className="flex justify-between items-center mt-4 pt-4 border-t">
               <Text className="text-sm text-gray-500">
-                Page {metadata.page} of {metadata.total_pages}
+                Page {pagination.page} of {pagination.total_pages}
               </Text>
               <div className="flex space-x-2">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={!metadata.has_previous}
+                  disabled={page <= 1}
                 >
                   Previous
                 </Button>
@@ -436,7 +409,7 @@ const PromotionsPage = () => {
                   variant="secondary"
                   size="sm"
                   onClick={() => setPage((p) => p + 1)}
-                  disabled={!metadata.has_next}
+                  disabled={page >= (pagination.total_pages || 1)}
                 >
                   Next
                 </Button>
