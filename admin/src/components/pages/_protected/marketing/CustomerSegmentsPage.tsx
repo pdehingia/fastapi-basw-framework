@@ -33,12 +33,7 @@ const CustomerSegmentsPage = () => {
   // Fetch segments
   const { data: segmentsData, isLoading } = useQuery({
     queryKey: ['customer-segments', page, search],
-    queryFn: () =>
-      marketingService.getCustomerSegments({
-        page,
-        page_size: 20,
-        search: search || undefined,
-      }),
+    queryFn: () => marketingService.getCustomerSegments(),
   });
 
   // Fetch customers for selected segment
@@ -252,7 +247,6 @@ const CustomerSegmentsPage = () => {
                 placeholder="Search segments..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                icon={MagnifyingGlassIcon}
               />
             </div>
           </div>
@@ -263,8 +257,8 @@ const CustomerSegmentsPage = () => {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Heading level={3}>All Segments</Heading>
-            <Text className="text-sm text-gray-500">{metadata?.total_items || 0} segments</Text>
+            <Heading size="lg">All Segments</Heading>
+            <Text className="text-sm text-gray-500">{segments.length} segments</Text>
           </div>
         </CardHeader>
         <CardBody>
@@ -274,31 +268,6 @@ const CustomerSegmentsPage = () => {
             loading={isLoading}
             emptyMessage="No segments found. Create your first segment to start targeting customers."
           />
-          {metadata && metadata.total_pages > 1 && (
-            <div className="flex justify-between items-center mt-4 pt-4 border-t">
-              <Text className="text-sm text-gray-500">
-                Page {metadata.page} of {metadata.total_pages}
-              </Text>
-              <div className="flex space-x-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={!metadata.has_previous}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={!metadata.has_next}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          )}
         </CardBody>
       </Card>
 
@@ -307,7 +276,7 @@ const CustomerSegmentsPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <Heading level={3}>Segment Customers</Heading>
+              <Heading size="lg">Segment Customers</Heading>
               <Button
                 variant="secondary"
                 size="sm"
