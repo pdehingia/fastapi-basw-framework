@@ -1,12 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/services/toast';
-import {
-  AnalyticsReportsService,
-  AnalyticsDashboardsService,
-  DataSourcesService,
-  AnalyticsExportService,
-  AnalyticsOverviewService,
-} from '@/services/api/analytics';
+import analyticsService from '@/services/api/analytics';
 import type {
   AnalyticsReport,
   AnalyticsDashboard,
@@ -25,7 +19,7 @@ import type {
 export const useAnalyticsReports = (params?: ReportSearchParams) => {
   return useQuery({
     queryKey: ['analytics-reports', params],
-    queryFn: () => AnalyticsReportsService.getReports(params),
+    queryFn: () => analyticsService.reports.getReports(params),
     staleTime: 30000,
   });
 };
@@ -33,7 +27,7 @@ export const useAnalyticsReports = (params?: ReportSearchParams) => {
 export const useAnalyticsReport = (id: string) => {
   return useQuery({
     queryKey: ['analytics-reports', id],
-    queryFn: () => AnalyticsReportsService.getReport(id),
+    queryFn: () => analyticsService.reports.getReports(),
     enabled: !!id,
   });
 };

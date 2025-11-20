@@ -6,7 +6,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/atoms';
-import { Card, Modal, Heading } from '@/components/molecules';
+import { Card, Modal } from '@/components/molecules';
+import { Heading } from '@/components/atoms';
 import { 
   useSupportTicket, 
   useUpdateTicketStatus, 

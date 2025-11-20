@@ -1,4 +1,4 @@
-import { apiClient } from '@/config/api';
+import { apiService } from './base';
 import type {
   ContentItem,
   ContentCategory,
