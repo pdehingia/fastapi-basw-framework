@@ -125,8 +125,8 @@ const CampaignsListPage = () => {
     }
   };
 
-  const campaigns = campaignsData?.data?.items || [];
-  const metadata = campaignsData?.data?.metadata;
+  const campaigns = campaignsData?.data?.data || [];
+  const pagination = campaignsData?.data;
 
   // Table columns
   const columns = [
@@ -359,7 +359,7 @@ const CampaignsListPage = () => {
         <CardHeader>
           <div className="flex justify-between items-center">
             <Heading size="lg">All Campaigns</Heading>
-            <Text className="text-sm text-gray-500">{metadata?.total_items || 0} campaigns</Text>
+            <Text className="text-sm text-gray-500">{pagination?.total || 0} campaigns</Text>
           </div>
         </CardHeader>
         <CardBody>
@@ -369,17 +369,17 @@ const CampaignsListPage = () => {
             loading={isLoading}
             emptyMessage="No campaigns found"
           />
-          {metadata && metadata.total_pages > 1 && (
+          {pagination && pagination.total_pages > 1 && (
             <div className="flex justify-between items-center mt-4 pt-4 border-t">
               <Text className="text-sm text-gray-500">
-                Page {metadata.page} of {metadata.total_pages}
+                Page {pagination.page} of {pagination.total_pages}
               </Text>
               <div className="flex space-x-2">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={!metadata.has_previous}
+                  disabled={pagination.page <= 1}
                 >
                   Previous
                 </Button>
@@ -387,7 +387,7 @@ const CampaignsListPage = () => {
                   variant="secondary"
                   size="sm"
                   onClick={() => setPage((p) => p + 1)}
-                  disabled={!metadata.has_next}
+                  disabled={pagination.page >= pagination.total_pages}
                 >
                   Next
                 </Button>
