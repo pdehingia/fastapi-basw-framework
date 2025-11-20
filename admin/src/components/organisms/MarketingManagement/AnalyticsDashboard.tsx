@@ -349,21 +349,22 @@ export const AnalyticsDashboard = () => {
       </Card>
 
       {/* Channel Performance */}
-      {analyticsData && analyticsData.by_channel.length > 0 && (
+      {analyticsData && analyticsData.campaign_performance?.by_channel && Object.keys(analyticsData.campaign_performance.by_channel).length > 0 && (
         <Card>
           <div className="p-6">
             <Heading size="medium" className="mb-4">Channel Performance</Heading>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {analyticsData.by_channel.map((channel) => (
-                <div key={channel.channel} className="p-4 bg-gray-50 rounded-lg">
+              {Object.entries(analyticsData.campaign_performance.by_channel).map(([channelName, channelData]: [string, any]) => (
+                <div key={channelName} className="p-4 bg-gray-50 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-900 capitalize mb-2">
-                    {channel.channel.replace('_', ' ')}
+                    {channelName.replace('_', ' ')}
                   </h4>
                   <div className="space-y-1 text-sm text-gray-600">
-                    <div>Campaigns: {channel.campaigns}</div>
-                    <div>Spent: ${channel.spent.toLocaleString()}</div>
-                    <div>Conversions: {channel.conversions.toLocaleString()}</div>
+                    <div>Impressions: {channelData.impressions?.toLocaleString() || 0}</div>
+                    <div>Clicks: {channelData.clicks?.toLocaleString() || 0}</div>
+                    <div>Conversions: {channelData.conversions?.toLocaleString() || 0}</div>
+                    <div>ROI: {channelData.roi?.toFixed(2) || '0.00'}x</div>
                   </div>
                 </div>
               ))}

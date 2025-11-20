@@ -294,19 +294,22 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ classNam
         <div className="flex space-x-3">
           <Button
             variant="outline"
-            onClick={() => navigate({ to: '/notifications/templates' })}
+            disabled
+            title="Feature coming soon"
           >
             Manage Templates
           </Button>
           <Button
             variant="outline"
-            onClick={() => navigate({ to: '/notifications/campaigns' })}
+            disabled
+            title="Feature coming soon"
           >
             View Campaigns
           </Button>
           <Button
             variant="primary"
-            onClick={() => navigate({ to: '/notifications/create' })}
+            disabled
+            title="Feature coming soon"
           >
             Create Notification
           </Button>

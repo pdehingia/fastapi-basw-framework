@@ -62,17 +62,11 @@ export {
 
 // Content Management Components
 export { 
-  ContentManager,
-  MediaLibrary
+  ContentManager
 } from './ContentManagement';
 
-// API Integration Components
-export { ApiIntegrationManagement } from './ApiIntegrationManagement';
-
-// Advanced Analytics Components
-export { AdvancedAnalyticsManagement } from './AdvancedAnalyticsManagement';
-export { AdvancedAnalyticsReportBuilder } from './AdvancedAnalyticsReportBuilder';
-export { AdvancedAnalyticsDashboardBuilder } from './AdvancedAnalyticsDashboardBuilder';
+// Note: ApiIntegrationManagement, AdvancedAnalytics components are .bak files - not exported
+// TODO: Restore these components from .bak files if needed
 
 // Export types
 export type { HeaderProps } from './Header';

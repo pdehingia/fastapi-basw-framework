@@ -1,6 +1,7 @@
 export { default as ContentManager } from './ContentManager';
-export { default as MediaLibrary } from './MediaLibrary';
 
 // Export all content management components
 export * from './ContentManager';
-export * from './MediaLibrary';
+
+// Note: MediaLibrary is a .bak file - not exported
+// TODO: Restore MediaLibrary.tsx from .bak if needed
