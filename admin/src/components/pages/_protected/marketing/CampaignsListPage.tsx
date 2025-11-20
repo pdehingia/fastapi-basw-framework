@@ -126,7 +126,7 @@ const CampaignsListPage = () => {
   };
 
   const campaigns = campaignsData?.data?.data || [];
-  const metadata = campaignsData?.data?.pagination;
+  const metadata = campaignsData?.data?.meta;
 
   // Table columns
   const columns = [
@@ -162,12 +162,12 @@ const CampaignsListPage = () => {
         <Badge
           variant={
             campaign.status === 'active'
-              ? 'primary'
+              ? 'success'
               : campaign.status === 'paused'
-              ? 'outline'
+              ? 'warning'
               : campaign.status === 'draft'
-              ? 'secondary'
-              : 'danger'
+              ? 'default'
+              : 'error'
           }
           size="sm"
         >
@@ -287,14 +287,11 @@ const CampaignsListPage = () => {
         { id: '2', label: 'Marketing', href: '/marketing' },
         { id: '3', label: 'Campaigns', href: '/marketing/campaigns', current: true },
       ]}
-      actions={
-        <Button
-          variant="primary"
-          onClick={() => navigate({ to: '/marketing/campaigns' })}
-        >
-          New Campaign
-        </Button>
-      }
+      primaryAction={{
+        label: 'New Campaign',
+        onClick: () => navigate({ to: '/marketing/campaigns' }),
+        variant: 'primary',
+      }}
     >
       {/* Filters */}
       <Card className="mb-6">

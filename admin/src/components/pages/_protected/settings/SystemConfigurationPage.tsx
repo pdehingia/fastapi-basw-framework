@@ -297,17 +297,6 @@ const SystemConfigurationPage = () => {
         { id: '2', label: 'Settings', href: '/settings' },
         { id: '3', label: 'System Configuration', href: '/settings/system', current: true },
       ]}
-      actions={
-        activeTab === 'flags' ? (
-          <Button variant="primary" onClick={() => toast.success('Create feature coming soon')}>
-            New Feature Flag
-          </Button>
-        ) : activeTab === 'notifications' ? (
-          <Button variant="primary" onClick={() => toast.success('Create notification coming soon')}>
-            New Notification
-          </Button>
-        ) : null
-      }
     >
       {/* Tabs */}
       <div className="flex space-x-1 mb-6 border-b">

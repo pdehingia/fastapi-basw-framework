@@ -216,22 +216,11 @@ const AcademyPerformancePage = () => {
         { id: '2', label: 'Analytics', href: '/analytics' },
         { id: '3', label: 'Academy Performance', href: '/analytics/academy', current: true },
       ]}
-      actions={
-        <div className="flex gap-2">
-          <Select 
-            value={period} 
-            onChange={(value) => setPeriod(value as any)}
-            options={[
-              { value: 'day', label: 'Today' },
-              { value: 'week', label: 'This Week' },
-              { value: 'month', label: 'This Month' },
-            ]}
-          />
-          <Button variant="secondary" onClick={handleExport}>
-            Export
-          </Button>
-        </div>
-      }
+      primaryAction={{
+        label: 'Export',
+        onClick: handleExport,
+        variant: 'secondary',
+      }}
     >
       {/* Overview Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
