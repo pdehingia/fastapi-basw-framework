@@ -48,11 +48,9 @@ export {
 } from './MarketingManagement';
 
 // Settings Management Components
-export { 
-  SystemSettingsPage,
-  EditSettingModal,
-  SystemHealthWidget 
-} from './SettingsManagement';
+export { default as SystemSettingsPage } from './SettingsManagement/SystemSettingsPage';
+export { default as EditSettingModal } from './SettingsManagement/EditSettingModal';
+export { default as SystemHealthWidget } from './SettingsManagement/SystemHealthWidget';
 
 // Notification Management Components
 export { 
@@ -65,7 +63,10 @@ export {
   ContentManager
 } from './ContentManagement';
 
-// Note: ApiIntegrationManagement, AdvancedAnalytics components are .bak files - not exported
+// Advanced Analytics Components
+export { AdvancedAnalyticsManagement } from './AdvancedAnalyticsManagement';
+
+// Note: ApiIntegrationManagement components are .bak files - not exported
 // TODO: Restore these components from .bak files if needed
 
 // Export types

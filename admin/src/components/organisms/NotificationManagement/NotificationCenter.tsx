@@ -9,16 +9,17 @@ import {
   Heading, 
   Text, 
   Button, 
-  Badge,
-  IconButton 
+  Badge
 } from '@/components/atoms';
 import { 
   Card, 
   CardHeader, 
   CardBody, 
-  DataTable, 
   Modal 
 } from '@/components/molecules';
+import {
+  DataTable
+} from '@/components/organisms';
 import {
   useNotifications,
   useNotificationRealTimeStats,
@@ -241,39 +242,43 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ classNam
       render: (notification: Notification) => (
         <div className="flex items-center space-x-1">
           {notification.status === 'pending' && (
-            <IconButton
-              icon="🚀"
+            <Button
               size="sm"
               variant="ghost"
               onClick={() => handleSendNotification(notification.id)}
               title="Send Now"
-            />
+            >
+              🚀
+            </Button>
           )}
           {(notification.status === 'pending' || notification.status === 'sent') && (
-            <IconButton
-              icon="❌"
+            <Button
               size="sm"
               variant="ghost"
               onClick={() => handleCancelNotification(notification.id)}
               title="Cancel"
-            />
+            >
+              ❌
+            </Button>
           )}
           {notification.status === 'failed' && (
-            <IconButton
-              icon="🔄"
+            <Button
               size="sm"
               variant="ghost"
               onClick={() => handleRetryNotification(notification.id)}
               title="Retry"
-            />
+            >
+              🔄
+            </Button>
           )}
-          <IconButton
-            icon="🗑️"
+          <Button
             size="sm"
             variant="ghost"
             onClick={() => handleDeleteNotification(notification.id)}
             title="Delete"
-          />
+          >
+            🗑️
+          </Button>
         </div>
       ),
     },

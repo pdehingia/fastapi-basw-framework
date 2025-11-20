@@ -6,7 +6,7 @@
 import { AUTH_ENDPOINTS } from '@/config/api';
 import { apiService } from './base';
 import type { 
-  ApiResponse,
+  
   LoginRequest, 
   LoginResponse, 
   AdminProfile 
@@ -16,7 +16,7 @@ export class AuthService {
   /**
    * Admin login with credentials
    */
-  async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
+  async login(credentials: LoginRequest): Promise<LoginResponse> {
     console.log('🔑 [AUTH] Login request starting...', { username: credentials.username });
     
     // Maya API expects x-www-form-urlencoded for login
@@ -41,40 +41,40 @@ export class AuthService {
       hasData: !!response.data
     });
     
-    return response;
+    return response.data;
   }
 
   /**
    * Get current admin user profile
    */
-  async getProfile(): Promise<ApiResponse<AdminProfile>> {
+  async getProfile(): Promise<AdminProfile> {
     console.log('👤 [AUTH] Getting profile...');
     const response = await apiService.get<AdminProfile>(AUTH_ENDPOINTS.ME);
     console.log('👤 [AUTH] Profile response:', {
       success: response.success,
       hasData: !!response.data
     });
-    return response;
+    return response.data;
   }
 
   /**
    * Refresh authentication token
    */
-  async refreshToken(): Promise<ApiResponse<LoginResponse>> {
+  async refreshToken(): Promise<LoginResponse> {
     return await apiService.post<LoginResponse>(AUTH_ENDPOINTS.REFRESH);
   }
 
   /**
    * Logout admin user
    */
-  async logout(): Promise<ApiResponse<void>> {
+  async logout(): Promise<void> {
     return await apiService.post<void>(AUTH_ENDPOINTS.LOGOUT);
   }
 
   /**
    * Verify token validity
    */
-  async verifyToken(): Promise<ApiResponse<{ valid: boolean }>> {
+  async verifyToken(): Promise<{ valid: boolean }> {
     return await apiService.get<{ valid: boolean }>(AUTH_ENDPOINTS.VERIFY);
   }
 }

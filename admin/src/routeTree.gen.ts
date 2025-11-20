@@ -13,31 +13,56 @@ import { Route as ProtectedRouteRouteImport } from './components/pages/_protecte
 import { Route as AuthLoginRouteImport } from './components/pages/auth/login'
 import { Route as ProtectedUsersIndexRouteRouteImport } from './components/pages/_protected/users/index.route'
 import { Route as ProtectedSupportTicketsIndexRouteRouteImport } from './components/pages/_protected/support-tickets/index.route'
+import { Route as ProtectedSubscriptionsIndexRouteRouteImport } from './components/pages/_protected/subscriptions/index.route'
+import { Route as ProtectedStudentsIndexRouteRouteImport } from './components/pages/_protected/students/index.route'
 import { Route as ProtectedSettingsIndexRouteRouteImport } from './components/pages/_protected/settings/index.route'
 import { Route as ProtectedSessionsIndexRouteRouteImport } from './components/pages/_protected/sessions/index.route'
+import { Route as ProtectedRolesPermissionsIndexRouteRouteImport } from './components/pages/_protected/roles-permissions/index.route'
 import { Route as ProtectedReviewsIndexRouteRouteImport } from './components/pages/_protected/reviews/index.route'
 import { Route as ProtectedPaymentsIndexRouteRouteImport } from './components/pages/_protected/payments/index.route'
+import { Route as ProtectedOtpManagementIndexRouteRouteImport } from './components/pages/_protected/otp-management/index.route'
 import { Route as ProtectedMarketingIndexRouteRouteImport } from './components/pages/_protected/marketing/index.route'
+import { Route as ProtectedFinancialIndexRouteRouteImport } from './components/pages/_protected/financial/index.route'
+import { Route as ProtectedFeatureFlagsIndexRouteRouteImport } from './components/pages/_protected/feature-flags/index.route'
 import { Route as ProtectedDashboardIndexRouteRouteImport } from './components/pages/_protected/dashboard/index.route'
+import { Route as ProtectedContentIndexRouteRouteImport } from './components/pages/_protected/content/index.route'
+import { Route as ProtectedCampaignsIndexRouteRouteImport } from './components/pages/_protected/campaigns/index.route'
 import { Route as ProtectedBookingsIndexRouteRouteImport } from './components/pages/_protected/bookings/index.route'
+import { Route as ProtectedAuditLogsIndexRouteRouteImport } from './components/pages/_protected/audit-logs/index.route'
 import { Route as ProtectedArtistVerificationIndexRouteRouteImport } from './components/pages/_protected/artist-verification/index.route'
 import { Route as ProtectedApiIntegrationsIndexRouteRouteImport } from './components/pages/_protected/api-integrations/index.route'
 import { Route as ProtectedAdvancedAnalyticsIndexRouteRouteImport } from './components/pages/_protected/advanced-analytics/index.route'
 import { Route as ProtectedAdminUsersIndexRouteRouteImport } from './components/pages/_protected/admin-users/index.route'
+import { Route as ProtectedAddressesIndexRouteRouteImport } from './components/pages/_protected/addresses/index.route'
+import { Route as ProtectedSubscriptionsListRouteRouteImport } from './components/pages/_protected/subscriptions/list.route'
+import { Route as ProtectedStudentsListRouteRouteImport } from './components/pages/_protected/students/list.route'
 import { Route as ProtectedSettingsSystemRouteRouteImport } from './components/pages/_protected/settings/system.route'
 import { Route as ProtectedSessionsProviderRouteRouteImport } from './components/pages/_protected/sessions/provider.route'
 import { Route as ProtectedSessionsCustomerRouteRouteImport } from './components/pages/_protected/sessions/customer.route'
 import { Route as ProtectedSessionsAdminRouteRouteImport } from './components/pages/_protected/sessions/admin.route'
+import { Route as ProtectedRolesPermissionsRolesRouteRouteImport } from './components/pages/_protected/roles-permissions/roles.route'
 import { Route as ProtectedReviewsFlaggedRouteRouteImport } from './components/pages/_protected/reviews/flagged.route'
 import { Route as ProtectedReviewsAnalyticsRouteRouteImport } from './components/pages/_protected/reviews/analytics.route'
 import { Route as ProtectedPaymentsDisputesRouteRouteImport } from './components/pages/_protected/payments/disputes.route'
+import { Route as ProtectedOtpManagementListRouteRouteImport } from './components/pages/_protected/otp-management/list.route'
 import { Route as ProtectedMarketingSegmentsRouteRouteImport } from './components/pages/_protected/marketing/segments.route'
 import { Route as ProtectedMarketingPromotionsRouteRouteImport } from './components/pages/_protected/marketing/promotions.route'
 import { Route as ProtectedMarketingCampaignsRouteRouteImport } from './components/pages/_protected/marketing/campaigns.route'
 import { Route as ProtectedMarketingAnalyticsRouteRouteImport } from './components/pages/_protected/marketing/analytics.route'
+import { Route as ProtectedFinancialWalletsRouteRouteImport } from './components/pages/_protected/financial/wallets.route'
+import { Route as ProtectedFinancialTransactionsRouteRouteImport } from './components/pages/_protected/financial/transactions.route'
+import { Route as ProtectedFinancialEarningsRouteRouteImport } from './components/pages/_protected/financial/earnings.route'
+import { Route as ProtectedFeatureFlagsListRouteRouteImport } from './components/pages/_protected/feature-flags/list.route'
+import { Route as ProtectedContentSalonsRouteRouteImport } from './components/pages/_protected/content/salons.route'
+import { Route as ProtectedContentCoursesRouteRouteImport } from './components/pages/_protected/content/courses.route'
+import { Route as ProtectedContentAcademiesRouteRouteImport } from './components/pages/_protected/content/academies.route'
+import { Route as ProtectedCampaignsSmsListRouteRouteImport } from './components/pages/_protected/campaigns/sms-list.route'
+import { Route as ProtectedCampaignsEmailListRouteRouteImport } from './components/pages/_protected/campaigns/email-list.route'
+import { Route as ProtectedAuditLogsActivityRouteRouteImport } from './components/pages/_protected/audit-logs/activity.route'
 import { Route as ProtectedArtistVerificationPortfolioRouteRouteImport } from './components/pages/_protected/artist-verification/portfolio.route'
 import { Route as ProtectedAnalyticsPlatformRouteRouteImport } from './components/pages/_protected/analytics/platform.route'
 import { Route as ProtectedAnalyticsAcademyRouteRouteImport } from './components/pages/_protected/analytics/academy.route'
+import { Route as ProtectedAddressesListRouteRouteImport } from './components/pages/_protected/addresses/list.route'
 import { Route as ProtectedUsersUsersUserIdRouteRouteImport } from './components/pages/_protected/users/users.$userId.route'
 import { Route as ProtectedSupportTicketsSupportTicketsTicketIdRouteRouteImport } from './components/pages/_protected/support-tickets/support-tickets.$ticketId.route'
 import { Route as ProtectedReviewsReviewsReviewIdRouteRouteImport } from './components/pages/_protected/reviews/reviews.$reviewId.route'
@@ -66,6 +91,18 @@ const ProtectedSupportTicketsIndexRouteRoute =
     path: '/support-tickets',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedSubscriptionsIndexRouteRoute =
+  ProtectedSubscriptionsIndexRouteRouteImport.update({
+    id: '/subscriptions/',
+    path: '/subscriptions',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedStudentsIndexRouteRoute =
+  ProtectedStudentsIndexRouteRouteImport.update({
+    id: '/students/',
+    path: '/students',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedSettingsIndexRouteRoute =
   ProtectedSettingsIndexRouteRouteImport.update({
     id: '/settings/',
@@ -76,6 +113,12 @@ const ProtectedSessionsIndexRouteRoute =
   ProtectedSessionsIndexRouteRouteImport.update({
     id: '/sessions/',
     path: '/sessions',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedRolesPermissionsIndexRouteRoute =
+  ProtectedRolesPermissionsIndexRouteRouteImport.update({
+    id: '/roles-permissions/',
+    path: '/roles-permissions',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedReviewsIndexRouteRoute =
@@ -90,10 +133,28 @@ const ProtectedPaymentsIndexRouteRoute =
     path: '/payments',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedOtpManagementIndexRouteRoute =
+  ProtectedOtpManagementIndexRouteRouteImport.update({
+    id: '/otp-management/',
+    path: '/otp-management',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedMarketingIndexRouteRoute =
   ProtectedMarketingIndexRouteRouteImport.update({
     id: '/marketing/',
     path: '/marketing',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedFinancialIndexRouteRoute =
+  ProtectedFinancialIndexRouteRouteImport.update({
+    id: '/financial/',
+    path: '/financial',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedFeatureFlagsIndexRouteRoute =
+  ProtectedFeatureFlagsIndexRouteRouteImport.update({
+    id: '/feature-flags/',
+    path: '/feature-flags',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedDashboardIndexRouteRoute =
@@ -102,10 +163,28 @@ const ProtectedDashboardIndexRouteRoute =
     path: '/dashboard',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedContentIndexRouteRoute =
+  ProtectedContentIndexRouteRouteImport.update({
+    id: '/content/',
+    path: '/content',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedCampaignsIndexRouteRoute =
+  ProtectedCampaignsIndexRouteRouteImport.update({
+    id: '/campaigns/',
+    path: '/campaigns',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedBookingsIndexRouteRoute =
   ProtectedBookingsIndexRouteRouteImport.update({
     id: '/bookings/',
     path: '/bookings',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedAuditLogsIndexRouteRoute =
+  ProtectedAuditLogsIndexRouteRouteImport.update({
+    id: '/audit-logs/',
+    path: '/audit-logs',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedArtistVerificationIndexRouteRoute =
@@ -132,6 +211,24 @@ const ProtectedAdminUsersIndexRouteRoute =
     path: '/admin-users',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedAddressesIndexRouteRoute =
+  ProtectedAddressesIndexRouteRouteImport.update({
+    id: '/addresses/',
+    path: '/addresses',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedSubscriptionsListRouteRoute =
+  ProtectedSubscriptionsListRouteRouteImport.update({
+    id: '/subscriptions/list',
+    path: '/subscriptions/list',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedStudentsListRouteRoute =
+  ProtectedStudentsListRouteRouteImport.update({
+    id: '/students/list',
+    path: '/students/list',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedSettingsSystemRouteRoute =
   ProtectedSettingsSystemRouteRouteImport.update({
     id: '/settings/system',
@@ -156,6 +253,12 @@ const ProtectedSessionsAdminRouteRoute =
     path: '/sessions/admin',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedRolesPermissionsRolesRouteRoute =
+  ProtectedRolesPermissionsRolesRouteRouteImport.update({
+    id: '/roles-permissions/roles',
+    path: '/roles-permissions/roles',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedReviewsFlaggedRouteRoute =
   ProtectedReviewsFlaggedRouteRouteImport.update({
     id: '/reviews/flagged',
@@ -172,6 +275,12 @@ const ProtectedPaymentsDisputesRouteRoute =
   ProtectedPaymentsDisputesRouteRouteImport.update({
     id: '/payments/disputes',
     path: '/payments/disputes',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedOtpManagementListRouteRoute =
+  ProtectedOtpManagementListRouteRouteImport.update({
+    id: '/otp-management/list',
+    path: '/otp-management/list',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedMarketingSegmentsRouteRoute =
@@ -198,6 +307,66 @@ const ProtectedMarketingAnalyticsRouteRoute =
     path: '/marketing/analytics',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedFinancialWalletsRouteRoute =
+  ProtectedFinancialWalletsRouteRouteImport.update({
+    id: '/financial/wallets',
+    path: '/financial/wallets',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedFinancialTransactionsRouteRoute =
+  ProtectedFinancialTransactionsRouteRouteImport.update({
+    id: '/financial/transactions',
+    path: '/financial/transactions',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedFinancialEarningsRouteRoute =
+  ProtectedFinancialEarningsRouteRouteImport.update({
+    id: '/financial/earnings',
+    path: '/financial/earnings',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedFeatureFlagsListRouteRoute =
+  ProtectedFeatureFlagsListRouteRouteImport.update({
+    id: '/feature-flags/list',
+    path: '/feature-flags/list',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedContentSalonsRouteRoute =
+  ProtectedContentSalonsRouteRouteImport.update({
+    id: '/content/salons',
+    path: '/content/salons',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedContentCoursesRouteRoute =
+  ProtectedContentCoursesRouteRouteImport.update({
+    id: '/content/courses',
+    path: '/content/courses',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedContentAcademiesRouteRoute =
+  ProtectedContentAcademiesRouteRouteImport.update({
+    id: '/content/academies',
+    path: '/content/academies',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedCampaignsSmsListRouteRoute =
+  ProtectedCampaignsSmsListRouteRouteImport.update({
+    id: '/campaigns/sms-list',
+    path: '/campaigns/sms-list',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedCampaignsEmailListRouteRoute =
+  ProtectedCampaignsEmailListRouteRouteImport.update({
+    id: '/campaigns/email-list',
+    path: '/campaigns/email-list',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedAuditLogsActivityRouteRoute =
+  ProtectedAuditLogsActivityRouteRouteImport.update({
+    id: '/audit-logs/activity',
+    path: '/audit-logs/activity',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedArtistVerificationPortfolioRouteRoute =
   ProtectedArtistVerificationPortfolioRouteRouteImport.update({
     id: '/artist-verification/portfolio',
@@ -214,6 +383,12 @@ const ProtectedAnalyticsAcademyRouteRoute =
   ProtectedAnalyticsAcademyRouteRouteImport.update({
     id: '/analytics/academy',
     path: '/analytics/academy',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedAddressesListRouteRoute =
+  ProtectedAddressesListRouteRouteImport.update({
+    id: '/addresses/list',
+    path: '/addresses/list',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedUsersUsersUserIdRouteRoute =
@@ -257,31 +432,56 @@ const ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute =
 
 export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
+  '/addresses/list': typeof ProtectedAddressesListRouteRoute
   '/analytics/academy': typeof ProtectedAnalyticsAcademyRouteRoute
   '/analytics/platform': typeof ProtectedAnalyticsPlatformRouteRoute
   '/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
+  '/audit-logs/activity': typeof ProtectedAuditLogsActivityRouteRoute
+  '/campaigns/email-list': typeof ProtectedCampaignsEmailListRouteRoute
+  '/campaigns/sms-list': typeof ProtectedCampaignsSmsListRouteRoute
+  '/content/academies': typeof ProtectedContentAcademiesRouteRoute
+  '/content/courses': typeof ProtectedContentCoursesRouteRoute
+  '/content/salons': typeof ProtectedContentSalonsRouteRoute
+  '/feature-flags/list': typeof ProtectedFeatureFlagsListRouteRoute
+  '/financial/earnings': typeof ProtectedFinancialEarningsRouteRoute
+  '/financial/transactions': typeof ProtectedFinancialTransactionsRouteRoute
+  '/financial/wallets': typeof ProtectedFinancialWalletsRouteRoute
   '/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
   '/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
   '/marketing/promotions': typeof ProtectedMarketingPromotionsRouteRoute
   '/marketing/segments': typeof ProtectedMarketingSegmentsRouteRoute
+  '/otp-management/list': typeof ProtectedOtpManagementListRouteRoute
   '/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/roles-permissions/roles': typeof ProtectedRolesPermissionsRolesRouteRoute
   '/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
   '/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
   '/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
   '/settings/system': typeof ProtectedSettingsSystemRouteRoute
+  '/students/list': typeof ProtectedStudentsListRouteRoute
+  '/subscriptions/list': typeof ProtectedSubscriptionsListRouteRoute
+  '/addresses': typeof ProtectedAddressesIndexRouteRoute
   '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
   '/advanced-analytics': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   '/api-integrations': typeof ProtectedApiIntegrationsIndexRouteRoute
   '/artist-verification': typeof ProtectedArtistVerificationIndexRouteRoute
+  '/audit-logs': typeof ProtectedAuditLogsIndexRouteRoute
   '/bookings': typeof ProtectedBookingsIndexRouteRoute
+  '/campaigns': typeof ProtectedCampaignsIndexRouteRoute
+  '/content': typeof ProtectedContentIndexRouteRoute
   '/dashboard': typeof ProtectedDashboardIndexRouteRoute
+  '/feature-flags': typeof ProtectedFeatureFlagsIndexRouteRoute
+  '/financial': typeof ProtectedFinancialIndexRouteRoute
   '/marketing': typeof ProtectedMarketingIndexRouteRoute
+  '/otp-management': typeof ProtectedOtpManagementIndexRouteRoute
   '/payments': typeof ProtectedPaymentsIndexRouteRoute
   '/reviews': typeof ProtectedReviewsIndexRouteRoute
+  '/roles-permissions': typeof ProtectedRolesPermissionsIndexRouteRoute
   '/sessions': typeof ProtectedSessionsIndexRouteRoute
   '/settings': typeof ProtectedSettingsIndexRouteRoute
+  '/students': typeof ProtectedStudentsIndexRouteRoute
+  '/subscriptions': typeof ProtectedSubscriptionsIndexRouteRoute
   '/support-tickets': typeof ProtectedSupportTicketsIndexRouteRoute
   '/users': typeof ProtectedUsersIndexRouteRoute
   '/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
@@ -293,31 +493,56 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
+  '/addresses/list': typeof ProtectedAddressesListRouteRoute
   '/analytics/academy': typeof ProtectedAnalyticsAcademyRouteRoute
   '/analytics/platform': typeof ProtectedAnalyticsPlatformRouteRoute
   '/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
+  '/audit-logs/activity': typeof ProtectedAuditLogsActivityRouteRoute
+  '/campaigns/email-list': typeof ProtectedCampaignsEmailListRouteRoute
+  '/campaigns/sms-list': typeof ProtectedCampaignsSmsListRouteRoute
+  '/content/academies': typeof ProtectedContentAcademiesRouteRoute
+  '/content/courses': typeof ProtectedContentCoursesRouteRoute
+  '/content/salons': typeof ProtectedContentSalonsRouteRoute
+  '/feature-flags/list': typeof ProtectedFeatureFlagsListRouteRoute
+  '/financial/earnings': typeof ProtectedFinancialEarningsRouteRoute
+  '/financial/transactions': typeof ProtectedFinancialTransactionsRouteRoute
+  '/financial/wallets': typeof ProtectedFinancialWalletsRouteRoute
   '/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
   '/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
   '/marketing/promotions': typeof ProtectedMarketingPromotionsRouteRoute
   '/marketing/segments': typeof ProtectedMarketingSegmentsRouteRoute
+  '/otp-management/list': typeof ProtectedOtpManagementListRouteRoute
   '/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/roles-permissions/roles': typeof ProtectedRolesPermissionsRolesRouteRoute
   '/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
   '/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
   '/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
   '/settings/system': typeof ProtectedSettingsSystemRouteRoute
+  '/students/list': typeof ProtectedStudentsListRouteRoute
+  '/subscriptions/list': typeof ProtectedSubscriptionsListRouteRoute
+  '/addresses': typeof ProtectedAddressesIndexRouteRoute
   '/admin-users': typeof ProtectedAdminUsersIndexRouteRoute
   '/advanced-analytics': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   '/api-integrations': typeof ProtectedApiIntegrationsIndexRouteRoute
   '/artist-verification': typeof ProtectedArtistVerificationIndexRouteRoute
+  '/audit-logs': typeof ProtectedAuditLogsIndexRouteRoute
   '/bookings': typeof ProtectedBookingsIndexRouteRoute
+  '/campaigns': typeof ProtectedCampaignsIndexRouteRoute
+  '/content': typeof ProtectedContentIndexRouteRoute
   '/dashboard': typeof ProtectedDashboardIndexRouteRoute
+  '/feature-flags': typeof ProtectedFeatureFlagsIndexRouteRoute
+  '/financial': typeof ProtectedFinancialIndexRouteRoute
   '/marketing': typeof ProtectedMarketingIndexRouteRoute
+  '/otp-management': typeof ProtectedOtpManagementIndexRouteRoute
   '/payments': typeof ProtectedPaymentsIndexRouteRoute
   '/reviews': typeof ProtectedReviewsIndexRouteRoute
+  '/roles-permissions': typeof ProtectedRolesPermissionsIndexRouteRoute
   '/sessions': typeof ProtectedSessionsIndexRouteRoute
   '/settings': typeof ProtectedSettingsIndexRouteRoute
+  '/students': typeof ProtectedStudentsIndexRouteRoute
+  '/subscriptions': typeof ProtectedSubscriptionsIndexRouteRoute
   '/support-tickets': typeof ProtectedSupportTicketsIndexRouteRoute
   '/users': typeof ProtectedUsersIndexRouteRoute
   '/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
@@ -331,31 +556,56 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
+  '/_protected/addresses/list': typeof ProtectedAddressesListRouteRoute
   '/_protected/analytics/academy': typeof ProtectedAnalyticsAcademyRouteRoute
   '/_protected/analytics/platform': typeof ProtectedAnalyticsPlatformRouteRoute
   '/_protected/artist-verification/portfolio': typeof ProtectedArtistVerificationPortfolioRouteRoute
+  '/_protected/audit-logs/activity': typeof ProtectedAuditLogsActivityRouteRoute
+  '/_protected/campaigns/email-list': typeof ProtectedCampaignsEmailListRouteRoute
+  '/_protected/campaigns/sms-list': typeof ProtectedCampaignsSmsListRouteRoute
+  '/_protected/content/academies': typeof ProtectedContentAcademiesRouteRoute
+  '/_protected/content/courses': typeof ProtectedContentCoursesRouteRoute
+  '/_protected/content/salons': typeof ProtectedContentSalonsRouteRoute
+  '/_protected/feature-flags/list': typeof ProtectedFeatureFlagsListRouteRoute
+  '/_protected/financial/earnings': typeof ProtectedFinancialEarningsRouteRoute
+  '/_protected/financial/transactions': typeof ProtectedFinancialTransactionsRouteRoute
+  '/_protected/financial/wallets': typeof ProtectedFinancialWalletsRouteRoute
   '/_protected/marketing/analytics': typeof ProtectedMarketingAnalyticsRouteRoute
   '/_protected/marketing/campaigns': typeof ProtectedMarketingCampaignsRouteRoute
   '/_protected/marketing/promotions': typeof ProtectedMarketingPromotionsRouteRoute
   '/_protected/marketing/segments': typeof ProtectedMarketingSegmentsRouteRoute
+  '/_protected/otp-management/list': typeof ProtectedOtpManagementListRouteRoute
   '/_protected/payments/disputes': typeof ProtectedPaymentsDisputesRouteRoute
   '/_protected/reviews/analytics': typeof ProtectedReviewsAnalyticsRouteRoute
   '/_protected/reviews/flagged': typeof ProtectedReviewsFlaggedRouteRoute
+  '/_protected/roles-permissions/roles': typeof ProtectedRolesPermissionsRolesRouteRoute
   '/_protected/sessions/admin': typeof ProtectedSessionsAdminRouteRoute
   '/_protected/sessions/customer': typeof ProtectedSessionsCustomerRouteRoute
   '/_protected/sessions/provider': typeof ProtectedSessionsProviderRouteRoute
   '/_protected/settings/system': typeof ProtectedSettingsSystemRouteRoute
+  '/_protected/students/list': typeof ProtectedStudentsListRouteRoute
+  '/_protected/subscriptions/list': typeof ProtectedSubscriptionsListRouteRoute
+  '/_protected/addresses/': typeof ProtectedAddressesIndexRouteRoute
   '/_protected/admin-users/': typeof ProtectedAdminUsersIndexRouteRoute
   '/_protected/advanced-analytics/': typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   '/_protected/api-integrations/': typeof ProtectedApiIntegrationsIndexRouteRoute
   '/_protected/artist-verification/': typeof ProtectedArtistVerificationIndexRouteRoute
+  '/_protected/audit-logs/': typeof ProtectedAuditLogsIndexRouteRoute
   '/_protected/bookings/': typeof ProtectedBookingsIndexRouteRoute
+  '/_protected/campaigns/': typeof ProtectedCampaignsIndexRouteRoute
+  '/_protected/content/': typeof ProtectedContentIndexRouteRoute
   '/_protected/dashboard/': typeof ProtectedDashboardIndexRouteRoute
+  '/_protected/feature-flags/': typeof ProtectedFeatureFlagsIndexRouteRoute
+  '/_protected/financial/': typeof ProtectedFinancialIndexRouteRoute
   '/_protected/marketing/': typeof ProtectedMarketingIndexRouteRoute
+  '/_protected/otp-management/': typeof ProtectedOtpManagementIndexRouteRoute
   '/_protected/payments/': typeof ProtectedPaymentsIndexRouteRoute
   '/_protected/reviews/': typeof ProtectedReviewsIndexRouteRoute
+  '/_protected/roles-permissions/': typeof ProtectedRolesPermissionsIndexRouteRoute
   '/_protected/sessions/': typeof ProtectedSessionsIndexRouteRoute
   '/_protected/settings/': typeof ProtectedSettingsIndexRouteRoute
+  '/_protected/students/': typeof ProtectedStudentsIndexRouteRoute
+  '/_protected/subscriptions/': typeof ProtectedSubscriptionsIndexRouteRoute
   '/_protected/support-tickets/': typeof ProtectedSupportTicketsIndexRouteRoute
   '/_protected/users/': typeof ProtectedUsersIndexRouteRoute
   '/_protected/admin-users/admin-users/$adminUserId': typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
@@ -369,31 +619,56 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth/login'
+    | '/addresses/list'
     | '/analytics/academy'
     | '/analytics/platform'
     | '/artist-verification/portfolio'
+    | '/audit-logs/activity'
+    | '/campaigns/email-list'
+    | '/campaigns/sms-list'
+    | '/content/academies'
+    | '/content/courses'
+    | '/content/salons'
+    | '/feature-flags/list'
+    | '/financial/earnings'
+    | '/financial/transactions'
+    | '/financial/wallets'
     | '/marketing/analytics'
     | '/marketing/campaigns'
     | '/marketing/promotions'
     | '/marketing/segments'
+    | '/otp-management/list'
     | '/payments/disputes'
     | '/reviews/analytics'
     | '/reviews/flagged'
+    | '/roles-permissions/roles'
     | '/sessions/admin'
     | '/sessions/customer'
     | '/sessions/provider'
     | '/settings/system'
+    | '/students/list'
+    | '/subscriptions/list'
+    | '/addresses'
     | '/admin-users'
     | '/advanced-analytics'
     | '/api-integrations'
     | '/artist-verification'
+    | '/audit-logs'
     | '/bookings'
+    | '/campaigns'
+    | '/content'
     | '/dashboard'
+    | '/feature-flags'
+    | '/financial'
     | '/marketing'
+    | '/otp-management'
     | '/payments'
     | '/reviews'
+    | '/roles-permissions'
     | '/sessions'
     | '/settings'
+    | '/students'
+    | '/subscriptions'
     | '/support-tickets'
     | '/users'
     | '/admin-users/admin-users/$adminUserId'
@@ -405,31 +680,56 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth/login'
+    | '/addresses/list'
     | '/analytics/academy'
     | '/analytics/platform'
     | '/artist-verification/portfolio'
+    | '/audit-logs/activity'
+    | '/campaigns/email-list'
+    | '/campaigns/sms-list'
+    | '/content/academies'
+    | '/content/courses'
+    | '/content/salons'
+    | '/feature-flags/list'
+    | '/financial/earnings'
+    | '/financial/transactions'
+    | '/financial/wallets'
     | '/marketing/analytics'
     | '/marketing/campaigns'
     | '/marketing/promotions'
     | '/marketing/segments'
+    | '/otp-management/list'
     | '/payments/disputes'
     | '/reviews/analytics'
     | '/reviews/flagged'
+    | '/roles-permissions/roles'
     | '/sessions/admin'
     | '/sessions/customer'
     | '/sessions/provider'
     | '/settings/system'
+    | '/students/list'
+    | '/subscriptions/list'
+    | '/addresses'
     | '/admin-users'
     | '/advanced-analytics'
     | '/api-integrations'
     | '/artist-verification'
+    | '/audit-logs'
     | '/bookings'
+    | '/campaigns'
+    | '/content'
     | '/dashboard'
+    | '/feature-flags'
+    | '/financial'
     | '/marketing'
+    | '/otp-management'
     | '/payments'
     | '/reviews'
+    | '/roles-permissions'
     | '/sessions'
     | '/settings'
+    | '/students'
+    | '/subscriptions'
     | '/support-tickets'
     | '/users'
     | '/admin-users/admin-users/$adminUserId'
@@ -442,31 +742,56 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_protected'
     | '/auth/login'
+    | '/_protected/addresses/list'
     | '/_protected/analytics/academy'
     | '/_protected/analytics/platform'
     | '/_protected/artist-verification/portfolio'
+    | '/_protected/audit-logs/activity'
+    | '/_protected/campaigns/email-list'
+    | '/_protected/campaigns/sms-list'
+    | '/_protected/content/academies'
+    | '/_protected/content/courses'
+    | '/_protected/content/salons'
+    | '/_protected/feature-flags/list'
+    | '/_protected/financial/earnings'
+    | '/_protected/financial/transactions'
+    | '/_protected/financial/wallets'
     | '/_protected/marketing/analytics'
     | '/_protected/marketing/campaigns'
     | '/_protected/marketing/promotions'
     | '/_protected/marketing/segments'
+    | '/_protected/otp-management/list'
     | '/_protected/payments/disputes'
     | '/_protected/reviews/analytics'
     | '/_protected/reviews/flagged'
+    | '/_protected/roles-permissions/roles'
     | '/_protected/sessions/admin'
     | '/_protected/sessions/customer'
     | '/_protected/sessions/provider'
     | '/_protected/settings/system'
+    | '/_protected/students/list'
+    | '/_protected/subscriptions/list'
+    | '/_protected/addresses/'
     | '/_protected/admin-users/'
     | '/_protected/advanced-analytics/'
     | '/_protected/api-integrations/'
     | '/_protected/artist-verification/'
+    | '/_protected/audit-logs/'
     | '/_protected/bookings/'
+    | '/_protected/campaigns/'
+    | '/_protected/content/'
     | '/_protected/dashboard/'
+    | '/_protected/feature-flags/'
+    | '/_protected/financial/'
     | '/_protected/marketing/'
+    | '/_protected/otp-management/'
     | '/_protected/payments/'
     | '/_protected/reviews/'
+    | '/_protected/roles-permissions/'
     | '/_protected/sessions/'
     | '/_protected/settings/'
+    | '/_protected/students/'
+    | '/_protected/subscriptions/'
     | '/_protected/support-tickets/'
     | '/_protected/users/'
     | '/_protected/admin-users/admin-users/$adminUserId'
@@ -512,6 +837,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedSupportTicketsIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/subscriptions/': {
+      id: '/_protected/subscriptions/'
+      path: '/subscriptions'
+      fullPath: '/subscriptions'
+      preLoaderRoute: typeof ProtectedSubscriptionsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/students/': {
+      id: '/_protected/students/'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof ProtectedStudentsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/settings/': {
       id: '/_protected/settings/'
       path: '/settings'
@@ -524,6 +863,13 @@ declare module '@tanstack/react-router' {
       path: '/sessions'
       fullPath: '/sessions'
       preLoaderRoute: typeof ProtectedSessionsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/roles-permissions/': {
+      id: '/_protected/roles-permissions/'
+      path: '/roles-permissions'
+      fullPath: '/roles-permissions'
+      preLoaderRoute: typeof ProtectedRolesPermissionsIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/reviews/': {
@@ -540,11 +886,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedPaymentsIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/otp-management/': {
+      id: '/_protected/otp-management/'
+      path: '/otp-management'
+      fullPath: '/otp-management'
+      preLoaderRoute: typeof ProtectedOtpManagementIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/marketing/': {
       id: '/_protected/marketing/'
       path: '/marketing'
       fullPath: '/marketing'
       preLoaderRoute: typeof ProtectedMarketingIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/financial/': {
+      id: '/_protected/financial/'
+      path: '/financial'
+      fullPath: '/financial'
+      preLoaderRoute: typeof ProtectedFinancialIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/feature-flags/': {
+      id: '/_protected/feature-flags/'
+      path: '/feature-flags'
+      fullPath: '/feature-flags'
+      preLoaderRoute: typeof ProtectedFeatureFlagsIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/dashboard/': {
@@ -554,11 +921,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/content/': {
+      id: '/_protected/content/'
+      path: '/content'
+      fullPath: '/content'
+      preLoaderRoute: typeof ProtectedContentIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/campaigns/': {
+      id: '/_protected/campaigns/'
+      path: '/campaigns'
+      fullPath: '/campaigns'
+      preLoaderRoute: typeof ProtectedCampaignsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/bookings/': {
       id: '/_protected/bookings/'
       path: '/bookings'
       fullPath: '/bookings'
       preLoaderRoute: typeof ProtectedBookingsIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/audit-logs/': {
+      id: '/_protected/audit-logs/'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof ProtectedAuditLogsIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/artist-verification/': {
@@ -589,6 +977,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedAdminUsersIndexRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/addresses/': {
+      id: '/_protected/addresses/'
+      path: '/addresses'
+      fullPath: '/addresses'
+      preLoaderRoute: typeof ProtectedAddressesIndexRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/subscriptions/list': {
+      id: '/_protected/subscriptions/list'
+      path: '/subscriptions/list'
+      fullPath: '/subscriptions/list'
+      preLoaderRoute: typeof ProtectedSubscriptionsListRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/students/list': {
+      id: '/_protected/students/list'
+      path: '/students/list'
+      fullPath: '/students/list'
+      preLoaderRoute: typeof ProtectedStudentsListRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/settings/system': {
       id: '/_protected/settings/system'
       path: '/settings/system'
@@ -617,6 +1026,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedSessionsAdminRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/roles-permissions/roles': {
+      id: '/_protected/roles-permissions/roles'
+      path: '/roles-permissions/roles'
+      fullPath: '/roles-permissions/roles'
+      preLoaderRoute: typeof ProtectedRolesPermissionsRolesRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/reviews/flagged': {
       id: '/_protected/reviews/flagged'
       path: '/reviews/flagged'
@@ -636,6 +1052,13 @@ declare module '@tanstack/react-router' {
       path: '/payments/disputes'
       fullPath: '/payments/disputes'
       preLoaderRoute: typeof ProtectedPaymentsDisputesRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/otp-management/list': {
+      id: '/_protected/otp-management/list'
+      path: '/otp-management/list'
+      fullPath: '/otp-management/list'
+      preLoaderRoute: typeof ProtectedOtpManagementListRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/marketing/segments': {
@@ -666,6 +1089,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedMarketingAnalyticsRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/financial/wallets': {
+      id: '/_protected/financial/wallets'
+      path: '/financial/wallets'
+      fullPath: '/financial/wallets'
+      preLoaderRoute: typeof ProtectedFinancialWalletsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/financial/transactions': {
+      id: '/_protected/financial/transactions'
+      path: '/financial/transactions'
+      fullPath: '/financial/transactions'
+      preLoaderRoute: typeof ProtectedFinancialTransactionsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/financial/earnings': {
+      id: '/_protected/financial/earnings'
+      path: '/financial/earnings'
+      fullPath: '/financial/earnings'
+      preLoaderRoute: typeof ProtectedFinancialEarningsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/feature-flags/list': {
+      id: '/_protected/feature-flags/list'
+      path: '/feature-flags/list'
+      fullPath: '/feature-flags/list'
+      preLoaderRoute: typeof ProtectedFeatureFlagsListRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/content/salons': {
+      id: '/_protected/content/salons'
+      path: '/content/salons'
+      fullPath: '/content/salons'
+      preLoaderRoute: typeof ProtectedContentSalonsRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/content/courses': {
+      id: '/_protected/content/courses'
+      path: '/content/courses'
+      fullPath: '/content/courses'
+      preLoaderRoute: typeof ProtectedContentCoursesRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/content/academies': {
+      id: '/_protected/content/academies'
+      path: '/content/academies'
+      fullPath: '/content/academies'
+      preLoaderRoute: typeof ProtectedContentAcademiesRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/campaigns/sms-list': {
+      id: '/_protected/campaigns/sms-list'
+      path: '/campaigns/sms-list'
+      fullPath: '/campaigns/sms-list'
+      preLoaderRoute: typeof ProtectedCampaignsSmsListRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/campaigns/email-list': {
+      id: '/_protected/campaigns/email-list'
+      path: '/campaigns/email-list'
+      fullPath: '/campaigns/email-list'
+      preLoaderRoute: typeof ProtectedCampaignsEmailListRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/audit-logs/activity': {
+      id: '/_protected/audit-logs/activity'
+      path: '/audit-logs/activity'
+      fullPath: '/audit-logs/activity'
+      preLoaderRoute: typeof ProtectedAuditLogsActivityRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/artist-verification/portfolio': {
       id: '/_protected/artist-verification/portfolio'
       path: '/artist-verification/portfolio'
@@ -685,6 +1178,13 @@ declare module '@tanstack/react-router' {
       path: '/analytics/academy'
       fullPath: '/analytics/academy'
       preLoaderRoute: typeof ProtectedAnalyticsAcademyRouteRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/addresses/list': {
+      id: '/_protected/addresses/list'
+      path: '/addresses/list'
+      fullPath: '/addresses/list'
+      preLoaderRoute: typeof ProtectedAddressesListRouteRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/users/users/$userId': {
@@ -733,31 +1233,56 @@ declare module '@tanstack/react-router' {
 }
 
 interface ProtectedRouteRouteChildren {
+  ProtectedAddressesListRouteRoute: typeof ProtectedAddressesListRouteRoute
   ProtectedAnalyticsAcademyRouteRoute: typeof ProtectedAnalyticsAcademyRouteRoute
   ProtectedAnalyticsPlatformRouteRoute: typeof ProtectedAnalyticsPlatformRouteRoute
   ProtectedArtistVerificationPortfolioRouteRoute: typeof ProtectedArtistVerificationPortfolioRouteRoute
+  ProtectedAuditLogsActivityRouteRoute: typeof ProtectedAuditLogsActivityRouteRoute
+  ProtectedCampaignsEmailListRouteRoute: typeof ProtectedCampaignsEmailListRouteRoute
+  ProtectedCampaignsSmsListRouteRoute: typeof ProtectedCampaignsSmsListRouteRoute
+  ProtectedContentAcademiesRouteRoute: typeof ProtectedContentAcademiesRouteRoute
+  ProtectedContentCoursesRouteRoute: typeof ProtectedContentCoursesRouteRoute
+  ProtectedContentSalonsRouteRoute: typeof ProtectedContentSalonsRouteRoute
+  ProtectedFeatureFlagsListRouteRoute: typeof ProtectedFeatureFlagsListRouteRoute
+  ProtectedFinancialEarningsRouteRoute: typeof ProtectedFinancialEarningsRouteRoute
+  ProtectedFinancialTransactionsRouteRoute: typeof ProtectedFinancialTransactionsRouteRoute
+  ProtectedFinancialWalletsRouteRoute: typeof ProtectedFinancialWalletsRouteRoute
   ProtectedMarketingAnalyticsRouteRoute: typeof ProtectedMarketingAnalyticsRouteRoute
   ProtectedMarketingCampaignsRouteRoute: typeof ProtectedMarketingCampaignsRouteRoute
   ProtectedMarketingPromotionsRouteRoute: typeof ProtectedMarketingPromotionsRouteRoute
   ProtectedMarketingSegmentsRouteRoute: typeof ProtectedMarketingSegmentsRouteRoute
+  ProtectedOtpManagementListRouteRoute: typeof ProtectedOtpManagementListRouteRoute
   ProtectedPaymentsDisputesRouteRoute: typeof ProtectedPaymentsDisputesRouteRoute
   ProtectedReviewsAnalyticsRouteRoute: typeof ProtectedReviewsAnalyticsRouteRoute
   ProtectedReviewsFlaggedRouteRoute: typeof ProtectedReviewsFlaggedRouteRoute
+  ProtectedRolesPermissionsRolesRouteRoute: typeof ProtectedRolesPermissionsRolesRouteRoute
   ProtectedSessionsAdminRouteRoute: typeof ProtectedSessionsAdminRouteRoute
   ProtectedSessionsCustomerRouteRoute: typeof ProtectedSessionsCustomerRouteRoute
   ProtectedSessionsProviderRouteRoute: typeof ProtectedSessionsProviderRouteRoute
   ProtectedSettingsSystemRouteRoute: typeof ProtectedSettingsSystemRouteRoute
+  ProtectedStudentsListRouteRoute: typeof ProtectedStudentsListRouteRoute
+  ProtectedSubscriptionsListRouteRoute: typeof ProtectedSubscriptionsListRouteRoute
+  ProtectedAddressesIndexRouteRoute: typeof ProtectedAddressesIndexRouteRoute
   ProtectedAdminUsersIndexRouteRoute: typeof ProtectedAdminUsersIndexRouteRoute
   ProtectedAdvancedAnalyticsIndexRouteRoute: typeof ProtectedAdvancedAnalyticsIndexRouteRoute
   ProtectedApiIntegrationsIndexRouteRoute: typeof ProtectedApiIntegrationsIndexRouteRoute
   ProtectedArtistVerificationIndexRouteRoute: typeof ProtectedArtistVerificationIndexRouteRoute
+  ProtectedAuditLogsIndexRouteRoute: typeof ProtectedAuditLogsIndexRouteRoute
   ProtectedBookingsIndexRouteRoute: typeof ProtectedBookingsIndexRouteRoute
+  ProtectedCampaignsIndexRouteRoute: typeof ProtectedCampaignsIndexRouteRoute
+  ProtectedContentIndexRouteRoute: typeof ProtectedContentIndexRouteRoute
   ProtectedDashboardIndexRouteRoute: typeof ProtectedDashboardIndexRouteRoute
+  ProtectedFeatureFlagsIndexRouteRoute: typeof ProtectedFeatureFlagsIndexRouteRoute
+  ProtectedFinancialIndexRouteRoute: typeof ProtectedFinancialIndexRouteRoute
   ProtectedMarketingIndexRouteRoute: typeof ProtectedMarketingIndexRouteRoute
+  ProtectedOtpManagementIndexRouteRoute: typeof ProtectedOtpManagementIndexRouteRoute
   ProtectedPaymentsIndexRouteRoute: typeof ProtectedPaymentsIndexRouteRoute
   ProtectedReviewsIndexRouteRoute: typeof ProtectedReviewsIndexRouteRoute
+  ProtectedRolesPermissionsIndexRouteRoute: typeof ProtectedRolesPermissionsIndexRouteRoute
   ProtectedSessionsIndexRouteRoute: typeof ProtectedSessionsIndexRouteRoute
   ProtectedSettingsIndexRouteRoute: typeof ProtectedSettingsIndexRouteRoute
+  ProtectedStudentsIndexRouteRoute: typeof ProtectedStudentsIndexRouteRoute
+  ProtectedSubscriptionsIndexRouteRoute: typeof ProtectedSubscriptionsIndexRouteRoute
   ProtectedSupportTicketsIndexRouteRoute: typeof ProtectedSupportTicketsIndexRouteRoute
   ProtectedUsersIndexRouteRoute: typeof ProtectedUsersIndexRouteRoute
   ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute: typeof ProtectedAdminUsersAdminUsersAdminUserIdRouteRoute
@@ -769,22 +1294,40 @@ interface ProtectedRouteRouteChildren {
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
+  ProtectedAddressesListRouteRoute: ProtectedAddressesListRouteRoute,
   ProtectedAnalyticsAcademyRouteRoute: ProtectedAnalyticsAcademyRouteRoute,
   ProtectedAnalyticsPlatformRouteRoute: ProtectedAnalyticsPlatformRouteRoute,
   ProtectedArtistVerificationPortfolioRouteRoute:
     ProtectedArtistVerificationPortfolioRouteRoute,
+  ProtectedAuditLogsActivityRouteRoute: ProtectedAuditLogsActivityRouteRoute,
+  ProtectedCampaignsEmailListRouteRoute: ProtectedCampaignsEmailListRouteRoute,
+  ProtectedCampaignsSmsListRouteRoute: ProtectedCampaignsSmsListRouteRoute,
+  ProtectedContentAcademiesRouteRoute: ProtectedContentAcademiesRouteRoute,
+  ProtectedContentCoursesRouteRoute: ProtectedContentCoursesRouteRoute,
+  ProtectedContentSalonsRouteRoute: ProtectedContentSalonsRouteRoute,
+  ProtectedFeatureFlagsListRouteRoute: ProtectedFeatureFlagsListRouteRoute,
+  ProtectedFinancialEarningsRouteRoute: ProtectedFinancialEarningsRouteRoute,
+  ProtectedFinancialTransactionsRouteRoute:
+    ProtectedFinancialTransactionsRouteRoute,
+  ProtectedFinancialWalletsRouteRoute: ProtectedFinancialWalletsRouteRoute,
   ProtectedMarketingAnalyticsRouteRoute: ProtectedMarketingAnalyticsRouteRoute,
   ProtectedMarketingCampaignsRouteRoute: ProtectedMarketingCampaignsRouteRoute,
   ProtectedMarketingPromotionsRouteRoute:
     ProtectedMarketingPromotionsRouteRoute,
   ProtectedMarketingSegmentsRouteRoute: ProtectedMarketingSegmentsRouteRoute,
+  ProtectedOtpManagementListRouteRoute: ProtectedOtpManagementListRouteRoute,
   ProtectedPaymentsDisputesRouteRoute: ProtectedPaymentsDisputesRouteRoute,
   ProtectedReviewsAnalyticsRouteRoute: ProtectedReviewsAnalyticsRouteRoute,
   ProtectedReviewsFlaggedRouteRoute: ProtectedReviewsFlaggedRouteRoute,
+  ProtectedRolesPermissionsRolesRouteRoute:
+    ProtectedRolesPermissionsRolesRouteRoute,
   ProtectedSessionsAdminRouteRoute: ProtectedSessionsAdminRouteRoute,
   ProtectedSessionsCustomerRouteRoute: ProtectedSessionsCustomerRouteRoute,
   ProtectedSessionsProviderRouteRoute: ProtectedSessionsProviderRouteRoute,
   ProtectedSettingsSystemRouteRoute: ProtectedSettingsSystemRouteRoute,
+  ProtectedStudentsListRouteRoute: ProtectedStudentsListRouteRoute,
+  ProtectedSubscriptionsListRouteRoute: ProtectedSubscriptionsListRouteRoute,
+  ProtectedAddressesIndexRouteRoute: ProtectedAddressesIndexRouteRoute,
   ProtectedAdminUsersIndexRouteRoute: ProtectedAdminUsersIndexRouteRoute,
   ProtectedAdvancedAnalyticsIndexRouteRoute:
     ProtectedAdvancedAnalyticsIndexRouteRoute,
@@ -792,13 +1335,23 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
     ProtectedApiIntegrationsIndexRouteRoute,
   ProtectedArtistVerificationIndexRouteRoute:
     ProtectedArtistVerificationIndexRouteRoute,
+  ProtectedAuditLogsIndexRouteRoute: ProtectedAuditLogsIndexRouteRoute,
   ProtectedBookingsIndexRouteRoute: ProtectedBookingsIndexRouteRoute,
+  ProtectedCampaignsIndexRouteRoute: ProtectedCampaignsIndexRouteRoute,
+  ProtectedContentIndexRouteRoute: ProtectedContentIndexRouteRoute,
   ProtectedDashboardIndexRouteRoute: ProtectedDashboardIndexRouteRoute,
+  ProtectedFeatureFlagsIndexRouteRoute: ProtectedFeatureFlagsIndexRouteRoute,
+  ProtectedFinancialIndexRouteRoute: ProtectedFinancialIndexRouteRoute,
   ProtectedMarketingIndexRouteRoute: ProtectedMarketingIndexRouteRoute,
+  ProtectedOtpManagementIndexRouteRoute: ProtectedOtpManagementIndexRouteRoute,
   ProtectedPaymentsIndexRouteRoute: ProtectedPaymentsIndexRouteRoute,
   ProtectedReviewsIndexRouteRoute: ProtectedReviewsIndexRouteRoute,
+  ProtectedRolesPermissionsIndexRouteRoute:
+    ProtectedRolesPermissionsIndexRouteRoute,
   ProtectedSessionsIndexRouteRoute: ProtectedSessionsIndexRouteRoute,
   ProtectedSettingsIndexRouteRoute: ProtectedSettingsIndexRouteRoute,
+  ProtectedStudentsIndexRouteRoute: ProtectedStudentsIndexRouteRoute,
+  ProtectedSubscriptionsIndexRouteRoute: ProtectedSubscriptionsIndexRouteRoute,
   ProtectedSupportTicketsIndexRouteRoute:
     ProtectedSupportTicketsIndexRouteRoute,
   ProtectedUsersIndexRouteRoute: ProtectedUsersIndexRouteRoute,

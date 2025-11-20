@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   PlusIcon, 
   PlayIcon, 
-  SaveIcon, 
+  DocumentCheckIcon,
   TrashIcon,
   EyeIcon,
   DocumentIcon,
@@ -14,8 +14,8 @@ import {
   CalendarDaysIcon,
   AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline';
-import { Button, Card, Input, Select, Textarea, Badge, Tab } from '../atoms';
-import { FormField, DataTable, Modal } from '../molecules';
+import { Button, Input, Select, Textarea, Badge, Tab } from '../atoms';
+import { FormField, DataTable, Modal, Card } from '../molecules';
 import { 
   useCreateReport,
   useUpdateReport,
@@ -240,7 +240,7 @@ export const AdvancedAnalyticsReportBuilder: React.FC<AdvancedAnalyticsReportBui
             disabled={createReportMutation.isLoading || updateReportMutation.isLoading}
             className="flex items-center gap-2"
           >
-            <SaveIcon className="w-4 h-4" />
+            <DocumentCheckIcon className="w-4 h-4" />
             {createReportMutation.isLoading || updateReportMutation.isLoading ? 'Saving...' : 'Save Report'}
           </Button>
         </div>
@@ -668,7 +668,7 @@ export const AdvancedAnalyticsReportBuilder: React.FC<AdvancedAnalyticsReportBui
             disabled={createReportMutation.isLoading || updateReportMutation.isLoading}
             className="flex items-center gap-2"
           >
-            <SaveIcon className="w-4 h-4" />
+            <DocumentCheckIcon className="w-4 h-4" />
             {reportId ? 'Update Report' : 'Create Report'}
           </Button>
         </div>

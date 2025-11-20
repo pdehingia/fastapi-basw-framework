@@ -12,8 +12,7 @@ import type {
   UpdateSupportTicketRequest,
   SupportTicketComment,
   CreateCommentRequest,
-  PaginatedResponse,
-  ApiResponse
+  PaginatedResponse
 } from '@/types/api.types';
 
 /**
@@ -23,7 +22,7 @@ export class SupportTicketService {
   /**
    * Get paginated list of support tickets
    */
-  async getSupportTickets(filters: SupportTicketFilters = {}): Promise<ApiResponse<PaginatedResponse<SupportTicket>>> {
+  async getSupportTickets(filters: SupportTicketFilters = {}): Promise<PaginatedResponse<SupportTicket>> {
     const params = new URLSearchParams();
     
     // Add filters to query params
@@ -46,21 +45,21 @@ export class SupportTicketService {
   /**
    * Get specific support ticket by ID
    */
-  async getSupportTicket(ticketId: string): Promise<ApiResponse<SupportTicket>> {
+  async getSupportTicket(ticketId: string): Promise<SupportTicket> {
     return apiClient.get(SUPPORT_ENDPOINTS.GET_TICKET(ticketId));
   }
 
   /**
    * Create new support ticket
    */
-  async createSupportTicket(ticketData: CreateSupportTicketRequest): Promise<ApiResponse<SupportTicket>> {
+  async createSupportTicket(ticketData: CreateSupportTicketRequest): Promise<SupportTicket> {
     return apiClient.post(SUPPORT_ENDPOINTS.TICKETS, ticketData);
   }
 
   /**
    * Update existing support ticket
    */
-  async updateSupportTicket(ticketId: string, updates: UpdateSupportTicketRequest): Promise<ApiResponse<SupportTicket>> {
+  async updateSupportTicket(ticketId: string, updates: UpdateSupportTicketRequest): Promise<SupportTicket> {
     return apiClient.patch(SUPPORT_ENDPOINTS.UPDATE_TICKET(ticketId), updates);
   }
 
@@ -74,21 +73,21 @@ export class SupportTicketService {
   /**
    * Get comments for a specific ticket
    */
-  async getTicketComments(ticketId: string): Promise<ApiResponse<SupportTicketComment[]>> {
+  async getTicketComments(ticketId: string): Promise<SupportTicketComment[]> {
     return apiClient.get(`${SUPPORT_ENDPOINTS.GET_TICKET(ticketId)}/comments`);
   }
 
   /**
    * Add comment to support ticket
    */
-  async addTicketComment(ticketId: string, commentData: CreateCommentRequest): Promise<ApiResponse<SupportTicketComment>> {
+  async addTicketComment(ticketId: string, commentData: CreateCommentRequest): Promise<SupportTicketComment> {
     return apiClient.post(`${SUPPORT_ENDPOINTS.GET_TICKET(ticketId)}/comments`, commentData);
   }
 
   /**
    * Assign ticket to agent
    */
-  async assignTicket(ticketId: string, agentId: string, notes?: string): Promise<ApiResponse<SupportTicket>> {
+  async assignTicket(ticketId: string, agentId: string, notes?: string): Promise<SupportTicket> {
     return apiClient.post(`${SUPPORT_ENDPOINTS.GET_TICKET(ticketId)}/assign`, {
       agent_id: agentId,
       notes
@@ -98,7 +97,7 @@ export class SupportTicketService {
   /**
    * Escalate support ticket
    */
-  async escalateTicket(ticketId: string, escalationLevel: string, reason: string): Promise<ApiResponse<SupportTicket>> {
+  async escalateTicket(ticketId: string, escalationLevel: string, reason: string): Promise<SupportTicket> {
     return apiClient.post(`${SUPPORT_ENDPOINTS.GET_TICKET(ticketId)}/escalate`, {
       escalation_level: escalationLevel,
       reason
@@ -108,7 +107,7 @@ export class SupportTicketService {
   /**
    * Update ticket status
    */
-  async updateTicketStatus(ticketId: string, status: SupportTicket['status'], resolution?: string): Promise<ApiResponse<SupportTicket>> {
+  async updateTicketStatus(ticketId: string, status: SupportTicket['status'], resolution?: string): Promise<SupportTicket> {
     return this.updateSupportTicket(ticketId, { 
       status,
       resolution,
@@ -119,7 +118,7 @@ export class SupportTicketService {
   /**
    * Update ticket priority
    */
-  async updateTicketPriority(ticketId: string, priority: SupportTicket['priority'], reason?: string): Promise<ApiResponse<SupportTicket>> {
+  async updateTicketPriority(ticketId: string, priority: SupportTicket['priority'], reason?: string): Promise<SupportTicket> {
     return this.updateSupportTicket(ticketId, { 
       priority,
       priority_change_reason: reason
@@ -129,7 +128,7 @@ export class SupportTicketService {
   /**
    * Bulk update multiple tickets
    */
-  async bulkUpdateTickets(ticketIds: string[], updates: Partial<UpdateSupportTicketRequest>): Promise<ApiResponse<{ updated: number; failed: string[] }>> {
+  async bulkUpdateTickets(ticketIds: string[], updates: Partial<UpdateSupportTicketRequest>): Promise<{ updated: number; failed: string[] }> {
     return apiClient.post(`${SUPPORT_ENDPOINTS.TICKETS}/bulk`, {
       ticket_ids: ticketIds,
       updates
@@ -139,7 +138,7 @@ export class SupportTicketService {
   /**
    * Get support ticket statistics
    */
-  async getTicketStats(dateRange?: { start_date: string; end_date: string }): Promise<ApiResponse<{
+  async getTicketStats(dateRange?: { start_date: string; end_date: string }): Promise<{
     total_tickets: number;
     open_tickets: number;
     resolved_tickets: number;
@@ -153,7 +152,7 @@ export class SupportTicketService {
       resolved_tickets: number;
       avg_resolution_time: number;
     }>;
-  }>> {
+  }> {
     const params = dateRange ? { params: dateRange } : {};
     return apiClient.get(`${SUPPORT_ENDPOINTS.TICKETS}/stats`, params);
   }
@@ -161,7 +160,7 @@ export class SupportTicketService {
   /**
    * Get list of available support agents
    */
-  async getSupportAgents(): Promise<ApiResponse<Array<{
+  async getSupportAgents(): Promise<Array<{
     id: string;
     name: string;
     email: string;
@@ -169,27 +168,27 @@ export class SupportTicketService {
     active_tickets: number;
     max_tickets: number;
     status: 'available' | 'busy' | 'offline';
-  }>>> {
+  }>> {
     return apiClient.get(`${SUPPORT_ENDPOINTS.TICKETS}/agents`);
   }
 
   /**
    * Get list of support categories
    */
-  async getSupportCategories(): Promise<ApiResponse<Array<{
+  async getSupportCategories(): Promise<Array<{
     id: string;
     name: string;
     description: string;
     default_priority: string;
     auto_assign_rules: any[];
-  }>>> {
+  }>> {
     return apiClient.get(`${SUPPORT_ENDPOINTS.TICKETS}/categories`);
   }
 
   /**
    * Search tickets with advanced filters
    */
-  async searchTickets(query: string, filters?: Partial<SupportTicketFilters>): Promise<ApiResponse<PaginatedResponse<SupportTicket>>> {
+  async searchTickets(query: string, filters?: Partial<SupportTicketFilters>): Promise<PaginatedResponse<SupportTicket>> {
     return this.getSupportTickets({
       ...filters,
       search: query
@@ -199,13 +198,13 @@ export class SupportTicketService {
   /**
    * Get ticket resolution metrics
    */
-  async getResolutionMetrics(timeframe: '24h' | '7d' | '30d' | '90d'): Promise<ApiResponse<{
+  async getResolutionMetrics(timeframe: '24h' | '7d' | '30d' | '90d'): Promise<{
     avg_first_response_time: number;
     avg_resolution_time: number;
     resolution_rate: number;
     customer_satisfaction: number;
     escalation_rate: number;
-  }>> {
+  }> {
     return apiClient.get(`${SUPPORT_ENDPOINTS.TICKETS}/metrics`, { 
       params: { timeframe }
     });

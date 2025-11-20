@@ -5,7 +5,7 @@
 
 import { apiService } from './base';
 import { CONFIG_ENDPOINTS } from '@/config/api';
-import type { ApiResponse } from '@/types/api.types';
+
 
 // Configuration Types
 export interface SystemConfiguration {
@@ -67,14 +67,14 @@ export class SystemConfigService {
   async getConfiguration(params: {
     category?: string;
     is_public?: boolean;
-  } = {}): Promise<ApiResponse<SystemConfiguration[]>> {
+  } = {}): Promise<SystemConfiguration[]> {
     return await apiService.get<SystemConfiguration[]>(
       CONFIG_ENDPOINTS.CONFIGURATION,
       params
     );
   }
 
-  async getConfigByKey(key: string): Promise<ApiResponse<SystemConfiguration>> {
+  async getConfigByKey(key: string): Promise<SystemConfiguration> {
     return await apiService.get<SystemConfiguration>(
       CONFIG_ENDPOINTS.CONFIG_DETAIL(key)
     );
@@ -83,7 +83,7 @@ export class SystemConfigService {
   async updateConfig(
     key: string,
     data: Partial<SystemConfiguration>
-  ): Promise<ApiResponse<SystemConfiguration>> {
+  ): Promise<SystemConfiguration> {
     return await apiService.put<SystemConfiguration>(
       CONFIG_ENDPOINTS.CONFIG_DETAIL(key),
       data
@@ -91,11 +91,11 @@ export class SystemConfigService {
   }
 
   // Feature Flags Management
-  async getFeatureFlags(): Promise<ApiResponse<FeatureFlag[]>> {
+  async getFeatureFlags(): Promise<FeatureFlag[]> {
     return await apiService.get<FeatureFlag[]>(CONFIG_ENDPOINTS.FEATURE_FLAGS);
   }
 
-  async getFeatureFlag(id: string): Promise<ApiResponse<FeatureFlag>> {
+  async getFeatureFlag(id: string): Promise<FeatureFlag> {
     return await apiService.get<FeatureFlag>(
       CONFIG_ENDPOINTS.FEATURE_FLAG_DETAIL(id)
     );
@@ -103,7 +103,7 @@ export class SystemConfigService {
 
   async createFeatureFlag(
     data: Omit<FeatureFlag, 'id' | 'created_at' | 'updated_at'>
-  ): Promise<ApiResponse<FeatureFlag>> {
+  ): Promise<FeatureFlag> {
     return await apiService.post<FeatureFlag>(
       CONFIG_ENDPOINTS.FEATURE_FLAGS,
       data
@@ -113,20 +113,20 @@ export class SystemConfigService {
   async updateFeatureFlag(
     id: string,
     data: Partial<FeatureFlag>
-  ): Promise<ApiResponse<FeatureFlag>> {
+  ): Promise<FeatureFlag> {
     return await apiService.put<FeatureFlag>(
       CONFIG_ENDPOINTS.FEATURE_FLAG_DETAIL(id),
       data
     );
   }
 
-  async deleteFeatureFlag(id: string): Promise<ApiResponse<void>> {
+  async deleteFeatureFlag(id: string): Promise<void> {
     return await apiService.delete<void>(
       CONFIG_ENDPOINTS.FEATURE_FLAG_DETAIL(id)
     );
   }
 
-  async toggleFeatureFlag(id: string): Promise<ApiResponse<FeatureFlag>> {
+  async toggleFeatureFlag(id: string): Promise<FeatureFlag> {
     return await apiService.post<FeatureFlag>(
       CONFIG_ENDPOINTS.TOGGLE_FLAG(id),
       {}
@@ -134,7 +134,7 @@ export class SystemConfigService {
   }
 
   // System Notifications Management
-  async getSystemNotifications(): Promise<ApiResponse<SystemNotification[]>> {
+  async getSystemNotifications(): Promise<SystemNotification[]> {
     return await apiService.get<SystemNotification[]>(
       CONFIG_ENDPOINTS.SYSTEM_NOTIFICATIONS
     );
@@ -142,7 +142,7 @@ export class SystemConfigService {
 
   async getSystemNotification(
     id: string
-  ): Promise<ApiResponse<SystemNotification>> {
+  ): Promise<SystemNotification> {
     return await apiService.get<SystemNotification>(
       CONFIG_ENDPOINTS.NOTIFICATION_DETAIL(id)
     );
@@ -150,7 +150,7 @@ export class SystemConfigService {
 
   async createSystemNotification(
     data: Omit<SystemNotification, 'id' | 'created_at'>
-  ): Promise<ApiResponse<SystemNotification>> {
+  ): Promise<SystemNotification> {
     return await apiService.post<SystemNotification>(
       CONFIG_ENDPOINTS.SYSTEM_NOTIFICATIONS,
       data
@@ -160,40 +160,40 @@ export class SystemConfigService {
   async updateSystemNotification(
     id: string,
     data: Partial<SystemNotification>
-  ): Promise<ApiResponse<SystemNotification>> {
+  ): Promise<SystemNotification> {
     return await apiService.put<SystemNotification>(
       CONFIG_ENDPOINTS.NOTIFICATION_DETAIL(id),
       data
     );
   }
 
-  async deleteSystemNotification(id: string): Promise<ApiResponse<void>> {
+  async deleteSystemNotification(id: string): Promise<void> {
     return await apiService.delete<void>(
       CONFIG_ENDPOINTS.NOTIFICATION_DETAIL(id)
     );
   }
 
-  async sendSystemNotification(id: string): Promise<ApiResponse<void>> {
+  async sendSystemNotification(id: string): Promise<void> {
     return await apiService.post<void>(CONFIG_ENDPOINTS.SEND_NOTIFICATION, {
       notification_id: id,
     });
   }
 
   // OTP Management
-  async getOTPSettings(): Promise<ApiResponse<OTPSettings>> {
+  async getOTPSettings(): Promise<OTPSettings> {
     return await apiService.get<OTPSettings>(CONFIG_ENDPOINTS.OTP_SETTINGS);
   }
 
   async updateOTPSettings(
     data: Partial<OTPSettings>
-  ): Promise<ApiResponse<OTPSettings>> {
+  ): Promise<OTPSettings> {
     return await apiService.put<OTPSettings>(
       CONFIG_ENDPOINTS.OTP_SETTINGS,
       data
     );
   }
 
-  async getOTPStats(): Promise<ApiResponse<OTPStats>> {
+  async getOTPStats(): Promise<OTPStats> {
     return await apiService.get<OTPStats>(CONFIG_ENDPOINTS.OTP_STATS);
   }
 }

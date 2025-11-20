@@ -40,7 +40,7 @@ const createApiClient = (): AxiosInstance => {
   // Response interceptor for auth handling
   client.interceptors.response.use(
     (response: AxiosResponse) => {
-      return response;
+      return response.data;
     },
     async (error: AxiosError) => {
       const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };

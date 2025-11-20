@@ -48,7 +48,7 @@ function addAuthHeaders(config: RequestInit = {}): RequestInit {
 }
 
 // Response interceptor for error handling
-async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
+async function handleResponse<T>(response: Response): Promise<T> {
   const contentType = response.headers.get('content-type');
   const isJson = contentType?.includes('application/json');
 
@@ -68,15 +68,11 @@ async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
     if (response.ok) {
       // Handle Maya API standardized response format
       if (data.success !== undefined) {
-        return data as ApiResponse<T>;
+        return data.data;
       }
       
       // Handle direct data responses  
-      return {
-        success: true,
-        data: data as T,
-        message: 'Request successful',
-      } as ApiResponse<T>;
+      return data;
     }
 
     // Handle error responses
@@ -148,7 +144,7 @@ export class ApiService {
   }
 
   // GET request
-  async get<T>(endpoint: string, params?: Record<string, any>): Promise<ApiResponse<T>> {
+  async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
     const url = this.buildUrl(endpoint, params);
     const config = addAuthHeaders({ method: 'GET' });
 
@@ -161,7 +157,7 @@ export class ApiService {
   }
 
   // POST request
-  async post<T>(endpoint: string, body?: any, config?: RequestInit): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, body?: any, config?: RequestInit): Promise<T> {
     const url = this.buildUrl(endpoint);
     const requestConfig = addAuthHeaders({
       method: 'POST',
@@ -178,7 +174,7 @@ export class ApiService {
   }
 
   // PUT request
-  async put<T>(endpoint: string, body?: any, config?: RequestInit): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, body?: any, config?: RequestInit): Promise<T> {
     const url = this.buildUrl(endpoint);
     const requestConfig = addAuthHeaders({
       method: 'PUT',
@@ -195,7 +191,7 @@ export class ApiService {
   }
 
   // PATCH request
-  async patch<T>(endpoint: string, body?: any, config?: RequestInit): Promise<ApiResponse<T>> {
+  async patch<T>(endpoint: string, body?: any, config?: RequestInit): Promise<T> {
     const url = this.buildUrl(endpoint);
     const requestConfig = addAuthHeaders({
       method: 'PATCH',
@@ -212,7 +208,7 @@ export class ApiService {
   }
 
   // DELETE request
-  async delete<T>(endpoint: string, config?: RequestInit): Promise<ApiResponse<T>> {
+  async delete<T>(endpoint: string, config?: RequestInit): Promise<T> {
     const url = this.buildUrl(endpoint);
     const requestConfig = addAuthHeaders({
       method: 'DELETE',
@@ -251,7 +247,7 @@ export class ApiService {
   }
 
   // Form data POST (for file uploads)
-  async postFormData<T>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> {
+  async postFormData<T>(endpoint: string, formData: FormData): Promise<T> {
     const url = this.buildUrl(endpoint);
     
     // Don't set Content-Type for FormData - browser will set it with boundary

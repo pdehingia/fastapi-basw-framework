@@ -6,7 +6,7 @@
 import { apiService } from './base';
 import { BOOKING_ENDPOINTS } from '@/config/api';
 import type {
-  ApiResponse,
+  
   PaginatedResponse,
   Booking,
   CreateBookingRequest,
@@ -21,35 +21,35 @@ export class BookingService {
    */
   async getBookings(
     params: BookingFilters & QueryParams = {}
-  ): Promise<ApiResponse<PaginatedResponse<Booking>>> {
-    return await apiService.get<PaginatedResponse<Booking>>(BOOKING_ENDPOINTS.LIST, params);
+  ): Promise<PaginatedResponse<Booking>> {
+    return await apiService.get<PaginatedResponse<Booking>(BOOKING_ENDPOINTS.LIST, params);
   }
 
   /**
    * Get single booking by ID with full details
    */
-  async getBooking(id: string): Promise<ApiResponse<Booking>> {
+  async getBooking(id: string): Promise<Booking> {
     return await apiService.get<Booking>(BOOKING_ENDPOINTS.GET(id));
   }
 
   /**
    * Create new booking with comprehensive validation
    */
-  async createBooking(data: CreateBookingRequest): Promise<ApiResponse<Booking>> {
+  async createBooking(data: CreateBookingRequest): Promise<Booking> {
     return await apiService.post<Booking>(BOOKING_ENDPOINTS.CREATE, data);
   }
 
   /**
    * Update existing booking details
    */
-  async updateBooking(id: string, data: UpdateBookingRequest): Promise<ApiResponse<Booking>> {
+  async updateBooking(id: string, data: UpdateBookingRequest): Promise<Booking> {
     return await apiService.put<Booking>(BOOKING_ENDPOINTS.UPDATE(id), data);
   }
 
   /**
    * Delete booking (admin only)
    */
-  async deleteBooking(id: string): Promise<ApiResponse<void>> {
+  async deleteBooking(id: string): Promise<void> {
     return await apiService.delete<void>(BOOKING_ENDPOINTS.DELETE(id));
   }
 
@@ -60,7 +60,7 @@ export class BookingService {
     status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled' | 'disputed';
     reason?: string;
     notes?: string;
-  }): Promise<ApiResponse<Booking>> {
+  }): Promise<Booking> {
     return await apiService.patch<Booking>(BOOKING_ENDPOINTS.UPDATE_STATUS(id), status);
   }
 
@@ -72,7 +72,7 @@ export class BookingService {
     start_date?: string;
     end_date?: string;
     service_type?: string;
-  } = {}): Promise<ApiResponse<{
+  } = {}): Promise<{
     total_bookings: number;
     confirmed_bookings: number;
     cancelled_bookings: number;
@@ -92,7 +92,7 @@ export class BookingService {
       count: number;
       revenue: number;
     }>;
-  }>> {
+  }> {
     return await apiService.get<any>(BOOKING_ENDPOINTS.STATISTICS, params);
   }
 
@@ -105,7 +105,7 @@ export class BookingService {
     fields?: string[];
   } = {}): Promise<Blob> {
     const response = await apiService.getBlob(BOOKING_ENDPOINTS.EXPORT, params);
-    return response;
+    return response.data;
   }
 
   /**
@@ -116,12 +116,12 @@ export class BookingService {
     description: string;
     reported_by: 'customer' | 'provider' | 'admin';
     priority: 'low' | 'medium' | 'high' | 'urgent';
-  }): Promise<ApiResponse<{
+  }): Promise<{
     dispute_id: string;
     booking_id: string;
     status: 'pending' | 'investigating' | 'resolved';
     created_at: string;
-  }>> {
+  }> {
     return await apiService.post<any>(BOOKING_ENDPOINTS.DISPUTE(id), dispute);
   }
 
@@ -134,7 +134,7 @@ export class BookingService {
     provider_id?: string;
     service_type?: string;
     view?: 'month' | 'week' | 'day';
-  }): Promise<ApiResponse<Array<{
+  }): Promise<Array<{
     id: string;
     title: string;
     start: string;
@@ -144,7 +144,7 @@ export class BookingService {
     customer_name: string;
     status: string;
     color?: string;
-  }>>> {
+  }>> {
     return await apiService.get<any>(BOOKING_ENDPOINTS.CALENDAR, params);
   }
 
@@ -158,12 +158,12 @@ export class BookingService {
     end_date?: string;
     filters?: BookingFilters;
     format?: 'json' | 'csv' | 'pdf';
-  }): Promise<ApiResponse<{
+  }): Promise<{
     report_id: string;
     status: 'generating' | 'completed' | 'failed';
     download_url?: string;
     generated_at?: string;
-  }>> {
+  }> {
     return await apiService.post<any>(`${BOOKING_ENDPOINTS.LIST}reports`, config);
   }
 
@@ -175,7 +175,7 @@ export class BookingService {
     start_date?: string;
     end_date?: string;
     service_type?: string;
-  } = {}): Promise<ApiResponse<any>> {
+  } = {}): Promise<any> {
     return this.getBookingStatistics(params);
   }
 
@@ -185,8 +185,8 @@ export class BookingService {
   async getBookingsByCustomer(
     customerId: string,
     params: BookingFilters & QueryParams = {}
-  ): Promise<ApiResponse<PaginatedResponse<Booking>>> {
-    return await apiService.get<PaginatedResponse<Booking>>(
+  ): Promise<PaginatedResponse<Booking>> {
+    return await apiService.get<PaginatedResponse<Booking>(
       `${BOOKING_ENDPOINTS.LIST}/customer/${customerId}`,
       params
     );
@@ -198,8 +198,8 @@ export class BookingService {
   async getBookingsByProvider(
     providerId: string,
     params: BookingFilters & QueryParams = {}
-  ): Promise<ApiResponse<PaginatedResponse<Booking>>> {
-    return await apiService.get<PaginatedResponse<Booking>>(
+  ): Promise<PaginatedResponse<Booking>> {
+    return await apiService.get<PaginatedResponse<Booking>(
       `${BOOKING_ENDPOINTS.LIST}/provider/${providerId}`,
       params
     );
@@ -210,8 +210,8 @@ export class BookingService {
    */
   async getUpcomingBookings(
     params: BookingFilters & QueryParams = {}
-  ): Promise<ApiResponse<PaginatedResponse<Booking>>> {
-    return await apiService.get<PaginatedResponse<Booking>>(
+  ): Promise<PaginatedResponse<Booking>> {
+    return await apiService.get<PaginatedResponse<Booking>(
       `${BOOKING_ENDPOINTS.LIST}/upcoming`,
       params
     );
@@ -222,8 +222,8 @@ export class BookingService {
    */
   async getOverdueBookings(
     params: BookingFilters & QueryParams = {}
-  ): Promise<ApiResponse<PaginatedResponse<Booking>>> {
-    return await apiService.get<PaginatedResponse<Booking>>(
+  ): Promise<PaginatedResponse<Booking>> {
+    return await apiService.get<PaginatedResponse<Booking>(
       `${BOOKING_ENDPOINTS.LIST}/overdue`,
       params
     );
@@ -235,8 +235,8 @@ export class BookingService {
   async searchBookings(
     query: string,
     filters: BookingFilters = {}
-  ): Promise<ApiResponse<PaginatedResponse<Booking>>> {
-    return await apiService.get<PaginatedResponse<Booking>>(
+  ): Promise<PaginatedResponse<Booking>> {
+    return await apiService.get<PaginatedResponse<Booking>(
       `${BOOKING_ENDPOINTS.LIST}/search`,
       { query, ...filters }
     );
@@ -245,7 +245,7 @@ export class BookingService {
   /**
    * Get booking timeline/history
    */
-  async getBookingTimeline(id: string): Promise<ApiResponse<Array<{
+  async getBookingTimeline(id: string): Promise<Array<{
     id: string;
     action: string;
     description: string;
@@ -253,7 +253,7 @@ export class BookingService {
     user_id?: string;
     user_name?: string;
     metadata?: Record<string, any>;
-  }>>> {
+  }>> {
     return await apiService.get<any>(`${BOOKING_ENDPOINTS.GET(id)}/timeline`);
   }
 
@@ -264,13 +264,13 @@ export class BookingService {
     id: string,
     reason: string,
     refundAmount?: number
-  ): Promise<ApiResponse<{
+  ): Promise<{
     booking_id: string;
     status: 'cancelled';
     refund_amount?: number;
     refund_id?: string;
     cancelled_at: string;
-  }>> {
+  }> {
     return await apiService.post<any>(`${BOOKING_ENDPOINTS.GET(id)}/cancel`, {
       reason,
       refund_amount: refundAmount
@@ -283,13 +283,13 @@ export class BookingService {
   async addBookingNote(
     id: string,
     note: string
-  ): Promise<ApiResponse<{
+  ): Promise<{
     note_id: string;
     booking_id: string;
     note: string;
     created_at: string;
     created_by: string;
-  }>> {
+  }> {
     return await apiService.post<any>(`${BOOKING_ENDPOINTS.GET(id)}/notes`, {
       note
     });
@@ -301,13 +301,13 @@ export class BookingService {
   async bulkUpdateBookings(
     bookingIds: string[],
     updates: Partial<UpdateBookingRequest>
-  ): Promise<ApiResponse<{
+  ): Promise<{
     updated: number;
     failed: Array<{
       id: string;
       error: string;
     }>;
-  }>> {
+  }> {
     return await apiService.put<any>(`${BOOKING_ENDPOINTS.LIST}/bulk`, {
       booking_ids: bookingIds,
       updates

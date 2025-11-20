@@ -12,42 +12,42 @@ import type {
   UpdateAdminUserRequest,
   QueryParams,
   PaginatedResponse,
-  ApiResponse,
+  
 } from '../../types/api.types';
 
 export class AdminUserService {
   /**
    * Get paginated list of admin users
    */
-  async getAdminUsers(params: AdminUserFilters & QueryParams = {}): Promise<ApiResponse<PaginatedResponse<AdminUser>>> {
+  async getAdminUsers(params: AdminUserFilters & QueryParams = {}): Promise<PaginatedResponse<AdminUser>> {
     return apiClient.get(ADMIN_USER_ENDPOINTS.LIST, { params });
   }
 
   /**
    * Get single admin user by ID
    */
-  async getAdminUser(id: string): Promise<ApiResponse<AdminUser>> {
+  async getAdminUser(id: string): Promise<AdminUser> {
     return apiClient.get(ADMIN_USER_ENDPOINTS.UPDATE(id));
   }
 
   /**
    * Create new admin user
    */
-  async createAdminUser(data: CreateAdminUserRequest): Promise<ApiResponse<AdminUser>> {
+  async createAdminUser(data: CreateAdminUserRequest): Promise<AdminUser> {
     return apiClient.post(ADMIN_USER_ENDPOINTS.CREATE, data);
   }
 
   /**
    * Update admin user
    */
-  async updateAdminUser(id: string, data: UpdateAdminUserRequest): Promise<ApiResponse<AdminUser>> {
+  async updateAdminUser(id: string, data: UpdateAdminUserRequest): Promise<AdminUser> {
     return apiClient.put(ADMIN_USER_ENDPOINTS.UPDATE(id), data);
   }
 
   /**
    * Delete admin user
    */
-  async deleteAdminUser(id: string): Promise<ApiResponse<{ message: string }>> {
+  async deleteAdminUser(id: string): Promise<{ message: string }> {
     return apiClient.delete(ADMIN_USER_ENDPOINTS.DELETE(id));
   }
 
@@ -57,7 +57,7 @@ export class AdminUserService {
   async updateAdminUserStatus(
     id: string, 
     data: { status: 'active' | 'inactive' | 'suspended'; reason?: string }
-  ): Promise<ApiResponse<AdminUser>> {
+  ): Promise<AdminUser> {
     return apiClient.patch(`${ADMIN_USER_ENDPOINTS.UPDATE(id)}/status`, data);
   }
 
@@ -67,7 +67,7 @@ export class AdminUserService {
   async updateAdminUserRole(
     id: string, 
     data: { role: 'super_admin' | 'admin' | 'moderator' }
-  ): Promise<ApiResponse<AdminUser>> {
+  ): Promise<AdminUser> {
     return apiClient.patch(`${ADMIN_USER_ENDPOINTS.UPDATE(id)}/role`, data);
   }
 
@@ -77,49 +77,49 @@ export class AdminUserService {
   async getAdminActivityLogs(
     adminUserId: string, 
     params: QueryParams = {}
-  ): Promise<ApiResponse<PaginatedResponse<any>>> {
+  ): Promise<PaginatedResponse<any>> {
     return apiClient.get(`${ADMIN_USER_ENDPOINTS.ACTIVITY_LOGS}/${adminUserId}`, { params });
   }
 
   /**
    * Get admin user sessions
    */
-  async getAdminUserSessions(adminUserId: string): Promise<ApiResponse<any[]>> {
+  async getAdminUserSessions(adminUserId: string): Promise<any[]> {
     return apiClient.get(`${ADMIN_USER_ENDPOINTS.UPDATE(adminUserId)}/sessions`);
   }
 
   /**
    * Terminate admin user sessions
    */
-  async terminateAdminUserSessions(adminUserId: string): Promise<ApiResponse<{ message: string }>> {
+  async terminateAdminUserSessions(adminUserId: string): Promise<{ message: string }> {
     return apiClient.post(`${ADMIN_USER_ENDPOINTS.UPDATE(adminUserId)}/terminate-sessions`);
   }
 
   /**
    * Reset admin user password
    */
-  async resetAdminUserPassword(id: string): Promise<ApiResponse<{ message: string; temporary_password: string }>> {
+  async resetAdminUserPassword(id: string): Promise<{ message: string; temporary_password: string }> {
     return apiClient.post(ADMIN_USER_ENDPOINTS.RESET_PASSWORD(id));
   }
 
   /**
    * Get available admin roles
    */
-  async getAdminRoles(): Promise<ApiResponse<any[]>> {
+  async getAdminRoles(): Promise<any[]> {
     return apiClient.get(ADMIN_USER_ENDPOINTS.ROLES);
   }
 
   /**
    * Create custom admin role
    */
-  async createAdminRole(data: { name: string; permissions: string[] }): Promise<ApiResponse<any>> {
+  async createAdminRole(data: { name: string; permissions: string[] }): Promise<any> {
     return apiClient.post(ADMIN_USER_ENDPOINTS.CREATE_ROLE, data);
   }
 
   /**
    * Get admin permissions
    */
-  async getAdminPermissions(): Promise<ApiResponse<any[]>> {
+  async getAdminPermissions(): Promise<any[]> {
     return apiClient.get(ADMIN_USER_ENDPOINTS.PERMISSIONS);
   }
 
@@ -130,10 +130,10 @@ export class AdminUserService {
     action: 'activate' | 'deactivate' | 'suspend' | 'delete';
     admin_user_ids: string[];
     reason?: string;
-  }): Promise<ApiResponse<{
+  }): Promise<{
     successful: string[];
     failed: { id: string; reason: string }[];
-  }>> {
+  }> {
     return apiClient.post(`${ADMIN_USER_ENDPOINTS.LIST}/bulk-actions`, action);
   }
 }

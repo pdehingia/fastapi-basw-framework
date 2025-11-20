@@ -3,7 +3,7 @@
  * Handles dashboard data and analytics operations
  */
 
-import { apiClient, handleApiResponse, handleApiError } from './client';
+import { apiClient, handleApiError } from './client';
 import { ANALYTICS_ENDPOINTS } from '@/config/api';
 import type { DashboardStats, TrendData } from '@/types/api.types';
 
@@ -19,7 +19,7 @@ export class DashboardService {
       const response = await apiClient.get(ANALYTICS_ENDPOINTS.DASHBOARD, {
         params: dateRange,
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -39,7 +39,7 @@ export class DashboardService {
       const response = await apiClient.get(ANALYTICS_ENDPOINTS.USERS, {
         params: { period },
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -60,7 +60,7 @@ export class DashboardService {
       const response = await apiClient.get(ANALYTICS_ENDPOINTS.BOOKINGS, {
         params: { period },
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -90,7 +90,7 @@ export class DashboardService {
       const response = await apiClient.get(ANALYTICS_ENDPOINTS.FINANCIAL, {
         params: { period },
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -99,25 +99,12 @@ export class DashboardService {
   /**
    * Get recent activity feed
    */
-  static async getRecentActivity(limit: number = 20): Promise<Array<{
-    id: string;
-    type: 'user_created' | 'booking_created' | 'booking_completed' | 'payment_received' | 'review_submitted';
-    title: string;
-    description: string;
-    timestamp: string;
-    entityId?: string;
-    entityType?: 'user' | 'booking' | 'payment' | 'review';
-    actor?: {
-      id: string;
-      name: string;
-      avatar?: string;
-    };
-  }>> {
+  static async getRecentActivity(limit: number = 20): Promise<any> {
     try {
       const response = await apiClient.get(`${ANALYTICS_ENDPOINTS.DASHBOARD}/activity`, {
         params: { limit },
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -126,19 +113,10 @@ export class DashboardService {
   /**
    * Get platform health metrics
    */
-  static async getPlatformHealth(): Promise<{
-    apiStatus: 'healthy' | 'degraded' | 'down';
-    databaseStatus: 'healthy' | 'degraded' | 'down';
-    cacheStatus: 'healthy' | 'degraded' | 'down';
-    responseTime: number;
-    uptime: number;
-    version: string;
-    environment: 'development' | 'staging' | 'production';
-    lastDeployment: string;
-  }> {
+  static async getPlatformHealth(): Promise<any> {
     try {
       const response = await apiClient.get(`${ANALYTICS_ENDPOINTS.DASHBOARD}/health`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -150,20 +128,12 @@ export class DashboardService {
   static async getTopServices(
     period: 'day' | 'week' | 'month' | 'year' = 'month',
     limit: number = 10
-  ): Promise<Array<{
-    id: string;
-    name: string;
-    category: string;
-    bookings: number;
-    revenue: number;
-    averageRating: number;
-    growth: number;
-  }>> {
+  ): Promise<any> {
     try {
       const response = await apiClient.get(`${ANALYTICS_ENDPOINTS.DASHBOARD}/top-services`, {
         params: { period, limit },
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -172,21 +142,12 @@ export class DashboardService {
   /**
    * Get key performance indicators (KPIs)
    */
-  static async getKPIs(period: 'day' | 'week' | 'month' | 'year' = 'month'): Promise<{
-    customerAcquisitionCost: number;
-    customerLifetimeValue: number;
-    churnRate: number;
-    netPromoterScore: number;
-    bookingConversionRate: number;
-    averageResponseTime: number;
-    customerSatisfaction: number;
-    providerUtilization: number;
-  }> {
+  static async getKPIs(period: 'day' | 'week' | 'month' | 'year' = 'month'): Promise<any> {
     try {
       const response = await apiClient.get(`${ANALYTICS_ENDPOINTS.DASHBOARD}/kpis`, {
         params: { period },
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }

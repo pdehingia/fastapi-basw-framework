@@ -7,7 +7,7 @@
 import { SESSION_ENDPOINTS } from '@/config/api';
 import { apiService } from './base';
 import type {
-  ApiResponse,
+  
   PaginatedResponse,
   UserSession,
   AdminSession,
@@ -27,7 +27,7 @@ export class SessionManagementService {
    */
   async getAdminSessions(
     filters: SessionFilters = {}
-  ): Promise<ApiResponse<PaginatedResponse<AdminSession>>> {
+  ): Promise<PaginatedResponse<AdminSession>> {
     return await apiService.get<PaginatedResponse<AdminSession>>(
       SESSION_ENDPOINTS.ADMIN_SESSIONS,
       filters
@@ -37,7 +37,7 @@ export class SessionManagementService {
   /**
    * Get admin sessions statistics
    */
-  async getAdminSessionsStats(): Promise<ApiResponse<SessionStats>> {
+  async getAdminSessionsStats(): Promise<SessionStats> {
     return await apiService.get<SessionStats>(SESSION_ENDPOINTS.ADMIN_SESSIONS_STATS);
   }
 
@@ -46,7 +46,7 @@ export class SessionManagementService {
    */
   async getActiveAdminSessions(
     filters: SessionFilters = {}
-  ): Promise<ApiResponse<PaginatedResponse<AdminSession>>> {
+  ): Promise<PaginatedResponse<AdminSession>> {
     return await apiService.get<PaginatedResponse<AdminSession>>(
       SESSION_ENDPOINTS.ADMIN_SESSIONS_ACTIVE,
       filters
@@ -56,7 +56,7 @@ export class SessionManagementService {
   /**
    * Get admin session details by ID
    */
-  async getAdminSessionDetail(sessionId: string): Promise<ApiResponse<AdminSession>> {
+  async getAdminSessionDetail(sessionId: string): Promise<AdminSession> {
     return await apiService.get<AdminSession>(
       SESSION_ENDPOINTS.ADMIN_SESSION_DETAIL(sessionId)
     );
@@ -68,7 +68,7 @@ export class SessionManagementService {
   async revokeAdminSession(
     sessionId: string,
     data: RevokeSessionRequest = {}
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<{ message: string }> {
     return await apiService.post<{ message: string }>(
       SESSION_ENDPOINTS.ADMIN_SESSION_REVOKE(sessionId),
       data
@@ -81,7 +81,7 @@ export class SessionManagementService {
   async revokeAllAdminUserSessions(
     userId: string,
     data: RevokeAllSessionsRequest
-  ): Promise<ApiResponse<{ revoked_count: number; message: string }>> {
+  ): Promise<{ revoked_count: number; message: string }> {
     return await apiService.post<{ revoked_count: number; message: string }>(
       SESSION_ENDPOINTS.ADMIN_USER_REVOKE_ALL(userId),
       data
@@ -95,7 +95,7 @@ export class SessionManagementService {
    */
   async getProviderSessions(
     filters: SessionFilters = {}
-  ): Promise<ApiResponse<PaginatedResponse<ProviderSession>>> {
+  ): Promise<PaginatedResponse<ProviderSession>> {
     return await apiService.get<PaginatedResponse<ProviderSession>>(
       SESSION_ENDPOINTS.PROVIDER_SESSIONS,
       filters
@@ -105,7 +105,7 @@ export class SessionManagementService {
   /**
    * Get provider sessions statistics
    */
-  async getProviderSessionsStats(): Promise<ApiResponse<SessionStats>> {
+  async getProviderSessionsStats(): Promise<SessionStats> {
     return await apiService.get<SessionStats>(SESSION_ENDPOINTS.PROVIDER_SESSIONS_STATS);
   }
 
@@ -114,7 +114,7 @@ export class SessionManagementService {
    */
   async getActiveProviderSessions(
     filters: SessionFilters = {}
-  ): Promise<ApiResponse<PaginatedResponse<ProviderSession>>> {
+  ): Promise<PaginatedResponse<ProviderSession>> {
     return await apiService.get<PaginatedResponse<ProviderSession>>(
       SESSION_ENDPOINTS.PROVIDER_SESSIONS_ACTIVE,
       filters
@@ -124,7 +124,7 @@ export class SessionManagementService {
   /**
    * Get provider session details by ID
    */
-  async getProviderSessionDetail(sessionId: string): Promise<ApiResponse<ProviderSession>> {
+  async getProviderSessionDetail(sessionId: string): Promise<ProviderSession> {
     return await apiService.get<ProviderSession>(
       SESSION_ENDPOINTS.PROVIDER_SESSION_DETAIL(sessionId)
     );
@@ -136,7 +136,7 @@ export class SessionManagementService {
   async revokeProviderSession(
     sessionId: string,
     data: RevokeSessionRequest = {}
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<{ message: string }> {
     return await apiService.post<{ message: string }>(
       SESSION_ENDPOINTS.PROVIDER_SESSION_REVOKE(sessionId),
       data
@@ -149,7 +149,7 @@ export class SessionManagementService {
   async revokeAllProviderUserSessions(
     userId: string,
     data: RevokeAllSessionsRequest
-  ): Promise<ApiResponse<{ revoked_count: number; message: string }>> {
+  ): Promise<{ revoked_count: number; message: string }> {
     return await apiService.post<{ revoked_count: number; message: string }>(
       SESSION_ENDPOINTS.PROVIDER_USER_REVOKE_ALL(userId),
       data
@@ -163,7 +163,7 @@ export class SessionManagementService {
    */
   async getCustomerSessions(
     filters: SessionFilters = {}
-  ): Promise<ApiResponse<PaginatedResponse<CustomerSession>>> {
+  ): Promise<PaginatedResponse<CustomerSession>> {
     return await apiService.get<PaginatedResponse<CustomerSession>>(
       SESSION_ENDPOINTS.CUSTOMER_SESSIONS,
       filters
@@ -173,7 +173,7 @@ export class SessionManagementService {
   /**
    * Get customer sessions statistics
    */
-  async getCustomerSessionsStats(): Promise<ApiResponse<SessionStats>> {
+  async getCustomerSessionsStats(): Promise<SessionStats> {
     return await apiService.get<SessionStats>(SESSION_ENDPOINTS.CUSTOMER_SESSIONS_STATS);
   }
 
@@ -182,7 +182,7 @@ export class SessionManagementService {
    */
   async getActiveCustomerSessions(
     filters: SessionFilters = {}
-  ): Promise<ApiResponse<PaginatedResponse<CustomerSession>>> {
+  ): Promise<PaginatedResponse<CustomerSession>> {
     return await apiService.get<PaginatedResponse<CustomerSession>>(
       SESSION_ENDPOINTS.CUSTOMER_SESSIONS_ACTIVE,
       filters
@@ -192,7 +192,7 @@ export class SessionManagementService {
   /**
    * Get customer session details by ID
    */
-  async getCustomerSessionDetail(sessionId: string): Promise<ApiResponse<CustomerSession>> {
+  async getCustomerSessionDetail(sessionId: string): Promise<CustomerSession> {
     return await apiService.get<CustomerSession>(
       SESSION_ENDPOINTS.CUSTOMER_SESSION_DETAIL(sessionId)
     );
@@ -204,7 +204,7 @@ export class SessionManagementService {
   async revokeCustomerSession(
     sessionId: string,
     data: RevokeSessionRequest = {}
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<{ message: string }> {
     return await apiService.post<{ message: string }>(
       SESSION_ENDPOINTS.CUSTOMER_SESSION_REVOKE(sessionId),
       data
@@ -217,7 +217,7 @@ export class SessionManagementService {
   async revokeAllCustomerUserSessions(
     userId: string,
     data: RevokeAllSessionsRequest
-  ): Promise<ApiResponse<{ revoked_count: number; message: string }>> {
+  ): Promise<{ revoked_count: number; message: string }> {
     return await apiService.post<{ revoked_count: number; message: string }>(
       SESSION_ENDPOINTS.CUSTOMER_USER_REVOKE_ALL(userId),
       data
@@ -233,10 +233,10 @@ export class SessionManagementService {
     sessionIds: string[],
     userType: 'admin' | 'provider' | 'customer',
     data: RevokeSessionRequest = {}
-  ): Promise<ApiResponse<{
+  ): Promise<{
     revoked: string[];
     failed: Array<{ session_id: string; error: string }>;
-  }>> {
+  }> {
     const endpoint =
       userType === 'admin'
         ? SESSION_ENDPOINTS.ADMIN_SESSIONS
@@ -258,7 +258,7 @@ export class SessionManagementService {
   /**
    * Get all sessions statistics (combined)
    */
-  async getAllSessionsStats(): Promise<ApiResponse<{
+  async getAllSessionsStats(): Promise<{
     admin: SessionStats;
     provider: SessionStats;
     customer: SessionStats;
@@ -267,7 +267,7 @@ export class SessionManagementService {
       active_sessions: number;
       unique_users: number;
     };
-  }>> {
+  }> {
     const [adminStats, providerStats, customerStats] = await Promise.all([
       this.getAdminSessionsStats(),
       this.getProviderSessionsStats(),
@@ -275,27 +275,23 @@ export class SessionManagementService {
     ]);
 
     return {
-      success: true,
-      data: {
-        admin: adminStats.data,
-        provider: providerStats.data,
-        customer: customerStats.data,
-        total: {
-          total_sessions:
-            adminStats.data.total_sessions +
-            providerStats.data.total_sessions +
-            customerStats.data.total_sessions,
-          active_sessions:
-            adminStats.data.active_sessions +
-            providerStats.data.active_sessions +
-            customerStats.data.active_sessions,
-          unique_users:
-            adminStats.data.unique_users +
-            providerStats.data.unique_users +
-            customerStats.data.unique_users,
-        },
+      admin: adminStats,
+      provider: providerStats,
+      customer: customerStats,
+      total: {
+        total_sessions:
+          adminStats.total_sessions +
+          providerStats.total_sessions +
+          customerStats.total_sessions,
+        active_sessions:
+          adminStats.active_sessions +
+          providerStats.active_sessions +
+          customerStats.active_sessions,
+        unique_users:
+          adminStats.unique_users +
+          providerStats.unique_users +
+          customerStats.unique_users,
       },
-      message: 'Sessions statistics retrieved successfully',
     };
   }
 
@@ -305,7 +301,7 @@ export class SessionManagementService {
   async searchSessions(
     query: string,
     userType?: 'admin' | 'provider' | 'customer'
-  ): Promise<ApiResponse<PaginatedResponse<UserSession>>> {
+  ): Promise<PaginatedResponse<UserSession>> {
     const filters: SessionFilters = { search: query };
 
     if (userType === 'admin') {
@@ -326,7 +322,7 @@ export class SessionManagementService {
   async getSessionsByUserId(
     userId: string,
     userType: 'admin' | 'provider' | 'customer'
-  ): Promise<ApiResponse<PaginatedResponse<UserSession>>> {
+  ): Promise<PaginatedResponse<UserSession>> {
     const filters: SessionFilters = { user_id: userId };
 
     switch (userType) {

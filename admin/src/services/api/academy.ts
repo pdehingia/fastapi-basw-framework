@@ -5,7 +5,7 @@
 
 import { apiService } from './base';
 import { ACADEMY_ENDPOINTS } from '@/config/api';
-import type { ApiResponse } from '@/types/api.types';
+
 
 // Academy Performance Types
 export interface AcademyPerformance {
@@ -86,7 +86,7 @@ export class AcademyPerformanceService {
     start_date?: string;
     end_date?: string;
     period?: 'day' | 'week' | 'month';
-  } = {}): Promise<ApiResponse<AcademyPerformance>> {
+  } = {}): Promise<AcademyPerformance> {
     return await apiService.get<AcademyPerformance>(ACADEMY_ENDPOINTS.PERFORMANCE, params);
   }
 
@@ -99,7 +99,7 @@ export class AcademyPerformanceService {
       start_date?: string;
       end_date?: string;
     } = {}
-  ): Promise<ApiResponse<AcademyDetailPerformance>> {
+  ): Promise<AcademyDetailPerformance> {
     return await apiService.get<AcademyDetailPerformance>(
       ACADEMY_ENDPOINTS.ACADEMY_PERFORMANCE(academyId),
       params
@@ -116,7 +116,7 @@ export class AcademyPerformanceService {
       end_date?: string;
       period?: 'day' | 'week' | 'month';
     } = {}
-  ): Promise<ApiResponse<AcademyTrends>> {
+  ): Promise<AcademyTrends> {
     return await apiService.get<AcademyTrends>(
       ACADEMY_ENDPOINTS.ACADEMY_TRENDS(academyId),
       params
@@ -129,7 +129,7 @@ export class AcademyPerformanceService {
   async getTopPerformers(params: {
     limit?: number;
     sort_by?: 'students' | 'completion_rate' | 'revenue' | 'rating';
-  } = {}): Promise<ApiResponse<AcademyPerformance['top_performers']>> {
+  } = {}): Promise<AcademyPerformance['top_performers']> {
     return await apiService.get<AcademyPerformance['top_performers']>(
       ACADEMY_ENDPOINTS.TOP_PERFORMERS,
       params
@@ -141,7 +141,7 @@ export class AcademyPerformanceService {
    */
   async calculatePerformance(
     data: PerformanceCalculationRequest
-  ): Promise<ApiResponse<any>> {
+  ): Promise<any> {
     return await apiService.post<any>(
       ACADEMY_ENDPOINTS.CALCULATE_PERFORMANCE,
       data
@@ -153,7 +153,7 @@ export class AcademyPerformanceService {
    */
   async exportPerformance(
     data: PerformanceExportRequest
-  ): Promise<ApiResponse<{ download_url: string }>> {
+  ): Promise<{ download_url: string }> {
     return await apiService.post<{ download_url: string }>(
       ACADEMY_ENDPOINTS.EXPORT_PERFORMANCE,
       data

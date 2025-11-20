@@ -3,7 +3,7 @@
  * Handles notification, template, and campaign operations
  */
 
-import { apiClient, handleApiResponse, handleApiError } from './client';
+import { apiClient, handleApiError } from './client';
 import { API_VERSION } from '@/config/api';
 import type {
   Notification,
@@ -35,7 +35,7 @@ export class NotificationService {
   }): Promise<NotificationListResponse> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications`, { params });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -47,7 +47,7 @@ export class NotificationService {
   static async getNotification(notificationId: string): Promise<Notification> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/${notificationId}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -59,7 +59,7 @@ export class NotificationService {
   static async createNotification(data: CreateNotificationRequest): Promise<Notification> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications`, data);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -71,7 +71,7 @@ export class NotificationService {
   static async sendNotification(notificationId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/${notificationId}/send`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -83,7 +83,7 @@ export class NotificationService {
   static async cancelNotification(notificationId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/${notificationId}/cancel`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -95,7 +95,7 @@ export class NotificationService {
   static async retryNotification(notificationId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/${notificationId}/retry`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -107,7 +107,7 @@ export class NotificationService {
   static async deleteNotification(notificationId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.delete(`${API_VERSION.CURRENT}/notifications/${notificationId}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -126,7 +126,7 @@ export class NotificationService {
   }): Promise<NotificationTemplateListResponse> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/templates`, { params });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -138,7 +138,7 @@ export class NotificationService {
   static async getTemplate(templateId: string): Promise<NotificationTemplate> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/templates/${templateId}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -150,7 +150,7 @@ export class NotificationService {
   static async createTemplate(data: CreateNotificationTemplateRequest): Promise<NotificationTemplate> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/templates`, data);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -165,7 +165,7 @@ export class NotificationService {
   ): Promise<NotificationTemplate> {
     try {
       const response = await apiClient.patch(`${API_VERSION.CURRENT}/notifications/templates/${templateId}`, data);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -177,7 +177,7 @@ export class NotificationService {
   static async deleteTemplate(templateId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.delete(`${API_VERSION.CURRENT}/notifications/templates/${templateId}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -192,7 +192,7 @@ export class NotificationService {
   ): Promise<{ subject?: string; title?: string; body: string; html_body?: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/templates/${templateId}/preview`, data);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -207,7 +207,7 @@ export class NotificationService {
   ): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/templates/${templateId}/test`, testData);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -225,7 +225,7 @@ export class NotificationService {
   }): Promise<NotificationCampaignListResponse> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/campaigns`, { params });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -237,7 +237,7 @@ export class NotificationService {
   static async getCampaign(campaignId: string): Promise<NotificationCampaign> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -249,7 +249,7 @@ export class NotificationService {
   static async createCampaign(data: CreateNotificationCampaignRequest): Promise<NotificationCampaign> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/campaigns`, data);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -264,7 +264,7 @@ export class NotificationService {
   ): Promise<NotificationCampaign> {
     try {
       const response = await apiClient.patch(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}`, data);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -276,7 +276,7 @@ export class NotificationService {
   static async startCampaign(campaignId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}/start`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -288,7 +288,7 @@ export class NotificationService {
   static async pauseCampaign(campaignId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}/pause`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -300,7 +300,7 @@ export class NotificationService {
   static async resumeCampaign(campaignId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}/resume`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -312,7 +312,7 @@ export class NotificationService {
   static async cancelCampaign(campaignId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}/cancel`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -324,7 +324,7 @@ export class NotificationService {
   static async deleteCampaign(campaignId: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.delete(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -347,7 +347,7 @@ export class NotificationService {
   }> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/campaigns/${campaignId}/analytics`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -361,7 +361,7 @@ export class NotificationService {
   static async getUserPreferences(userId: string): Promise<NotificationPreferences> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/preferences/${userId}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -376,7 +376,7 @@ export class NotificationService {
   ): Promise<NotificationPreferences> {
     try {
       const response = await apiClient.patch(`${API_VERSION.CURRENT}/notifications/preferences/${userId}`, preferences);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -395,7 +395,7 @@ export class NotificationService {
   }): Promise<NotificationAnalytics> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/analytics`, { params });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -414,7 +414,7 @@ export class NotificationService {
   }> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/notifications/stats/realtime`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -430,7 +430,7 @@ export class NotificationService {
   ): Promise<{ success: boolean; sent_count: number; failed_count: number; errors: string[] }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/bulk`, { notifications });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -444,7 +444,7 @@ export class NotificationService {
   ): Promise<{ success: boolean; cancelled_count: number; failed_count: number; errors: string[] }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/bulk/cancel`, { notification_ids: notificationIds });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -458,7 +458,7 @@ export class NotificationService {
   ): Promise<{ success: boolean; retried_count: number; failed_count: number; errors: string[] }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/notifications/bulk/retry`, { notification_ids: notificationIds });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }

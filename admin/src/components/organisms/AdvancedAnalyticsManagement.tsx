@@ -15,8 +15,9 @@ import {
   CalendarDaysIcon,
   ClockIcon
 } from '@heroicons/react/24/outline';
-import { Button, Card, Input, Select, Badge, Tab } from '../atoms';
-import { DataTable, Modal, FormField } from '../molecules';
+import { Button, Input, Select, Badge, Tab } from '../atoms';
+import { Modal, FormField, Card } from '../molecules';
+import { EnhancedDataTable } from '../organisms';
 import { AdvancedAnalyticsReportBuilder } from './AdvancedAnalyticsReportBuilder';
 import { AdvancedAnalyticsDashboardBuilder } from './AdvancedAnalyticsDashboardBuilder';
 import {
@@ -30,7 +31,7 @@ import {
   useGetAnalyticsOverview
 } from '../../hooks';
 import { toast } from '../../services/toast';
-import { formatDate, formatDuration } from '../../utils';
+import { formatDate, formatDuration } from '@/utils/formatters';
 import { 
   AnalyticsReport, 
   AnalyticsDashboard, 
@@ -573,7 +574,7 @@ export const AdvancedAnalyticsManagement: React.FC<AdvancedAnalyticsManagementPr
 
             {/* Reports Table */}
             <Card>
-              <DataTable
+              <EnhancedDataTable
                 data={reportsData?.results || []}
                 columns={reportColumns}
                 loading={loadingReports}
@@ -658,7 +659,7 @@ export const AdvancedAnalyticsManagement: React.FC<AdvancedAnalyticsManagementPr
 
             {/* Exports Table */}
             <Card>
-              <DataTable
+              <EnhancedDataTable
                 data={exportsData?.results || []}
                 columns={exportColumns}
                 loading={loadingExports}

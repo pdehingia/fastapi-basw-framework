@@ -137,7 +137,7 @@ class ReviewService {
   /**
    * Get reviews with filtering and pagination
    */
-  async getReviews(filters: ReviewFilters = {}): Promise<ApiResponse<Review[]>> {
+  async getReviews(filters: ReviewFilters = {}): Promise<Review[]> {
     const queryParams = new URLSearchParams();
     
     Object.entries(filters).forEach(([key, value]) => {
@@ -152,26 +152,26 @@ class ReviewService {
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<Review[]>>(response);
+    return this.handleResponse<ApiResponse<Review[]>(response);
   }
 
   /**
    * Get review details by ID
    */
-  async getReviewById(reviewId: string): Promise<ApiResponse<Review>> {
+  async getReviewById(reviewId: string): Promise<Review> {
     const url = `${this.baseUrl}${REVIEW_ENDPOINTS.GET(reviewId)}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<Review>>(response);
+    return this.handleResponse<ApiResponse<Review>(response);
   }
 
   /**
    * Moderate a review (approve/reject)
    */
-  async moderateReview(reviewId: string, moderationData: ReviewModerationData): Promise<ApiResponse<Review>> {
+  async moderateReview(reviewId: string, moderationData: ReviewModerationData): Promise<Review> {
     const url = `${this.baseUrl}${REVIEW_ENDPOINTS.MODERATE(reviewId)}`;
     const response = await fetch(url, {
       method: 'PATCH',
@@ -179,39 +179,39 @@ class ReviewService {
       body: JSON.stringify(moderationData),
     });
 
-    return this.handleResponse<ApiResponse<Review>>(response);
+    return this.handleResponse<ApiResponse<Review>(response);
   }
 
   /**
    * Delete a review
    */
-  async deleteReview(reviewId: string): Promise<ApiResponse<void>> {
+  async deleteReview(reviewId: string): Promise<void> {
     const url = `${API_BASE_URL}${REVIEW_ENDPOINTS.DELETE(reviewId)}`;
     const response = await fetch(url, {
       method: 'DELETE',
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<void>>(response);
+    return this.handleResponse<ApiResponse<void>(response);
   }
 
   /**
    * Get review analytics
    */
-  async getReviewAnalytics(period: 'weekly' | 'monthly' | 'quarterly' | 'yearly' = 'monthly'): Promise<ApiResponse<ReviewAnalytics>> {
+  async getReviewAnalytics(period: 'weekly' | 'monthly' | 'quarterly' | 'yearly' = 'monthly'): Promise<ReviewAnalytics> {
     const url = `${API_BASE_URL}${REVIEW_ENDPOINTS.ANALYTICS}?period=${period}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<ReviewAnalytics>>(response);
+    return this.handleResponse<ApiResponse<ReviewAnalytics>(response);
   }
 
   /**
    * Bulk moderate reviews
    */
-  async bulkModerateReviews(bulkData: BulkModerationData): Promise<ApiResponse<{ processed_count: number }>> {
+  async bulkModerateReviews(bulkData: BulkModerationData): Promise<{ processed_count: number }> {
     const url = `${API_BASE_URL}${REVIEW_ENDPOINTS.BULK_MODERATE}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -219,26 +219,26 @@ class ReviewService {
       body: JSON.stringify(bulkData)
     });
 
-    return this.handleResponse<ApiResponse<{ processed_count: number }>>(response);
+    return this.handleResponse<ApiResponse<{ processed_count: number }>(response);
   }
 
   /**
    * Get flagged reviews
    */
-  async getFlaggedReviews(page: number = 1, limit: number = 20): Promise<ApiResponse<Review[]>> {
+  async getFlaggedReviews(page: number = 1, limit: number = 20): Promise<Review[]> {
     const url = `${API_BASE_URL}${REVIEW_ENDPOINTS.FLAGGED}?page=${page}&limit=${limit}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<Review[]>>(response);
+    return this.handleResponse<ApiResponse<Review[]>(response);
   }
 
   /**
    * Feature/Unfeature a review
    */
-  async toggleReviewFeature(reviewId: string, featured: boolean): Promise<ApiResponse<Review>> {
+  async toggleReviewFeature(reviewId: string, featured: boolean): Promise<Review> {
     const url = `${API_BASE_URL}${REVIEW_ENDPOINTS.GET(reviewId)}`;
     const response = await fetch(url, {
       method: 'PATCH',
@@ -246,13 +246,13 @@ class ReviewService {
       body: JSON.stringify({ is_featured: featured }),
     });
 
-    return this.handleResponse<ApiResponse<Review>>(response);
+    return this.handleResponse<ApiResponse<Review>(response);
   }
 
   /**
    * Get reviews by provider ID
    */
-  async getReviewsByProvider(providerId: string, filters: ReviewFilters = {}): Promise<ApiResponse<Review[]>> {
+  async getReviewsByProvider(providerId: string, filters: ReviewFilters = {}): Promise<Review[]> {
     const queryParams = new URLSearchParams();
     queryParams.append('provider_id', providerId);
     
@@ -268,7 +268,7 @@ class ReviewService {
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<Review[]>>(response);
+    return this.handleResponse<ApiResponse<Review[]>(response);
   }
 }
 

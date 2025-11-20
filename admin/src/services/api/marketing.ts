@@ -9,7 +9,7 @@ import {
   CouponCode, 
   ReferralStats, 
   ReferralConfig,
-  ApiResponse,
+  
   PaginatedResponse,
   QueryParams
 } from '@/types';
@@ -138,69 +138,69 @@ class MarketingService extends ApiService {
   private readonly basePath = '/api/admin/v1/marketing';
 
   // Campaign Management
-  async getCampaigns(params: MarketingFilters & QueryParams = {}): Promise<ApiResponse<PaginatedResponse<MarketingCampaign>>> {
+  async getCampaigns(params: MarketingFilters & QueryParams = {}): Promise<PaginatedResponse<MarketingCampaign>> {
     return this.get(`${this.basePath}/campaigns`, { params });
   }
 
-  async getCampaign(id: string): Promise<ApiResponse<MarketingCampaign>> {
+  async getCampaign(id: string): Promise<MarketingCampaign> {
     return this.get(`${this.basePath}/campaigns/${id}`);
   }
 
-  async createCampaign(data: CreateCampaignRequest): Promise<ApiResponse<MarketingCampaign>> {
+  async createCampaign(data: CreateCampaignRequest): Promise<MarketingCampaign> {
     return this.post(`${this.basePath}/campaigns`, data);
   }
 
-  async updateCampaign(id: string, data: UpdateCampaignRequest): Promise<ApiResponse<MarketingCampaign>> {
+  async updateCampaign(id: string, data: UpdateCampaignRequest): Promise<MarketingCampaign> {
     return this.patch(`${this.basePath}/campaigns/${id}`, data);
   }
 
-  async deleteCampaign(id: string): Promise<ApiResponse<void>> {
+  async deleteCampaign(id: string): Promise<void> {
     return this.delete(`${this.basePath}/campaigns/${id}`);
   }
 
-  async duplicateCampaign(id: string, newName: string): Promise<ApiResponse<MarketingCampaign>> {
+  async duplicateCampaign(id: string, newName: string): Promise<MarketingCampaign> {
     return this.post(`${this.basePath}/campaigns/${id}/duplicate`, { name: newName });
   }
 
-  async pauseCampaign(id: string): Promise<ApiResponse<MarketingCampaign>> {
+  async pauseCampaign(id: string): Promise<MarketingCampaign> {
     return this.patch(`${this.basePath}/campaigns/${id}/pause`);
   }
 
-  async resumeCampaign(id: string): Promise<ApiResponse<MarketingCampaign>> {
+  async resumeCampaign(id: string): Promise<MarketingCampaign> {
     return this.patch(`${this.basePath}/campaigns/${id}/resume`);
   }
 
   // Promotion Management
-  async getPromotions(params: QueryParams = {}): Promise<ApiResponse<PaginatedResponse<PromotionCampaign>>> {
+  async getPromotions(params: QueryParams = {}): Promise<PaginatedResponse<PromotionCampaign>> {
     return this.get(`${this.basePath}/promotions`, { params });
   }
 
-  async createPromotion(data: Partial<PromotionCampaign>): Promise<ApiResponse<PromotionCampaign>> {
+  async createPromotion(data: Partial<PromotionCampaign>): Promise<PromotionCampaign> {
     return this.post(`${this.basePath}/promotions`, data);
   }
 
-  async updatePromotion(id: string, data: Partial<PromotionCampaign>): Promise<ApiResponse<PromotionCampaign>> {
+  async updatePromotion(id: string, data: Partial<PromotionCampaign>): Promise<PromotionCampaign> {
     return this.patch(`${this.basePath}/promotions/${id}`, data);
   }
 
-  async deletePromotion(id: string): Promise<ApiResponse<void>> {
+  async deletePromotion(id: string): Promise<void> {
     return this.delete(`${this.basePath}/promotions/${id}`);
   }
 
   // Coupon Management
-  async getCoupons(params: QueryParams = {}): Promise<ApiResponse<PaginatedResponse<CouponCode>>> {
+  async getCoupons(params: QueryParams = {}): Promise<PaginatedResponse<CouponCode>> {
     return this.get(`${this.basePath}/coupons`, { params });
   }
 
-  async createCoupon(data: Partial<CouponCode>): Promise<ApiResponse<CouponCode>> {
+  async createCoupon(data: Partial<CouponCode>): Promise<CouponCode> {
     return this.post(`${this.basePath}/coupons`, data);
   }
 
-  async updateCoupon(id: string, data: Partial<CouponCode>): Promise<ApiResponse<CouponCode>> {
+  async updateCoupon(id: string, data: Partial<CouponCode>): Promise<CouponCode> {
     return this.patch(`${this.basePath}/coupons/${id}`, data);
   }
 
-  async deleteCoupon(id: string): Promise<ApiResponse<void>> {
+  async deleteCoupon(id: string): Promise<void> {
     return this.delete(`${this.basePath}/coupons/${id}`);
   }
 
@@ -211,7 +211,7 @@ class MarketingService extends ApiService {
     discount_type: 'percentage' | 'fixed';
     discount_value: number;
     expires_at?: string;
-  }): Promise<ApiResponse<CouponCode[]>> {
+  }): Promise<CouponCode[]> {
     return this.post(`${this.basePath}/coupons/generate`, params);
   }
 
@@ -220,82 +220,82 @@ class MarketingService extends ApiService {
     period?: 'day' | 'week' | 'month' | 'quarter' | 'year';
     date_from?: string;
     date_to?: string;
-  } = {}): Promise<ApiResponse<MarketingAnalytics>> {
+  } = {}): Promise<MarketingAnalytics> {
     return this.get(`${this.basePath}/analytics`, { params });
   }
 
-  async getCampaignAnalytics(campaignId: string): Promise<ApiResponse<MarketingCampaign['metrics'] & {
+  async getCampaignAnalytics(campaignId: string): Promise<MarketingCampaign['metrics'] & {
     timeline: Array<{
       date: string;
       impressions: number;
       clicks: number;
       conversions: number;
     }>;
-  }>> {
+  }> {
     return this.get(`${this.basePath}/campaigns/${campaignId}/analytics`);
   }
 
   // Customer Segmentation
-  async getCustomerSegments(): Promise<ApiResponse<CustomerSegment[]>> {
+  async getCustomerSegments(): Promise<CustomerSegment[]> {
     return this.get(`${this.basePath}/segments`);
   }
 
-  async createCustomerSegment(data: CreateSegmentRequest): Promise<ApiResponse<CustomerSegment>> {
+  async createCustomerSegment(data: CreateSegmentRequest): Promise<CustomerSegment> {
     return this.post(`${this.basePath}/segments`, data);
   }
 
-  async updateCustomerSegment(id: string, data: Partial<CreateSegmentRequest>): Promise<ApiResponse<CustomerSegment>> {
+  async updateCustomerSegment(id: string, data: Partial<CreateSegmentRequest>): Promise<CustomerSegment> {
     return this.patch(`${this.basePath}/segments/${id}`, data);
   }
 
-  async deleteCustomerSegment(id: string): Promise<ApiResponse<void>> {
+  async deleteCustomerSegment(id: string): Promise<void> {
     return this.delete(`${this.basePath}/segments/${id}`);
   }
 
-  async getSegmentCustomers(id: string, params: QueryParams = {}): Promise<ApiResponse<PaginatedResponse<any>>> {
+  async getSegmentCustomers(id: string, params: QueryParams = {}): Promise<PaginatedResponse<any>> {
     return this.get(`${this.basePath}/segments/${id}/customers`, { params });
   }
 
   // Referral Management
-  async getReferralStats(): Promise<ApiResponse<ReferralStats>> {
+  async getReferralStats(): Promise<ReferralStats> {
     return this.get(`${this.basePath}/referrals/stats`);
   }
 
-  async getReferralConfig(): Promise<ApiResponse<ReferralConfig>> {
+  async getReferralConfig(): Promise<ReferralConfig> {
     return this.get(`${this.basePath}/referrals/config`);
   }
 
-  async updateReferralConfig(data: Partial<ReferralConfig>): Promise<ApiResponse<ReferralConfig>> {
+  async updateReferralConfig(data: Partial<ReferralConfig>): Promise<ReferralConfig> {
     return this.patch(`${this.basePath}/referrals/config`, data);
   }
 
   // Campaign Templates
-  async getCampaignTemplates(): Promise<ApiResponse<Array<{
+  async getCampaignTemplates(): Promise<Array<{
     id: string;
     name: string;
     type: MarketingCampaign['type'];
     description: string;
     template: Partial<CreateCampaignRequest>;
-  }>>> {
+  }>> {
     return this.get(`${this.basePath}/templates`);
   }
 
   // Email Marketing
-  async sendTestEmail(campaignId: string, testEmails: string[]): Promise<ApiResponse<void>> {
+  async sendTestEmail(campaignId: string, testEmails: string[]): Promise<void> {
     return this.post(`${this.basePath}/campaigns/${campaignId}/test-email`, { emails: testEmails });
   }
 
-  async scheduleCampaign(campaignId: string, scheduledDate: string): Promise<ApiResponse<MarketingCampaign>> {
+  async scheduleCampaign(campaignId: string, scheduledDate: string): Promise<MarketingCampaign> {
     return this.patch(`${this.basePath}/campaigns/${campaignId}/schedule`, { scheduled_date: scheduledDate });
   }
 
   // Bulk Operations
-  async bulkUpdateCampaigns(campaignIds: string[], action: 'pause' | 'resume' | 'archive'): Promise<ApiResponse<{ success: string[]; failed: string[] }>> {
+  async bulkUpdateCampaigns(campaignIds: string[], action: 'pause' | 'resume' | 'archive'): Promise<{ success: string[]; failed: string[] }> {
     return this.patch(`${this.basePath}/campaigns/bulk`, { campaign_ids: campaignIds, action });
   }
 
   // Export/Reporting
-  async exportCampaignData(campaignId?: string, format: 'csv' | 'xlsx' = 'csv'): Promise<ApiResponse<{ download_url: string }>> {
+  async exportCampaignData(campaignId?: string, format: 'csv' | 'xlsx' = 'csv'): Promise<{ download_url: string }> {
     const endpoint = campaignId 
       ? `${this.basePath}/campaigns/${campaignId}/export`
       : `${this.basePath}/campaigns/export`;
@@ -307,7 +307,7 @@ class MarketingService extends ApiService {
     date_from?: string;
     date_to?: string;
     format?: 'csv' | 'xlsx' | 'pdf';
-  }): Promise<ApiResponse<{ download_url: string }>> {
+  }): Promise<{ download_url: string }> {
     return this.get(`${this.basePath}/analytics/export`, { params });
   }
 }

@@ -751,7 +751,7 @@ export const useTestRateLimitRule = () => {
     }) => RateLimitService.testRateLimitRule(ruleId, testRequest),
     onSuccess: (result) => {
       if (result.blocked) {
-        toast.warning(`Request would be blocked (delay: ${result.delay}s)`);
+        toast.error(`Request would be blocked (delay: ${result.delay}s)`);
       } else {
         toast.success(`Request would be allowed (${result.remaining_requests} requests remaining)`);
       }

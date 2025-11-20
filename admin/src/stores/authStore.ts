@@ -44,13 +44,13 @@ export const useAuthStore = create<AuthStore>()(
         // Step 2: Fetch user profile to get complete user data
         const profileResponse = await authService.getProfile();
         console.log('🏪 [AUTH STORE] Step 2 completed - profile data received:', {
-          userId: profileResponse.data.id,
-          email: profileResponse.data.email
+          userId: profileResponse.id,
+          email: profileResponse.email
         });
         
         console.log('🏪 [AUTH STORE] Setting authenticated state...');
         set({
-          user: profileResponse.data,
+          user: profileResponse,
           isAuthenticated: true,
           isInitialized: true,
           isLoading: false,
@@ -59,7 +59,7 @@ export const useAuthStore = create<AuthStore>()(
         
         console.log('🏪 [AUTH STORE] Login completed successfully, final state:', {
           isAuthenticated: true,
-          user: profileResponse.data.email
+          user: profileResponse.email
         });
       } catch (error) {
         console.error('🏪 [AUTH STORE] Login failed:', error);
@@ -101,7 +101,7 @@ export const useAuthStore = create<AuthStore>()(
           const profileResponse = await authService.getProfile();
           
           set({
-            user: profileResponse.data,
+            user: profileResponse,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -189,11 +189,11 @@ export const useAuthStore = create<AuthStore>()(
           // Try to get user profile - this will work if httpOnly cookies are valid
           const profileResponse = await authService.getProfile();
           console.log('🏪 [AUTH STORE] Profile retrieved successfully:', {
-            userId: profileResponse.data.id,
-            email: profileResponse.data.email
+            userId: profileResponse.id,
+            email: profileResponse.email
           });
           set({
-            user: profileResponse.data,
+            user: profileResponse,
             isAuthenticated: true,
             isInitialized: true,
             isLoading: false,

@@ -28,7 +28,7 @@ import type {
   TestIntegrationRequest,
   CreateRateLimitRuleRequest,
   BulkApiKeyOperation,
-  ApiResponse,
+  
 } from '@/types/api.types';
 
 // ==================== API KEY MANAGEMENT ====================
@@ -67,7 +67,7 @@ export const ApiKeyService = {
     return response.data;
   },
 
-  revokeApiKey: async (id: string): Promise<ApiResponse> => {
+  revokeApiKey: async (id: string): Promise<any> => {
     const response = await apiClient.post(`/admin/api/keys/${id}/revoke`);
     return response.data;
   },
@@ -82,7 +82,7 @@ export const ApiKeyService = {
     return response.data;
   },
 
-  bulkApiKeyOperation: async (operation: BulkApiKeyOperation): Promise<ApiResponse> => {
+  bulkApiKeyOperation: async (operation: BulkApiKeyOperation): Promise<any> => {
     const response = await apiClient.post('/admin/api/keys/bulk', operation);
     return response.data;
   },
@@ -144,7 +144,7 @@ export const WebhookService = {
     return response.data;
   },
 
-  deleteWebhookEndpoint: async (id: string): Promise<ApiResponse> => {
+  deleteWebhookEndpoint: async (id: string): Promise<any> => {
     const response = await apiClient.delete(`/admin/webhooks/${id}`);
     return response.data;
   },
@@ -236,7 +236,7 @@ export const IntegrationService = {
     return response.data;
   },
 
-  deleteIntegration: async (id: string): Promise<ApiResponse> => {
+  deleteIntegration: async (id: string): Promise<any> => {
     const response = await apiClient.delete(`/admin/integrations/${id}`);
     return response.data;
   },
@@ -329,7 +329,7 @@ export const ApiDocumentationService = {
     return response.data;
   },
 
-  generateApiDocumentation: async (): Promise<ApiResponse> => {
+  generateApiDocumentation: async (): Promise<any> => {
     const response = await apiClient.post('/admin/api/documentation/generate');
     return response.data;
   },
@@ -497,7 +497,7 @@ export const RateLimitService = {
     return response.data;
   },
 
-  deleteRateLimitRule: async (id: string): Promise<ApiResponse> => {
+  deleteRateLimitRule: async (id: string): Promise<any> => {
     const response = await apiClient.delete(`/admin/rate-limits/${id}`);
     return response.data;
   },

@@ -6,7 +6,7 @@
 import { USER_ENDPOINTS } from '@/config/api';
 import { apiService } from './base';
 import type { 
-  ApiResponse,
+  
   PaginatedResponse,
   User,
   CreateUserRequest,
@@ -23,35 +23,35 @@ export class UserService {
   /**
    * Get user dashboard statistics
    */
-  async getDashboardStats(): Promise<ApiResponse<UserDashboardStats>> {
+  async getDashboardStats(): Promise<UserDashboardStats> {
     return await apiService.get<UserDashboardStats>(USER_ENDPOINTS.DASHBOARD);
   }
 
   /**
    * Get paginated list of users with filters
    */
-  async getUsers(filters: UserFilters = {}): Promise<ApiResponse<PaginatedResponse<User>>> {
+  async getUsers(filters: UserFilters = {}): Promise<PaginatedResponse<User>> {
     return await apiService.get<PaginatedResponse<User>>(USER_ENDPOINTS.LIST, filters);
   }
 
   /**
    * Get user details by ID
    */
-  async getUser(userId: string): Promise<ApiResponse<User>> {
+  async getUser(userId: string): Promise<User> {
     return await apiService.get<User>(USER_ENDPOINTS.GET(userId));
   }
 
   /**
    * Create a new admin user
    */
-  async createUser(userData: CreateUserRequest): Promise<ApiResponse<User>> {
+  async createUser(userData: CreateUserRequest): Promise<User> {
     return await apiService.post<User>(USER_ENDPOINTS.CREATE, userData);
   }
 
   /**
    * Update user information
    */
-  async updateUser(userId: string, updates: UpdateUserRequest): Promise<ApiResponse<User>> {
+  async updateUser(userId: string, updates: UpdateUserRequest): Promise<User> {
     return await apiService.put<User>(USER_ENDPOINTS.UPDATE(userId), updates);
   }
 
@@ -61,14 +61,14 @@ export class UserService {
   async updateUserStatus(
     userId: string, 
     statusUpdate: UpdateUserStatusRequest
-  ): Promise<ApiResponse<User>> {
+  ): Promise<User> {
     return await apiService.patch<User>(USER_ENDPOINTS.UPDATE_STATUS(userId), statusUpdate);
   }
 
   /**
    * Delete a user
    */
-  async deleteUser(userId: string): Promise<ApiResponse<{ deleted_user_id: string }>> {
+  async deleteUser(userId: string): Promise<{ deleted_user_id: string }> {
     return await apiService.delete<{ deleted_user_id: string }>(USER_ENDPOINTS.DELETE(userId));
   }
 
@@ -78,7 +78,7 @@ export class UserService {
   async searchUsers(
     query: string, 
     searchType: 'name' | 'email' | 'phone' = 'name'
-  ): Promise<ApiResponse<User[]>> {
+  ): Promise<User[]> {
     return await apiService.get<User[]>(USER_ENDPOINTS.SEARCH, {
       query,
       search_type: searchType,
@@ -91,7 +91,7 @@ export class UserService {
   async getUserActivity(
     userId: string, 
     params: QueryParams = {}
-  ): Promise<ApiResponse<any[]>> {
+  ): Promise<any[]> {
     return await apiService.get<any[]>(USER_ENDPOINTS.ACTIVITY(userId), params);
   }
 
@@ -106,7 +106,7 @@ export class UserService {
       send_email?: boolean;
       send_sms?: boolean;
     }
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<{ message: string }> {
     return await apiService.post<{ message: string }>(
       USER_ENDPOINTS.NOTIFICATIONS(userId),
       notification
@@ -116,10 +116,10 @@ export class UserService {
   /**
    * Bulk user actions (suspend, activate, delete)
    */
-  async bulkUserActions(action: BulkUserAction): Promise<ApiResponse<{
+  async bulkUserActions(action: BulkUserAction): Promise<{
     successful: string[];
     failed: Array<{ user_id: string; error: string }>;
-  }>> {
+  }> {
     return await apiService.post<{
       successful: string[];
       failed: Array<{ user_id: string; error: string }>;
@@ -129,10 +129,10 @@ export class UserService {
   /**
    * Export user data
    */
-  async exportUsers(exportRequest: ExportRequest): Promise<ApiResponse<{
+  async exportUsers(exportRequest: ExportRequest): Promise<{
     download_url: string;
     expires_at: string;
-  }>> {
+  }> {
     return await apiService.post<{
       download_url: string;
       expires_at: string;
@@ -146,7 +146,7 @@ export class UserService {
     start_date?: string;
     end_date?: string;
     group_by?: 'day' | 'week' | 'month';
-  } = {}): Promise<ApiResponse<{
+  } = {}): Promise<{
     total_users: number;
     new_registrations: number;
     active_users: number;
@@ -156,7 +156,7 @@ export class UserService {
       new_users: number;
       active_users: number;
     }>;
-  }>> {
+  }> {
     return await apiService.get<{
       total_users: number;
       new_registrations: number;

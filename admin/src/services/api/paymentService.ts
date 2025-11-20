@@ -3,7 +3,7 @@
  * Handles all payment-related API calls
  */
 
-import { ApiResponse, PaginatedResponse } from '../../types/api.types';
+import {  PaginatedResponse } from '../../types/api.types';
 
 export interface Payment {
   id: string;
@@ -142,7 +142,7 @@ export const paymentService = {
   },
 
   // Process refund
-  async processRefund(paymentId: string, refundData: RefundRequest): Promise<ApiResponse<RefundRecord>> {
+  async processRefund(paymentId: string, refundData: RefundRequest): Promise<RefundRecord> {
     const response = await fetch(`/api/admin/v1/payments/${paymentId}/refund`, {
       method: 'POST',
       headers: {
@@ -182,7 +182,7 @@ export const paymentService = {
   },
 
   // Resolve dispute
-  async resolveDispute(disputeId: string, resolution: DisputeResolution): Promise<ApiResponse<DisputeInfo>> {
+  async resolveDispute(disputeId: string, resolution: DisputeResolution): Promise<DisputeInfo> {
     const response = await fetch(`/api/admin/v1/payments/disputes/${disputeId}/resolve`, {
       method: 'PATCH',
       headers: {
@@ -200,7 +200,7 @@ export const paymentService = {
   },
 
   // Get financial reports
-  async getFinancialReports(period: string, year?: string): Promise<ApiResponse<FinancialReport[]>> {
+  async getFinancialReports(period: string, year?: string): Promise<FinancialReport[]> {
     const params = new URLSearchParams({ period });
     if (year) {
       params.append('year', year);
@@ -259,7 +259,7 @@ export const paymentService = {
   },
 
   // Update platform fees
-  async updatePlatformFees(fees: Partial<PlatformFees>): Promise<ApiResponse<PlatformFees>> {
+  async updatePlatformFees(fees: Partial<PlatformFees>): Promise<PlatformFees> {
     const response = await fetch('/api/admin/v1/payments/platform-fees', {
       method: 'PUT',
       headers: {

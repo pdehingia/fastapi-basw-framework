@@ -41,8 +41,9 @@ export const useContent = (params?: Parameters<typeof ContentService.getContent>
 export const useInfiniteContent = (params?: Parameters<typeof ContentService.getContent>[0]) => {
   return useInfiniteQuery({
     queryKey: ['content', 'infinite', params],
-    queryFn: ({ pageParam = 1 }) =>
+    queryFn: ({ pageParam }: { pageParam: number }) =>
       ContentService.getContent({ ...params, page: pageParam }),
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { page, pages } = lastPage.pagination;
       return page < pages ? page + 1 : undefined;
@@ -174,7 +175,7 @@ export const useScheduleContent = () => {
   return useMutation({
     mutationFn: ({ id, scheduledFor }: { id: string; scheduledFor: string }) =>
       ContentService.scheduleContent(id, scheduledFor),
-    onSuccess: (schedule) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['content'] });
       queryClient.invalidateQueries({ queryKey: ['content-schedule'] });
       toast.success('Content scheduled successfully');
@@ -432,8 +433,9 @@ export const useMediaFiles = (params?: Parameters<typeof MediaService.getMediaFi
 export const useInfiniteMedia = (params?: Parameters<typeof MediaService.getMediaFiles>[0]) => {
   return useInfiniteQuery({
     queryKey: ['media', 'infinite', params],
-    queryFn: ({ pageParam = 1 }) =>
+    queryFn: ({ pageParam }: { pageParam: number }) =>
       MediaService.getMediaFiles({ ...params, page: pageParam }),
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { page, pages } = lastPage.pagination;
       return page < pages ? page + 1 : undefined;

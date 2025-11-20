@@ -5,6 +5,497 @@
 
 import type { Permission } from './auth.types';
 
+// ==================== OTP MANAGEMENT TYPES ====================
+
+/**
+ * OTP Verification entity
+ */
+export interface OTPVerification {
+  id: number;
+  phone_number: string;
+  country_code: string;
+  purpose: string; // login, register, password_reset, etc.
+  user_id?: string;
+  user_type?: string;
+  otp_code: string;
+  attempts_count: number;
+  max_attempts: number;
+  is_verified: boolean;
+  is_blocked: boolean;
+  blocked_until?: string;
+  ip_address?: string;
+  user_agent?: string;
+  created_at: string;
+  expires_at: string;
+  verified_at?: string;
+}
+
+/**
+ * OTP Verification filters
+ */
+export interface OTPVerificationFilters {
+  phone_number?: string;
+  user_id?: string;
+  user_type?: string;
+  purpose?: string;
+  is_verified?: boolean;
+  is_blocked?: boolean;
+  created_from?: string;
+  created_to?: string;
+}
+
+/**
+ * OTP Verification list response
+ */
+export interface OTPVerificationListResponse {
+  items: OTPVerification[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
+}
+
+/**
+ * OTP Statistics
+ */
+export interface OTPStatistics {
+  total_otps: number;
+  verified_otps: number;
+  unverified_otps: number;
+  blocked_numbers: number;
+  expired_otps: number;
+  by_purpose: Record<string, number>;
+  by_user_type: Record<string, number>;
+  verification_rate: number;
+  avg_verification_time_seconds?: number;
+}
+
+/**
+ * Blocked user information
+ */
+export interface BlockedUser {
+  phone_number: string;
+  country_code: string;
+  attempts_count: number;
+  blocked_until: string;
+  last_attempt_at: string;
+  reason: string;
+}
+
+/**
+ * Resend OTP request
+ */
+export interface OTPResendRequest {
+  phone_number: string;
+  country_code?: string;
+  purpose: string;
+}
+
+/**
+ * Unblock phone request
+ */
+export interface OTPUnblockRequest {
+  phone_number: string;
+  country_code?: string;
+  reason?: string;
+}
+
+// ==================== ROLES & PERMISSIONS TYPES ====================
+
+/**
+ * Role entity
+ */
+export interface Role {
+  id: number;
+  role_name: string;
+  role_slug: string;
+  description?: string;
+  parent_role_id?: number;
+  level: number;
+  is_active: boolean;
+  is_system_role: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Role with permissions
+ */
+export interface RoleWithPermissions extends Role {
+  permissions: RolePermission[];
+}
+
+/**
+ * Role hierarchy node
+ */
+export interface RoleHierarchyNode {
+  id: number;
+  role_name: string;
+  role_slug: string;
+  level: number;
+  children: RoleHierarchyNode[];
+}
+
+/**
+ * Create role request
+ */
+export interface RoleCreate {
+  role_name: string;
+  role_slug: string;
+  description?: string;
+  parent_role_id?: number;
+  level?: number;
+  is_active?: boolean;
+}
+
+/**
+ * Update role request
+ */
+export interface RoleUpdate {
+  role_name?: string;
+  description?: string;
+  parent_role_id?: number;
+  level?: number;
+  is_active?: boolean;
+}
+
+/**
+ * Role filters
+ */
+export interface RoleFilters {
+  search?: string;
+  is_active?: boolean;
+  is_system_role?: boolean;
+  parent_role_id?: number;
+  level?: number;
+}
+
+/**
+ * Role list response
+ */
+export interface RoleListResponse {
+  roles: Role[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+/**
+ * Role statistics
+ */
+export interface RoleStatistics {
+  total_roles: number;
+  active_roles: number;
+  system_roles: number;
+  custom_roles: number;
+  roles_by_level: Record<string, number>;
+}
+
+/**
+ * Permission entity
+ */
+export interface RolePermission {
+  id: number;
+  permission_name: string;
+  permission_slug: string;
+  category: string;
+  description?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+/**
+ * Permission filters
+ */
+export interface PermissionFilters {
+  search?: string;
+  category?: string;
+  is_active?: boolean;
+}
+
+/**
+ * Permission list response
+ */
+export interface PermissionListResponse {
+  permissions: RolePermission[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+/**
+ * Permission statistics
+ */
+export interface PermissionStatistics {
+  total_permissions: number;
+  active_permissions: number;
+  permissions_by_category: Record<string, number>;
+}
+
+/**
+ * Assign permissions to role request
+ */
+export interface RolePermissionAssign {
+  permission_ids: number[];
+}
+
+// ==================== FEATURE FLAGS TYPES ====================
+
+/**
+ * Feature flag entity
+ */
+export interface FeatureFlag {
+  id: string;
+  name: string;
+  key: string;
+  description?: string;
+  is_enabled: boolean;
+  rollout_percentage: number; // 0-100
+  user_segments?: string[];
+  conditions?: Record<string, any>;
+  created_by?: string;
+  updated_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Create feature flag request
+ */
+export interface FeatureFlagCreate {
+  name: string;
+  key: string;
+  description?: string;
+  is_enabled?: boolean;
+  rollout_percentage?: number;
+  user_segments?: string[];
+  conditions?: Record<string, any>;
+}
+
+/**
+ * Update feature flag request
+ */
+export interface FeatureFlagUpdate {
+  name?: string;
+  description?: string;
+  is_enabled?: boolean;
+  rollout_percentage?: number;
+  user_segments?: string[];
+  conditions?: Record<string, any>;
+}
+
+/**
+ * Feature flag filters
+ */
+export interface FeatureFlagFilters {
+  is_enabled?: boolean;
+  user_segment?: string;
+  search?: string;
+}
+
+/**
+ * Feature flag list response
+ */
+export interface FeatureFlagListResponse {
+  items: FeatureFlag[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
+}
+
+/**
+ * Toggle feature flag request
+ */
+export interface FeatureFlagToggleRequest {
+  is_enabled: boolean;
+}
+
+/**
+ * Toggle feature flag response
+ */
+export interface FeatureFlagToggleResponse {
+  id: string;
+  key: string;
+  is_enabled: boolean;
+  message: string;
+}
+
+// ==================== ADDRESS MANAGEMENT TYPES ====================
+
+export type OwnerType = 'admin' | 'provider' | 'customer';
+
+/**
+ * Address entity
+ */
+export interface Address {
+  id: string;
+  owner_user_id: string;
+  owner_type: OwnerType;
+  label?: string; // e.g., Home, Office
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+  contact_name?: string;
+  contact_phone?: string;
+  latitude?: number;
+  longitude?: number;
+  is_verified: boolean;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+  // Detailed response fields
+  owner_name?: string;
+  owner_email?: string;
+  owner_phone?: string;
+}
+
+/**
+ * Create address request
+ */
+export interface AddressCreate {
+  owner_user_id: string;
+  owner_type: OwnerType;
+  label?: string;
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country?: string; // defaults to "India"
+  contact_name?: string;
+  contact_phone?: string;
+  latitude?: number;
+  longitude?: number;
+  is_default?: boolean;
+}
+
+/**
+ * Update address request
+ */
+export interface AddressUpdate {
+  label?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  country?: string;
+  contact_name?: string;
+  contact_phone?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+/**
+ * Address filters
+ */
+export interface AddressFilters {
+  search?: string;
+  owner_user_id?: string;
+  owner_type?: OwnerType;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  is_verified?: boolean;
+  is_default?: boolean;
+}
+
+/**
+ * Address list response
+ */
+export interface AddressListResponse {
+  addresses: Address[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+/**
+ * Address statistics
+ */
+export interface AddressStatistics {
+  total_addresses: number;
+  verified_addresses: number;
+  unverified_addresses: number;
+  default_addresses: number;
+  addresses_by_owner_type: Record<string, number>;
+  addresses_by_state: Record<string, number>;
+  addresses_by_city: Record<string, number>;
+}
+
+/**
+ * Address verification request
+ */
+export interface AddressVerify {
+  latitude: number;
+  longitude: number;
+  verification_notes?: string;
+}
+
+/**
+ * Address verification response
+ */
+export interface AddressVerificationResponse {
+  address_id: string;
+  is_verified: boolean;
+  verified_at: string;
+  latitude: number;
+  longitude: number;
+  verification_notes?: string;
+}
+
+/**
+ * Set default address request
+ */
+export interface SetDefaultRequest {
+  user_id: string;
+  owner_type: OwnerType;
+}
+
+/**
+ * Bulk import single address item
+ */
+export interface AddressBulkImportItem {
+  owner_user_id: string;
+  owner_type: OwnerType;
+  label?: string;
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country?: string;
+  contact_name?: string;
+  contact_phone?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+/**
+ * Bulk import request
+ */
+export interface AddressBulkImport {
+  addresses: AddressBulkImportItem[];
+}
+
+/**
+ * Bulk import result
+ */
+export interface AddressBulkImportResult {
+  total_submitted: number;
+  successful_imports: number;
+  failed_imports: number;
+  imported_addresses: Address[];
+  errors: Array<Record<string, any>>;
+}
+
 // ==================== BASE TYPES ====================
 
 export interface ApiResponse<T = any> {
@@ -2284,6 +2775,992 @@ export interface RevokeAllSessionsRequest {
   reason: string;
   notify_user?: boolean;
   exclude_current?: boolean;
+}
+
+// ==================== FINANCIAL MANAGEMENT TYPES ====================
+
+export type UserType = 'admin' | 'customer' | 'provider';
+export type TransactionType = 'payment' | 'refund' | 'commission' | 'withdrawal' | 'deposit' | 'transfer' | 'adjustment';
+export type TransactionStatus = 'pending' | 'completed' | 'failed' | 'cancelled' | 'processing';
+export type WalletTransactionType = 'credit' | 'debit' | 'transfer' | 'refund' | 'commission' | 'withdrawal' | 'adjustment';
+
+export interface FinancialTransaction {
+  id: string;
+  transaction_id: string;
+  user_id: string;
+  user_type: UserType;
+  transaction_type: TransactionType;
+  status: TransactionStatus;
+  amount: number;
+  currency: string;
+  description: string;
+  booking_id?: string;
+  payment_method?: string;
+  payment_gateway?: string;
+  gateway_transaction_id?: string;
+  gateway_response?: Record<string, any>;
+  commission_amount?: number;
+  commission_percentage?: number;
+  net_amount?: number;
+  metadata?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+}
+
+export interface CreateTransactionRequest {
+  user_id: string;
+  user_type: UserType;
+  transaction_type: TransactionType;
+  amount: number;
+  currency?: string;
+  description: string;
+  booking_id?: string;
+  payment_method?: string;
+  payment_gateway?: string;
+  gateway_transaction_id?: string;
+  commission_percentage?: number;
+  metadata?: Record<string, any>;
+}
+
+export interface UpdateTransactionRequest {
+  status?: TransactionStatus;
+  description?: string;
+  gateway_response?: Record<string, any>;
+  metadata?: Record<string, any>;
+}
+
+export interface FinancialTransactionFilters {
+  page?: number;
+  size?: number;
+  user_id?: string;
+  user_type?: UserType;
+  transaction_type?: TransactionType;
+  status?: TransactionStatus;
+  booking_id?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface BulkTransactionRequest {
+  transactions: CreateTransactionRequest[];
+}
+
+export interface BulkTransactionResponse {
+  success: boolean;
+  created_count: number;
+  failed_count: number;
+  created_ids: string[];
+  errors?: Array<{
+    index: number;
+    error: string;
+  }>;
+}
+
+export interface BankAccount {
+  id: string;
+  account_id: string;
+  user_id: string;
+  user_type: UserType;
+  account_holder_name: string;
+  bank_name: string;
+  account_number: string;
+  routing_number?: string;
+  swift_code?: string;
+  iban?: string;
+  account_type: 'checking' | 'savings' | 'business';
+  currency: string;
+  is_primary: boolean;
+  is_verified: boolean;
+  verification_status: 'pending' | 'verified' | 'failed';
+  verification_date?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateBankAccountRequest {
+  user_id: string;
+  user_type: UserType;
+  account_holder_name: string;
+  bank_name: string;
+  account_number: string;
+  routing_number?: string;
+  swift_code?: string;
+  iban?: string;
+  account_type: 'checking' | 'savings' | 'business';
+  currency?: string;
+  is_primary?: boolean;
+}
+
+export interface UpdateBankAccountRequest {
+  account_holder_name?: string;
+  bank_name?: string;
+  is_primary?: boolean;
+  is_verified?: boolean;
+}
+
+export interface Wallet {
+  id: string;
+  wallet_id: string;
+  user_id: string;
+  user_type: UserType;
+  balance: number;
+  available_balance: number;
+  pending_balance: number;
+  currency: string;
+  is_active: boolean;
+  last_transaction_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateWalletRequest {
+  user_id: string;
+  user_type: UserType;
+  currency?: string;
+  initial_balance?: number;
+}
+
+export interface UpdateWalletRequest {
+  is_active?: boolean;
+}
+
+export interface WalletTransaction {
+  id: string;
+  transaction_id: string;
+  wallet_id: string;
+  transaction_type: WalletTransactionType;
+  amount: number;
+  balance_before: number;
+  balance_after: number;
+  description: string;
+  reference_id?: string;
+  reference_type?: string;
+  metadata?: Record<string, any>;
+  created_at: string;
+}
+
+export interface CreateWalletTransactionRequest {
+  wallet_id: string;
+  transaction_type: WalletTransactionType;
+  amount: number;
+  description: string;
+  reference_id?: string;
+  reference_type?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface ProviderEarnings {
+  provider_id: string;
+  provider_name: string;
+  total_earnings: number;
+  total_commission: number;
+  net_earnings: number;
+  total_bookings: number;
+  completed_bookings: number;
+  average_booking_value: number;
+  period_start: string;
+  period_end: string;
+  currency: string;
+  earnings_by_month: Array<{
+    month: string;
+    earnings: number;
+    bookings: number;
+  }>;
+}
+
+export interface MonthlyEarnings {
+  month: string;
+  year: number;
+  total_earnings: number;
+  commission: number;
+  net_earnings: number;
+  booking_count: number;
+}
+
+export interface TopEarner {
+  provider_id: string;
+  provider_name: string;
+  business_name?: string;
+  total_earnings: number;
+  booking_count: number;
+  average_rating?: number;
+  rank: number;
+}
+
+export interface FinancialStatistics {
+  total_revenue: number;
+  total_commission: number;
+  net_revenue: number;
+  total_transactions: number;
+  successful_transactions: number;
+  pending_transactions: number;
+  failed_transactions: number;
+  total_refunds: number;
+  refund_amount: number;
+  average_transaction_value: number;
+  currency: string;
+  period: {
+    start: string;
+    end: string;
+  };
+}
+
+export interface WalletStatistics {
+  total_wallets: number;
+  active_wallets: number;
+  inactive_wallets: number;
+  total_balance: number;
+  total_available_balance: number;
+  total_pending_balance: number;
+  currency: string;
+}
+
+export interface TransactionStatistics {
+  total_transactions: number;
+  completed_transactions: number;
+  pending_transactions: number;
+  failed_transactions: number;
+  total_volume: number;
+  average_transaction_size: number;
+  transactions_by_type: Record<TransactionType, number>;
+  transactions_by_status: Record<TransactionStatus, number>;
+  currency: string;
+}
+
+// ==================== AUDIT LOGS TYPES ====================
+
+// User Activity Logs
+export interface UserActivityLog {
+  id: number;
+  user_id: string;
+  user_type: 'admin' | 'provider' | 'customer';
+  activity_type: string;
+  activity_category?: string;
+  description?: string;
+  metadata?: Record<string, any>;
+  ip_address?: string;
+  session_id?: string;
+  created_at: string;
+}
+
+export interface UserActivityLogFilters {
+  user_id?: string;
+  user_type?: string;
+  activity_type?: string;
+  activity_category?: string;
+  created_from?: string;
+  created_to?: string;
+}
+
+export interface ActivityLogStatistics {
+  total_logs: number;
+  by_user_type: Record<string, number>;
+  by_activity_type: Record<string, number>;
+  by_activity_category: Record<string, number>;
+  by_user: Record<string, number>; // Top 10 most active users
+  logs_per_day: Array<{
+    date: string;
+    count: number;
+  }>;
+  unique_users: number;
+  unique_sessions: number;
+}
+
+// Customer Audit Logs
+export interface CustomerAuditLog {
+  id: number;
+  customer_user_id?: string;
+  action: string;
+  entity?: string;
+  entity_id?: string;
+  before?: Record<string, any>;
+  after?: Record<string, any>;
+  created_at: string;
+}
+
+export interface CustomerAuditLogFilters {
+  customer_user_id?: string;
+  action?: string;
+  entity?: string;
+  entity_id?: string;
+  created_from?: string;
+  created_to?: string;
+}
+
+// Provider Audit Logs
+export interface ProviderAuditLog {
+  id: number;
+  provider_user_id?: string;
+  action: string;
+  entity?: string;
+  entity_id?: string;
+  before?: Record<string, any>;
+  after?: Record<string, any>;
+  created_at: string;
+}
+
+export interface ProviderAuditLogFilters {
+  provider_user_id?: string;
+  action?: string;
+  entity?: string;
+  entity_id?: string;
+  created_from?: string;
+  created_to?: string;
+}
+
+// Shared audit statistics
+export interface AuditLogStatistics {
+  total_logs: number;
+  by_action: Record<string, number>;
+  by_entity: Record<string, number>;
+  by_user: Record<string, number>; // Top 10 most active users
+  logs_per_day: Array<{
+    date: string;
+    count: number;
+  }>;
+}
+
+// ==================== CAMPAIGN MANAGEMENT TYPES ====================
+
+// Campaign types and statuses
+export type CampaignType = 'promotional' | 'newsletter' | 'notification' | 'reminder';
+export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'sent' | 'paused' | 'cancelled';
+export type TargetAudience = 'all_users' | 'academies' | 'artists' | 'customers';
+
+// Email Campaign
+export interface EmailCampaign {
+  id: string;
+  campaign_name: string;
+  campaign_type: CampaignType;
+  subject_line: string;
+  template_id?: string;
+  sender_name: string;
+  sender_email: string;
+  target_audience: TargetAudience;
+  segment_criteria?: Record<string, any>;
+  campaign_status: CampaignStatus;
+  scheduled_at?: string;
+  sent_at?: string;
+  total_recipients: number;
+  total_sent: number;
+  total_delivered: number;
+  total_opened: number;
+  total_clicked: number;
+  total_unsubscribed: number;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EmailCampaignCreate {
+  campaign_name: string;
+  campaign_type: CampaignType;
+  subject_line: string;
+  template_id?: string;
+  sender_name: string;
+  sender_email: string;
+  target_audience: TargetAudience;
+  segment_criteria?: Record<string, any>;
+  scheduled_at?: string;
+}
+
+export interface EmailCampaignUpdate {
+  campaign_name?: string;
+  campaign_type?: CampaignType;
+  subject_line?: string;
+  template_id?: string;
+  sender_name?: string;
+  sender_email?: string;
+  target_audience?: TargetAudience;
+  segment_criteria?: Record<string, any>;
+  campaign_status?: CampaignStatus;
+  scheduled_at?: string;
+}
+
+export interface EmailCampaignFilters {
+  campaign_type?: CampaignType;
+  campaign_status?: CampaignStatus;
+  target_audience?: TargetAudience;
+  created_by?: string;
+  scheduled_from?: string;
+  scheduled_to?: string;
+}
+
+export interface EmailCampaignStatistics {
+  total_campaigns: number;
+  draft_campaigns: number;
+  scheduled_campaigns: number;
+  sent_campaigns: number;
+  total_recipients: number;
+  total_sent: number;
+  total_delivered: number;
+  total_opened: number;
+  total_clicked: number;
+  total_unsubscribed: number;
+  average_open_rate: number;
+  average_click_rate: number;
+}
+
+export interface SendCampaignRequest {
+  send_test?: boolean;
+  test_emails?: string[];
+}
+
+// SMS Campaign
+export interface SMSCampaign {
+  id: string;
+  campaign_name: string;
+  campaign_type: CampaignType;
+  message_content: string;
+  target_audience: TargetAudience;
+  segment_criteria?: Record<string, any>;
+  campaign_status: CampaignStatus;
+  scheduled_at?: string;
+  sent_at?: string;
+  total_recipients: number;
+  total_sent: number;
+  total_delivered: number;
+  total_failed: number;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SMSCampaignCreate {
+  campaign_name: string;
+  campaign_type: CampaignType;
+  message_content: string;
+  target_audience: TargetAudience;
+  segment_criteria?: Record<string, any>;
+  scheduled_at?: string;
+}
+
+export interface SMSCampaignUpdate {
+  campaign_name?: string;
+  campaign_type?: CampaignType;
+  message_content?: string;
+  target_audience?: TargetAudience;
+  segment_criteria?: Record<string, any>;
+  campaign_status?: CampaignStatus;
+  scheduled_at?: string;
+}
+
+export interface SMSCampaignFilters {
+  campaign_type?: CampaignType;
+  campaign_status?: CampaignStatus;
+  target_audience?: TargetAudience;
+  created_by?: string;
+  scheduled_from?: string;
+  scheduled_to?: string;
+}
+
+export interface SMSCampaignStatistics {
+  total_campaigns: number;
+  draft_campaigns: number;
+  scheduled_campaigns: number;
+  sent_campaigns: number;
+  total_recipients: number;
+  total_sent: number;
+  total_delivered: number;
+  total_failed: number;
+  average_delivery_rate: number;
+}
+
+export interface SendSMSCampaignRequest {
+  send_test?: boolean;
+  test_numbers?: string[];
+}
+
+// ==================== SUBSCRIPTION MANAGEMENT TYPES ====================
+
+// Subscription types
+export type SubscriptionPlan = 'premium' | 'elite';
+export type SubscriptionStatus = 'active' | 'cancelled' | 'expired' | 'paused' | 'payment_failed';
+export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+export type BillingCycle = 'monthly' | 'yearly';
+
+// Subscription
+export interface Subscription {
+  id: string;
+  provider_user_id: string;
+  plan_type: SubscriptionPlan;
+  plan_name: string;
+  plan_price: number;
+  billing_cycle: BillingCycle;
+  commission_rate: number;
+  features: Record<string, any>;
+  start_date: string;
+  end_date: string;
+  current_period_start: string;
+  current_period_end: string;
+  razorpay_subscription_id?: string;
+  status: SubscriptionStatus;
+  auto_renew: boolean;
+  cancel_at_period_end: boolean;
+  cancelled_at?: string;
+  payment_failed_count: number;
+  created_at: string;
+  updated_at: string;
+  // Extended fields
+  provider_name?: string;
+  provider_email?: string;
+  provider_phone?: string;
+  days_remaining?: number;
+  is_expiring_soon?: boolean;
+}
+
+export interface SubscriptionCreate {
+  provider_user_id: string;
+  plan_type: SubscriptionPlan;
+  plan_name: string;
+  plan_price: number;
+  billing_cycle: BillingCycle;
+  commission_rate: number;
+  features: Record<string, any>;
+  start_date: string;
+  end_date: string;
+  auto_renew?: boolean;
+}
+
+export interface SubscriptionUpdate {
+  plan_type?: SubscriptionPlan;
+  plan_name?: string;
+  plan_price?: number;
+  billing_cycle?: BillingCycle;
+  commission_rate?: number;
+  features?: Record<string, any>;
+  auto_renew?: boolean;
+  end_date?: string;
+}
+
+export interface SubscriptionFilters {
+  search?: string;
+  plan_type?: SubscriptionPlan;
+  status?: SubscriptionStatus;
+  auto_renew?: boolean;
+  provider_user_id?: string;
+  start_date_from?: string;
+  start_date_to?: string;
+  end_date_from?: string;
+  end_date_to?: string;
+  expiring_in_days?: number;
+}
+
+export interface SubscriptionStatistics {
+  total_subscriptions: number;
+  active_subscriptions: number;
+  cancelled_subscriptions: number;
+  expired_subscriptions: number;
+  paused_subscriptions: number;
+  payment_failed_subscriptions: number;
+  subscriptions_by_plan: Record<string, number>;
+  total_mrr: number; // Monthly Recurring Revenue
+  total_arr: number; // Annual Recurring Revenue
+  avg_subscription_value: number;
+  churn_rate: number;
+  renewal_rate: number;
+  subscriptions_expiring_30_days: number;
+  subscriptions_expiring_7_days: number;
+}
+
+export interface SubscriptionCancel {
+  cancel_immediately?: boolean;
+  reason?: string;
+}
+
+export interface SubscriptionRenew {
+  new_end_date: string;
+  payment_id?: string;
+}
+
+export interface ExpiringSubscription {
+  subscription_id: string;
+  provider_user_id: string;
+  provider_name: string;
+  provider_email: string;
+  provider_phone: string;
+  plan_name: string;
+  plan_type: SubscriptionPlan;
+  end_date: string;
+  days_remaining: number;
+  auto_renew: boolean;
+  status: SubscriptionStatus;
+}
+
+// Subscription Payment
+export interface SubscriptionPayment {
+  id: string;
+  subscription_id: string;
+  provider_user_id: string;
+  amount: number;
+  currency: string;
+  razorpay_payment_id?: string;
+  razorpay_order_id?: string;
+  billing_period_start: string;
+  billing_period_end: string;
+  status: PaymentStatus;
+  failure_reason?: string;
+  retry_attempt: number;
+  transaction_id?: string;
+  payment_date: string;
+  created_at: string;
+}
+
+export interface SubscriptionPaymentCreate {
+  subscription_id: string;
+  provider_user_id: string;
+  amount: number;
+  currency?: string;
+  billing_period_start: string;
+  billing_period_end: string;
+  razorpay_payment_id?: string;
+  razorpay_order_id?: string;
+  status?: PaymentStatus;
+}
+
+export interface SubscriptionRetryPayment {
+  razorpay_payment_id?: string;
+  razorpay_order_id?: string;
+}
+
+export interface PaymentStatistics {
+  total_payments: number;
+  successful_payments: number;
+  failed_payments: number;
+  pending_payments: number;
+  total_revenue: number;
+  avg_payment_amount: number;
+  payment_success_rate: number;
+  total_failed_amount: number;
+  payments_by_month: Record<string, number>;
+}
+
+// ==================== BUSINESS & COURSE CONTENT MANAGEMENT TYPES ====================
+
+// Business (Salon/Academy)
+export interface Business {
+  id: string;
+  salon_name?: string;
+  academy_name?: string;
+  salon_slug?: string;
+  provider_user_id?: string;
+  address_id?: string;
+  commission_rate?: number;
+  gst_number?: string;
+  registration_number?: string;
+  is_verified: boolean;
+  is_active: boolean;
+  business_hours?: string;
+  branding?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BusinessCreate {
+  salon_name?: string;
+  academy_name?: string;
+  salon_slug?: string;
+  provider_user_id?: string;
+  address_id?: string;
+  commission_rate?: number;
+  gst_number?: string;
+  registration_number?: string;
+  business_hours?: string;
+  branding?: string;
+}
+
+export interface BusinessUpdate extends Partial<BusinessCreate> {}
+
+export interface BusinessFilters {
+  search?: string;
+  is_active?: boolean;
+  is_verified?: boolean;
+  commission_min?: number;
+  commission_max?: number;
+  created_from?: string;
+  created_to?: string;
+}
+
+export interface BusinessStatistics {
+  total_salons: number;
+  active_salons: number;
+  verified_salons: number;
+  total_academies: number;
+  active_academies: number;
+  verified_academies: number;
+  total_services: number;
+  active_services: number;
+  new_salons_this_month: number;
+  new_academies_this_month: number;
+}
+
+export interface BusinessStatusUpdate {
+  is_active?: boolean;
+  is_verified?: boolean;
+  reason?: string;
+}
+
+// Courses
+export interface Course {
+  id: string;
+  course_name: string;
+  course_code: string;
+  category: string;
+  level: string;
+  description?: string;
+  duration_weeks?: number;
+  total_hours?: number;
+  certificate_provided: boolean;
+  prerequisites?: string;
+  learning_outcomes?: string[];
+  syllabus_url?: string;
+  image_url?: string;
+  suggested_price?: number;
+  is_active: boolean;
+  is_featured: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CourseCreate {
+  course_name: string;
+  course_code: string;
+  category: string;
+  level: string;
+  description?: string;
+  duration_weeks?: number;
+  total_hours?: number;
+  certificate_provided?: boolean;
+  prerequisites?: string;
+  learning_outcomes?: string[];
+  syllabus_url?: string;
+  image_url?: string;
+  suggested_price?: number;
+}
+
+export interface CourseUpdate extends Partial<CourseCreate> {}
+
+export interface CourseFilters {
+  category?: string;
+  level?: string;
+  is_active?: boolean;
+  is_featured?: boolean;
+  search?: string;
+}
+
+export interface CourseStatistics {
+  total_courses: number;
+  active_courses: number;
+  featured_courses: number;
+  total_academy_courses: number;
+  courses_by_category: Record<string, number>;
+  courses_by_level: Record<string, number>;
+}
+
+// Academy Courses
+export interface AcademyCourse {
+  id: string;
+  academy_id: string;
+  course_id: string;
+  custom_course_name?: string;
+  custom_description?: string;
+  duration_weeks?: number;
+  total_hours?: number;
+  price?: number;
+  discount_price?: number;
+  max_students?: number;
+  is_available: boolean;
+  start_date?: string;
+  end_date?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AcademyCourseCreate {
+  academy_id: string;
+  course_id: string;
+  custom_course_name?: string;
+  custom_description?: string;
+  duration_weeks?: number;
+  total_hours?: number;
+  price?: number;
+  discount_price?: number;
+  max_students?: number;
+  is_available?: boolean;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface AcademyCourseFilters {
+  academy_id?: string;
+  course_id?: string;
+  is_available?: boolean;
+  category?: string;
+  level?: string;
+}
+
+// ==================== ACADEMY STUDENT MANAGEMENT TYPES ====================
+
+// Enums
+export type RegistrationStatus = 'pending' | 'invited' | 'registered' | 'active' | 'graduated' | 'dropped_out' | 'suspended';
+export type StudentType = 'regular' | 'scholarship' | 'exchange' | 'part_time' | 'full_time';
+export type BulkStudentAction = 'send_invitation' | 'update_status' | 'graduate' | 'transfer_course' | 'send_notification';
+export type StudentExportFormat = 'csv' | 'excel' | 'json' | 'pdf';
+
+// Academy Student
+export interface AcademyStudent {
+  id: string;
+  academy_id: string;
+  artist_user_id: string;
+  course_id?: string;
+  course_name: string;
+  enrollment_date: string;
+  graduation_date?: string;
+  maya_registration_status: RegistrationStatus;
+  invitation_sent: boolean;
+  invitation_sent_at?: string;
+  student_photo_url?: string;
+  certificate_url?: string;
+  created_at: string;
+  updated_at: string;
+  
+  // Related data
+  academy_name?: string;
+  student_name?: string;
+  student_email?: string;
+  student_phone?: string;
+  
+  // Progress tracking (for detail view)
+  progress_percentage?: number;
+  attendance_percentage?: number;
+  assignments_completed?: number;
+  total_assignments?: number;
+  average_grade?: number;
+  skills_acquired?: string[];
+  certifications?: any[];
+  notes?: string;
+  last_activity?: string;
+}
+
+export interface AcademyStudentCreate {
+  academy_id: string;
+  artist_user_id: string;
+  course_id?: string;
+  course_name: string;
+  enrollment_date: string;
+  graduation_date?: string;
+  maya_registration_status?: RegistrationStatus;
+  send_invitation?: boolean;
+  student_photo_url?: string;
+  notes?: string;
+}
+
+export interface AcademyStudentUpdate {
+  course_id?: string;
+  course_name?: string;
+  enrollment_date?: string;
+  graduation_date?: string;
+  maya_registration_status?: RegistrationStatus;
+  student_photo_url?: string;
+  certificate_url?: string;
+  notes?: string;
+}
+
+export interface AcademyStudentFilters {
+  search?: string;
+  academy_id?: string;
+  course_id?: string;
+  registration_status?: RegistrationStatus;
+  invitation_sent?: boolean;
+  has_graduated?: boolean;
+  enrolled_after?: string;
+  enrolled_before?: string;
+  graduation_after?: string;
+  graduation_before?: string;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
+}
+
+// Student Status Management
+export interface StudentStatusUpdate {
+  status: RegistrationStatus;
+  reason?: string;
+  notes?: string;
+  send_notification?: boolean;
+  update_graduation_date?: boolean;
+  graduation_date?: string;
+}
+
+export interface StudentInvitation {
+  student_ids: string[];
+  custom_message?: string;
+  include_course_details?: boolean;
+  include_academy_info?: boolean;
+}
+
+// Bulk Operations
+export interface BulkStudentOperation {
+  student_ids: string[];
+  action: BulkStudentAction;
+  reason?: string;
+  new_status?: RegistrationStatus;
+  new_course_id?: string;
+  graduation_date?: string;
+  notification_message?: string;
+  custom_invitation_message?: string;
+}
+
+export interface BulkStudentOperationResponse {
+  processed: number;
+  successful: number;
+  failed: number;
+  errors: Array<{ student_id: string; error: string }>;
+}
+
+// Progress & Performance
+export interface StudentProgress {
+  student_id: string;
+  progress_percentage: number;
+  attendance_percentage?: number;
+  assignments_completed: number;
+  total_assignments: number;
+  average_grade?: number;
+  skills_acquired: string[];
+  notes?: string;
+  last_updated: string;
+}
+
+export interface StudentCertification {
+  certification_name: string;
+  certification_type: string;
+  issued_date: string;
+  expiry_date?: string;
+  certificate_url?: string;
+  issuing_authority?: string;
+  verification_code?: string;
+}
+
+// Statistics
+export interface AcademyStudentStatistics {
+  total_students: number;
+  active_students: number;
+  graduated_students: number;
+  pending_registration: number;
+  invited_students: number;
+  dropout_students: number;
+  new_enrollments_today: number;
+  new_enrollments_this_week: number;
+  new_enrollments_this_month: number;
+  enrollment_growth_percentage: number;
+  average_completion_rate: number;
+  average_time_to_graduate?: number;
+  top_performing_academies: Array<{ academy_id: string; academy_name: string; student_count: number }>;
+  most_popular_courses: Array<{ course_id: string; course_name: string; enrollment_count: number }>;
+  students_by_academy: Array<{ academy_id: string; academy_name: string; count: number }>;
+  students_by_course: Array<{ course_name: string; count: number }>;
+  enrollments_by_month: Array<{ month: string; count: number }>;
+  graduation_trend: Array<{ month: string; count: number }>;
 }
 
 // Export default type for convenience

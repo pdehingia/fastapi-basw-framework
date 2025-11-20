@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
   PlusIcon,
-  SaveIcon,
+  DocumentCheckIcon,
   EyeIcon,
   TrashIcon,
   Cog6ToothIcon,
@@ -16,8 +16,8 @@ import {
   BellIcon
 } from '@heroicons/react/24/outline';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { Button, Card, Input, Select, Badge, Tab } from '../atoms';
-import { FormField, Modal } from '../molecules';
+import { Button, Input, Select, Badge, Tab } from '../atoms';
+import { FormField, Modal, Card } from '../molecules';
 import {
   useCreateDashboard,
   useUpdateDashboard,
@@ -344,7 +344,7 @@ export const AdvancedAnalyticsDashboardBuilder: React.FC<AdvancedAnalyticsDashbo
             disabled={createDashboardMutation.isLoading || updateDashboardMutation.isLoading}
             className="flex items-center gap-2"
           >
-            <SaveIcon className="w-4 h-4" />
+            <DocumentCheckIcon className="w-4 h-4" />
             {createDashboardMutation.isLoading || updateDashboardMutation.isLoading ? 'Saving...' : 'Save Dashboard'}
           </Button>
         </div>

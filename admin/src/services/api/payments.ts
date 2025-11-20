@@ -6,7 +6,7 @@
 import { apiService } from './base';
 import { PAYMENT_ENDPOINTS } from '@/config/api';
 import type {
-  ApiResponse,
+  
   PaginatedResponse,
   Payment,
   RefundRequest,
@@ -33,14 +33,14 @@ export class PaymentService {
       max_amount?: number;
       search?: string;
     } & QueryParams = {}
-  ): Promise<ApiResponse<PaginatedResponse<Payment>>> {
+  ): Promise<PaginatedResponse<Payment>> {
     return await apiService.get<PaginatedResponse<Payment>>(PAYMENT_ENDPOINTS.LIST, params);
   }
 
   /**
    * Get single payment by ID with full transaction details
    */
-  async getPayment(id: string): Promise<ApiResponse<Payment & {
+  async getPayment(id: string): Promise<Payment & {
     booking_details?: {
       id: string;
       service_name: string;
@@ -56,14 +56,14 @@ export class PaymentService {
       processed_at: string;
     }>;
     dispute_info?: PaymentDispute;
-  }>> {
+  }> {
     return await apiService.get<any>(PAYMENT_ENDPOINTS.GET(id));
   }
 
   /**
    * Process payment refund with detailed tracking
    */
-  async processRefund(paymentId: string, refundData: RefundRequest): Promise<ApiResponse<{
+  async processRefund(paymentId: string, refundData: RefundRequest): Promise<{
     refund_id: string;
     payment_id: string;
     amount: number;
@@ -71,7 +71,7 @@ export class PaymentService {
     estimated_completion: string;
     transaction_id: string;
     created_at: string;
-  }>> {
+  }> {
     return await apiService.post<any>(PAYMENT_ENDPOINTS.REFUND(paymentId), refundData);
   }
 
@@ -85,7 +85,7 @@ export class PaymentService {
     created_to?: string;
     page?: number;
     limit?: number;
-  } = {}): Promise<ApiResponse<PaginatedResponse<PaymentDispute>>> {
+  } = {}): Promise<PaginatedResponse<PaymentDispute>> {
     return await apiService.get<PaginatedResponse<PaymentDispute>>(PAYMENT_ENDPOINTS.DISPUTES, params);
   }
 
@@ -98,14 +98,14 @@ export class PaymentService {
     reason: string;
     admin_notes: string;
     notify_parties?: boolean;
-  }): Promise<ApiResponse<{
+  }): Promise<{
     dispute_id: string;
     status: 'resolved' | 'escalated';
     resolution_type: string;
     amount_refunded?: number;
     resolved_at: string;
     resolved_by: string;
-  }>> {
+  }> {
     return await apiService.post<any>(PAYMENT_ENDPOINTS.RESOLVE_DISPUTE(disputeId), resolution);
   }
 
@@ -120,7 +120,7 @@ export class PaymentService {
     currency?: string;
     payment_method?: string;
     format?: 'json' | 'csv' | 'pdf' | 'excel';
-  }): Promise<ApiResponse<{
+  }): Promise<{
     report_id: string;
     total_transactions: number;
     total_amount: number;
@@ -145,7 +145,7 @@ export class PaymentService {
       refunds: number;
     }>;
     generated_at: string;
-  }>> {
+  }> {
     return await apiService.get<any>(PAYMENT_ENDPOINTS.REPORTS, params);
   }
 
@@ -172,7 +172,7 @@ export class PaymentService {
     period?: 'month' | 'quarter' | 'year';
     start_date?: string;
     end_date?: string;
-  } = {}): Promise<ApiResponse<{
+  } = {}): Promise<{
     fee_structure: {
       percentage: number;
       fixed_fee: number;
@@ -194,7 +194,7 @@ export class PaymentService {
       revenue: number;
       fees_paid: number;
     }>;
-  }>> {
+  }> {
     return await apiService.get<any>(PAYMENT_ENDPOINTS.PLATFORM_FEES, params);
   }
 
@@ -204,7 +204,7 @@ export class PaymentService {
   async getPaymentAnalytics(params: {
     period: 'today' | 'week' | 'month' | 'quarter' | 'year';
     compare_previous?: boolean;
-  }): Promise<ApiResponse<{
+  }): Promise<{
     total_revenue: number;
     total_transactions: number;
     successful_payments: number;
@@ -230,7 +230,7 @@ export class PaymentService {
       total_spent: number;
       transaction_count: number;
     }>;
-  }>> {
+  }> {
     return await apiService.get<any>(`${PAYMENT_ENDPOINTS.LIST}analytics`, params);
   }
 
@@ -243,7 +243,7 @@ export class PaymentService {
     parameters?: any;
     reason?: string;
     admin_notes?: string;
-  }): Promise<ApiResponse<{
+  }): Promise<{
     processed_count: number;
     failed_count: number;
     results: Array<{
@@ -251,14 +251,14 @@ export class PaymentService {
       status: 'success' | 'failed';
       error?: string;
     }>;
-  }>> {
+  }> {
     return await apiService.post<any>(`${PAYMENT_ENDPOINTS.LIST}bulk-actions`, action);
   }
 
   /**
    * Get payment gateway status and health
    */
-  async getGatewayStatus(): Promise<ApiResponse<{
+  async getGatewayStatus(): Promise<{
     gateways: Array<{
       name: string;
       status: 'online' | 'offline' | 'degraded';
@@ -270,7 +270,7 @@ export class PaymentService {
     overall_health: 'healthy' | 'warning' | 'critical';
     total_transactions_today: number;
     failure_rate_today: number;
-  }>> {
+  }> {
     return await apiService.get<any>(`${PAYMENT_ENDPOINTS.LIST}gateway-status`);
   }
 
@@ -280,7 +280,7 @@ export class PaymentService {
   async getFraudDetection(params: {
     period?: 'week' | 'month' | 'quarter';
     risk_level?: 'low' | 'medium' | 'high';
-  } = {}): Promise<ApiResponse<{
+  } = {}): Promise<{
     total_flagged: number;
     confirmed_fraud: number;
     false_positives: number;
@@ -297,7 +297,7 @@ export class PaymentService {
       status: 'pending_review' | 'approved' | 'blocked';
       created_at: string;
     }>;
-  }>> {
+  }> {
     return await apiService.get<any>(`${PAYMENT_ENDPOINTS.LIST}fraud-detection`, params);
   }
 }

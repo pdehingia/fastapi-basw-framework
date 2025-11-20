@@ -5,7 +5,7 @@
 
 import { apiService } from './base';
 import { ANALYTICS_ENDPOINTS } from '@/config/api';
-import type { ApiResponse } from '@/types/api.types';
+
 
 // Platform Analytics Types
 export interface PlatformAnalytics {
@@ -72,13 +72,13 @@ export const analyticsService = {
       start_date?: string;
       end_date?: string;
       period?: 'day' | 'week' | 'month' | 'quarter' | 'year';
-    } = {}): Promise<ApiResponse<PlatformAnalytics>> {
+    } = {}): Promise<PlatformAnalytics> {
       return await apiService.get<PlatformAnalytics>(ANALYTICS_ENDPOINTS.PLATFORM, params);
     },
 
     async getSummary(params: {
       period?: 'day' | 'week' | 'month' | 'quarter' | 'year';
-    } = {}): Promise<ApiResponse<PlatformSummary>> {
+    } = {}): Promise<PlatformSummary> {
       return await apiService.get<PlatformSummary>(ANALYTICS_ENDPOINTS.PLATFORM_SUMMARY, params);
     },
 
@@ -87,15 +87,15 @@ export const analyticsService = {
       start_date?: string;
       end_date?: string;
       period?: 'day' | 'week' | 'month';
-    }): Promise<ApiResponse<PlatformTrends>> {
+    }): Promise<PlatformTrends> {
       return await apiService.get<PlatformTrends>(ANALYTICS_ENDPOINTS.PLATFORM_TRENDS, params);
     },
 
-    async calculate(data: AnalyticsCalculationRequest): Promise<ApiResponse<any>> {
+    async calculate(data: AnalyticsCalculationRequest): Promise<any> {
       return await apiService.post<any>(ANALYTICS_ENDPOINTS.PLATFORM_CALCULATE, data);
     },
 
-    async export(data: ExportAnalyticsRequest): Promise<ApiResponse<{ download_url: string }>> {
+    async export(data: ExportAnalyticsRequest): Promise<{ download_url: string }> {
       return await apiService.post<{ download_url: string }>(
         ANALYTICS_ENDPOINTS.PLATFORM_EXPORT,
         data

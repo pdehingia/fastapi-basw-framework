@@ -146,7 +146,7 @@ class ArtistVerificationService {
   /**
    * Get verification queue with filtering and pagination
    */
-  async getVerificationQueue(filters: VerificationFilters = {}): Promise<ApiResponse<VerificationRequest[]>> {
+  async getVerificationQueue(filters: VerificationFilters = {}): Promise<VerificationRequest[]> {
     const queryParams = new URLSearchParams();
     
     Object.entries(filters).forEach(([key, value]) => {
@@ -161,26 +161,26 @@ class ArtistVerificationService {
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<VerificationRequest[]>>(response);
+    return this.handleResponse<ApiResponse<VerificationRequest[]>(response);
   }
 
   /**
    * Get verification request details by ID
    */
-  async getVerificationRequest(requestId: string): Promise<ApiResponse<VerificationRequest>> {
+  async getVerificationRequest(requestId: string): Promise<VerificationRequest> {
     const url = `${this.baseUrl}${ARTIST_VERIFICATION_ENDPOINTS.GET_REQUEST(requestId)}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<VerificationRequest>>(response);
+    return this.handleResponse<ApiResponse<VerificationRequest>(response);
   }
 
   /**
    * Make verification decision (approve/reject)
    */
-  async makeVerificationDecision(requestId: string, decision: VerificationDecision): Promise<ApiResponse<VerificationRequest>> {
+  async makeVerificationDecision(requestId: string, decision: VerificationDecision): Promise<VerificationRequest> {
     const url = `${this.baseUrl}${ARTIST_VERIFICATION_ENDPOINTS.DECISION(requestId)}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -188,13 +188,13 @@ class ArtistVerificationService {
       body: JSON.stringify(decision),
     });
 
-    return this.handleResponse<ApiResponse<VerificationRequest>>(response);
+    return this.handleResponse<ApiResponse<VerificationRequest>(response);
   }
 
   /**
    * Get portfolio moderation queue
    */
-  async getPortfolioModerationQueue(filters: PortfolioFilters = {}): Promise<ApiResponse<PortfolioItem[]>> {
+  async getPortfolioModerationQueue(filters: PortfolioFilters = {}): Promise<PortfolioItem[]> {
     const queryParams = new URLSearchParams();
     
     Object.entries(filters).forEach(([key, value]) => {
@@ -209,13 +209,13 @@ class ArtistVerificationService {
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<PortfolioItem[]>>(response);
+    return this.handleResponse<ApiResponse<PortfolioItem[]>(response);
   }
 
   /**
    * Moderate portfolio image
    */
-  async moderatePortfolioImage(imageId: string, moderationData: PortfolioModerationData): Promise<ApiResponse<PortfolioItem>> {
+  async moderatePortfolioImage(imageId: string, moderationData: PortfolioModerationData): Promise<PortfolioItem> {
     const url = `${this.baseUrl}${ARTIST_VERIFICATION_ENDPOINTS.MODERATE_PORTFOLIO(imageId)}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -223,13 +223,13 @@ class ArtistVerificationService {
       body: JSON.stringify(moderationData),
     });
 
-    return this.handleResponse<ApiResponse<PortfolioItem>>(response);
+    return this.handleResponse<ApiResponse<PortfolioItem>(response);
   }
 
   /**
    * Bulk moderate portfolio images
    */
-  async bulkModeratePortfolio(bulkData: BulkPortfolioModeration): Promise<ApiResponse<{ processed_count: number }>> {
+  async bulkModeratePortfolio(bulkData: BulkPortfolioModeration): Promise<{ processed_count: number }> {
     const url = `${this.baseUrl}${ARTIST_VERIFICATION_ENDPOINTS.BULK_MODERATE_PORTFOLIO}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -237,26 +237,26 @@ class ArtistVerificationService {
       body: JSON.stringify(bulkData),
     });
 
-    return this.handleResponse<ApiResponse<{ processed_count: number }>>(response);
+    return this.handleResponse<ApiResponse<{ processed_count: number }>(response);
   }
 
   /**
    * Get verification statistics
    */
-  async getVerificationStats(): Promise<ApiResponse<VerificationStats>> {
+  async getVerificationStats(): Promise<VerificationStats> {
     const url = `${this.baseUrl}${ARTIST_VERIFICATION_ENDPOINTS.STATS}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<VerificationStats>>(response);
+    return this.handleResponse<ApiResponse<VerificationStats>(response);
   }
 
   /**
    * Get artist portfolio by artist ID
    */
-  async getArtistPortfolio(artistId: string, filters: PortfolioFilters = {}): Promise<ApiResponse<PortfolioItem[]>> {
+  async getArtistPortfolio(artistId: string, filters: PortfolioFilters = {}): Promise<PortfolioItem[]> {
     const queryParams = new URLSearchParams();
     queryParams.append('artist_id', artistId);
     
@@ -272,7 +272,7 @@ class ArtistVerificationService {
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<PortfolioItem[]>>(response);
+    return this.handleResponse<ApiResponse<PortfolioItem[]>(response);
   }
 
   /**
@@ -297,7 +297,7 @@ class ArtistVerificationService {
   /**
    * Feature/Unfeature portfolio image
    */
-  async togglePortfolioFeature(imageId: string, featured: boolean): Promise<ApiResponse<PortfolioItem>> {
+  async togglePortfolioFeature(imageId: string, featured: boolean): Promise<PortfolioItem> {
     const url = `${this.baseUrl}${ARTIST_VERIFICATION_ENDPOINTS.TOGGLE_PORTFOLIO_FEATURE(imageId)}`;
     const response = await fetch(url, {
       method: 'PATCH',
@@ -305,20 +305,20 @@ class ArtistVerificationService {
       body: JSON.stringify({ is_featured: featured }),
     });
 
-    return this.handleResponse<ApiResponse<PortfolioItem>>(response);
+    return this.handleResponse<ApiResponse<PortfolioItem>(response);
   }
 
   /**
    * Get verification request history for an artist
    */
-  async getArtistVerificationHistory(artistId: string): Promise<ApiResponse<VerificationRequest[]>> {
+  async getArtistVerificationHistory(artistId: string): Promise<VerificationRequest[]> {
     const url = `${this.baseUrl}${ARTIST_VERIFICATION_ENDPOINTS.ARTIST_HISTORY(artistId)}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.getHeaders(),
     });
 
-    return this.handleResponse<ApiResponse<VerificationRequest[]>>(response);
+    return this.handleResponse<ApiResponse<VerificationRequest[]>(response);
   }
 }
 

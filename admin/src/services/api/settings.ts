@@ -3,7 +3,7 @@
  * Handles system configuration and settings operations
  */
 
-import { apiClient, handleApiResponse, handleApiError } from './client';
+import { apiClient, handleApiError } from './client';
 import { SETTINGS_ENDPOINTS, API_VERSION } from '@/config/api';
 import type { SystemSettings, SystemSetting } from '@/types/api.types';
 
@@ -14,7 +14,7 @@ export class SettingsService {
   static async getSettings(): Promise<SystemSettings> {
     try {
       const response = await apiClient.get(SETTINGS_ENDPOINTS.SYSTEM_SETTINGS);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -26,7 +26,7 @@ export class SettingsService {
   static async updateSettings(settings: Partial<SystemSettings>): Promise<SystemSettings> {
     try {
       const response = await apiClient.patch(SETTINGS_ENDPOINTS.SYSTEM_SETTINGS, settings);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -38,7 +38,7 @@ export class SettingsService {
   static async updateSetting(key: string, value: string): Promise<SystemSetting> {
     try {
       const response = await apiClient.patch(`${API_VERSION.CURRENT}/settings/${key}`, { value });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -50,7 +50,7 @@ export class SettingsService {
   static async resetSettings(): Promise<SystemSettings> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/settings/reset`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -64,7 +64,7 @@ export class SettingsService {
   ): Promise<Partial<SystemSettings>> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/settings/${section}`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -79,7 +79,7 @@ export class SettingsService {
   ): Promise<Partial<SystemSettings>> {
     try {
       const response = await apiClient.patch(`${API_VERSION.CURRENT}/settings/${section}`, data);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -91,7 +91,7 @@ export class SettingsService {
   static async testEmailConfiguration(): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/settings/test-email`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -103,7 +103,7 @@ export class SettingsService {
   static async testSMSConfiguration(): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.post(`${API_VERSION.CURRENT}/settings/test-sms`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -127,7 +127,7 @@ export class SettingsService {
   }> {
     try {
       const response = await apiClient.get(`${API_VERSION.CURRENT}/settings/system-info`);
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -141,7 +141,7 @@ export class SettingsService {
       const response = await apiClient.patch(`${API_VERSION.CURRENT}/settings/maintenance`, {
         enabled,
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -174,7 +174,7 @@ export class SettingsService {
           'Content-Type': 'multipart/form-data',
         },
       });
-      return handleApiResponse(response);
+      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }
