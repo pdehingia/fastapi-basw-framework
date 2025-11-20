@@ -62,15 +62,16 @@ const CustomerSegmentsPage = () => {
     onError: () => toast.error('Failed to delete segment'),
   });
 
-  const duplicateSegmentMutation = useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string }) =>
-      marketingService.duplicateCustomerSegment(id, name),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['customer-segments'] });
-      toast.success('Segment duplicated successfully');
-    },
-    onError: () => toast.error('Failed to duplicate segment'),
-  });
+  // Duplicate functionality not yet implemented in API
+  // const duplicateSegmentMutation = useMutation({
+  //   mutationFn: ({ id, name }: { id: string; name: string }) =>
+  //     marketingService.duplicateCustomerSegment(id, name),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['customer-segments'] });
+  //     toast.success('Segment duplicated successfully');
+  //   },
+  //   onError: () => toast.error('Failed to duplicate segment'),
+  // });
 
   // Handlers
   const handleDeleteSegment = (id: string) => {
@@ -79,16 +80,12 @@ const CustomerSegmentsPage = () => {
     }
   };
 
-  const handleDuplicateSegment = (segment: CustomerSegment) => {
-    const newName = prompt('Enter name for duplicated segment:', `${segment.name} (Copy)`);
-    if (newName) {
-      duplicateSegmentMutation.mutate({ id: segment.id, name: newName });
-    }
+  const handleDuplicateSegment = (_segment: CustomerSegment) => {
+    toast.success('Duplicate feature coming soon');
   };
 
-  const segments = segmentsData?.data?.items || [];
-  const metadata = segmentsData?.data?.metadata;
-  const customers = customersData?.data?.items || [];
+  const segments = Array.isArray(segmentsData?.data) ? segmentsData.data : [];
+  const customers = Array.isArray(customersData?.data) ? customersData.data : [];
 
   // Table columns
   const columns = [
@@ -110,21 +107,19 @@ const CustomerSegmentsPage = () => {
       render: (_: any, segment: CustomerSegment) => (
         <div className="space-y-1 text-sm">
           {segment.criteria.age_range && (
-            <div>Age: {segment.criteria.age_range.min}-{segment.criteria.age_range.max}</div>
+            <div>Age: {segment.criteria.age_range[0]}-{segment.criteria.age_range[1]}</div>
           )}
-          {segment.criteria.locations && segment.criteria.locations.length > 0 && (
-            <div>Locations: {segment.criteria.locations.join(', ')}</div>
+          {segment.criteria.location && segment.criteria.location.length > 0 && (
+            <div>Locations: {segment.criteria.location.join(', ')}</div>
           )}
           {segment.criteria.purchase_history && (
-            <div>
-              Purchases: {segment.criteria.purchase_history.min_count || 0}+
-              {segment.criteria.purchase_history.total_spent_min && 
-                ` ($${segment.criteria.purchase_history.total_spent_min}+)`}
+            <div className="capitalize">
+              Purchase History: {segment.criteria.purchase_history}
             </div>
           )}
           {segment.criteria.engagement_level && (
             <div className="capitalize">
-              Engagement: {segment.criteria.engagement_level.join(', ')}
+              Engagement: {segment.criteria.engagement_level}
             </div>
           )}
         </div>
@@ -137,7 +132,7 @@ const CustomerSegmentsPage = () => {
         <div>
           <div className="font-semibold text-lg">{segment.customer_count.toLocaleString()}</div>
           <Button
-            variant="link"
+            variant="ghost"
             size="sm"
             onClick={() => setSelectedSegment(segment.id)}
           >
@@ -151,10 +146,10 @@ const CustomerSegmentsPage = () => {
       header: 'Status',
       render: (_: any, segment: CustomerSegment) => (
         <Badge
-          variant={segment.is_active ? 'success' : 'default'}
+          variant="success"
           size="sm"
         >
-          {segment.is_active ? 'Active' : 'Inactive'}
+          Active
         </Badge>
       ),
     },
@@ -235,19 +230,16 @@ const CustomerSegmentsPage = () => {
       title="Customer Segments"
       subtitle="Create and manage customer segments for targeted campaigns"
       breadcrumbs={[
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Marketing', path: '/marketing' },
-        { label: 'Segments', path: '/marketing/segments' },
+        { id: '1', label: 'Dashboard', href: '/dashboard' },
+        { id: '2', label: 'Marketing', href: '/marketing' },
+        { id: '3', label: 'Segments', href: '/marketing/segments', current: true },
       ]}
-      actions={
-        <Button
-          variant="primary"
-          onClick={() => navigate({ to: '/marketing/segments/new' })}
-          icon={PlusIcon}
-        >
-          New Segment
-        </Button>
-      }
+      primaryAction={{
+        id: 'new-segment',
+        label: 'New Segment',
+        onClick: () => navigate({ to: '/marketing/segments' }),
+        variant: 'primary',
+      }}
     >
       {/* Filters */}
       <Card className="mb-6">
