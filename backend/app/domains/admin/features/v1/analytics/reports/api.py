@@ -16,7 +16,7 @@ from .schemas import (
     ComprehensiveReport, CustomReportListResponse, ReportPeriod
 )
 
-router = APIRouter(prefix="/analytics", tags=[API_TAGS.ANALYTICS_REPORTS])
+router = APIRouter(prefix="", tags=[API_TAGS.ANALYTICS_REPORTS])
 
 
 @router.get("/overview", response_model=SuccessResponse[AnalyticsOverviewResponse])

@@ -13,8 +13,8 @@ from app.domains.admin.features.v1 import (
     user_sessions_router,
     audit_logs_router,
     campaigns_router,
-    marketing_router,
-    system_router
+    # marketing_router,  # TODO: Fix import paths
+    # system_router  # TODO: Fix import paths
 )
 
 # Create admin domain router with v1 prefix
@@ -31,7 +31,7 @@ admin_router.include_router(services_router)
 admin_router.include_router(user_sessions_router)
 admin_router.include_router(audit_logs_router)
 admin_router.include_router(campaigns_router)
-admin_router.include_router(marketing_router)
-admin_router.include_router(system_router)
+# admin_router.include_router(marketing_router)  # TODO: Fix import paths
+# admin_router.include_router(system_router)  # TODO: Fix import paths
 
 __all__ = ["admin_router"]

@@ -73,7 +73,7 @@ class PlatformAnalytic(Base):
     avg_resolution_time_hours = Column(Float, default=0.0, nullable=False)
     
     # Additional data
-    metadata = Column(JSONB, nullable=True)  # Additional metrics
+    analytics_metadata = Column(JSONB, nullable=True)  # Additional metrics
     calculated_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     
     # Tracking

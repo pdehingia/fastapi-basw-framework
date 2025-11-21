@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.shared.models.provider_business import ProviderBusinessDetail, ProviderSalon
 from app.shared.models.user import ProviderUser
-from app.shared.models.salon import Salon
+from app.shared.models.business import Salon
 from app.core.exceptions import NotFoundException, ConflictException, ValidationException
 from .schemas import (
     ProviderBusinessDetailCreate, ProviderBusinessDetailUpdate, ProviderBusinessDetailResponse,

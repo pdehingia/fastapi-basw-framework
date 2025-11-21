@@ -6,7 +6,8 @@ Supports both sync and async database operations for Maya Platform.
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from typing import Generator
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from typing import Generator, AsyncGenerator
 import logging
 
 from app.core.config import settings
@@ -39,11 +40,28 @@ engine = create_engine(
     }
 )
 
+# Create async engine for async operations
+async_engine = create_async_engine(
+    settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://"),
+    pool_pre_ping=True,
+    pool_size=settings.DB_POOL_SIZE,
+    max_overflow=settings.DB_MAX_OVERFLOW,
+    echo=settings.DB_ECHO,
+)
+
 # Create SessionLocal class for database sessions
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine,
+)
+
+# Create async session maker
+AsyncSessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=async_engine,
+    class_=AsyncSession,
 )
 
 # Create Base class for declarative models
@@ -67,6 +85,26 @@ def get_db() -> Generator[Session, None, None]:
         yield db
     finally:
         db.close()
+
+
+async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
+    """
+    Async database session dependency.
+
+    Yields an async database session and ensures it's closed after use.
+    Use this as a FastAPI dependency for async operations.
+
+    Example:
+        @router.get("/items")
+        async def get_items(db: AsyncSession = Depends(get_async_db)):
+            result = await db.execute(select(Item))
+            return result.scalars().all()
+    """
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
 
 
 def init_db() -> None:

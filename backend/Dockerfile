@@ -1,7 +1,7 @@
 # ==========================================
 # Stage 1: Builder
 # ==========================================
-FROM python:3.11-slim AS builder
+FROM python:3.13-slim AS builder
 
 # Set working directory
 WORKDIR /app
@@ -12,12 +12,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install build dependencies with retry logic
+RUN apt-get update && \
+    for i in 1 2 3; do \
+        apt-get install -y --no-install-recommends gcc g++ libpq-dev && break || sleep 5; \
+    done && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
 COPY requirements-minimal.txt .
@@ -27,7 +27,7 @@ RUN pip install --upgrade pip && \
 # ==========================================
 # Stage 2: Runtime
 # ==========================================
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 # Set working directory
 WORKDIR /app
@@ -40,7 +40,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/home/appuser/.local/bin:$PATH"
 
 # Install runtime dependencies only
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends --fix-missing \
     postgresql-client \
     redis-tools \
     curl \
@@ -51,7 +51,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | gpg --dearmor | tee /usr/share/keyrings/mongodb-server-6.0.gpg >/dev/null \
     && echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends mongodb-mongosh \
+    && apt-get install -y --no-install-recommends --fix-missing mongodb-mongosh \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user

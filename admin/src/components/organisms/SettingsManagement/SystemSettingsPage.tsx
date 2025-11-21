@@ -26,7 +26,7 @@ interface SettingsFilters {
   category?: string;
 }
 
-export const SystemSettingsPage = () => {
+const SystemSettingsPage = () => {
   const [filters, setFilters] = useState<SettingsFilters>({});
   const [selectedSetting, setSelectedSetting] = useState<SystemSetting | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -306,3 +306,6 @@ export const SystemSettingsPage = () => {
     </DashboardLayout>
   );
 };
+
+export { SystemSettingsPage };
+export default SystemSettingsPage;

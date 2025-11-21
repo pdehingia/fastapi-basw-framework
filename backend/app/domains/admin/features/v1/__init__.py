@@ -10,8 +10,8 @@ from .services import router as services_router
 from .user_sessions import router as user_sessions_router
 from .audit_logs import router as audit_logs_router
 from .campaigns import router as campaigns_router
-from .marketing import router as marketing_router
-from .system import router as system_router
+# from .marketing import router as marketing_router  # TODO: Fix import paths
+# from .system import router as system_router  # TODO: Fix import paths
 
 __all__ = [
     "auth_router",
@@ -24,6 +24,6 @@ __all__ = [
     "user_sessions_router",
     "audit_logs_router",
     "campaigns_router",
-    "marketing_router",
-    "system_router"
+    # "marketing_router",  # TODO: Fix import paths
+    # "system_router"  # TODO: Fix import paths
 ]

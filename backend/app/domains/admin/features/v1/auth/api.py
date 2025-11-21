@@ -53,7 +53,7 @@ async def admin_login(
     
     try:
         # authenticate_user now returns user only (session tracking temporarily disabled)
-        user = await auth_service.authenticate_user(
+        user = auth_service.authenticate_user(
             email=form_data.username,
             password=form_data.password,
             client_info=client_info
@@ -74,7 +74,7 @@ async def admin_login(
         # Try to create session record with error handling
         session_token = None
         try:
-            session_token = await auth_service.create_session(user.id, client_info or {})
+            session_token = auth_service.create_session(user.id, client_info or {})
             logger.info(f"Session created successfully: {session_token[:8]}...")
         except Exception as e:
             logger.error(f"Failed to create session: {e}")
@@ -141,7 +141,7 @@ async def admin_register(
     
     try:
         # Check if user already exists
-        existing_user = await auth_service.get_user_by_email(user_data.email)
+        existing_user = auth_service.get_user_by_email(user_data.email)
         if existing_user:
             raise HTTPException(
                 status_code=HTTP_STATUS_CODES.BAD_REQUEST,
@@ -149,7 +149,7 @@ async def admin_register(
             )
         
         # Create new admin user
-        user = await auth_service.create_admin_user(user_data)
+        user = await auth_service.register_admin_user(user_data)
         
         return AdminUserResponse.from_orm(user)
         
@@ -159,9 +159,11 @@ async def admin_register(
             detail=str(e)
         )
     except Exception as e:
+        import traceback
+        traceback.print_exc()  # Temporary debug logging
         raise HTTPException(
             status_code=HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-            detail=ERROR_MESSAGES.INTERNAL_ERROR
+            detail=f"{ERROR_MESSAGES.INTERNAL_SERVER_ERROR}: {str(e)}"
         )
 
 
@@ -207,7 +209,7 @@ async def get_current_admin_profile(
     """Get current admin user profile."""
     auth_service = AdminAuthService(db)
     
-    user = await auth_service.get_user_by_id(current_user["id"])
+    user = auth_service.get_user_by_id(current_user["id"])
     if not user:
         raise HTTPException(
             status_code=HTTP_STATUS_CODES.NOT_FOUND,
@@ -246,7 +248,7 @@ async def get_current_admin_user(
         raise credentials_exception
     
     auth_service = AdminAuthService(db)
-    user = await auth_service.get_user_by_id(user_id)
+    user = auth_service.get_user_by_id(user_id)
     
     if user is None:
         raise credentials_exception
@@ -287,7 +289,7 @@ async def admin_logout(
             
             if session_token:
                 # Mark session as logged out
-                await auth_service.logout_session(session_token)
+                auth_service.logout_session(session_token)
                 logger.info(f"Session logged out successfully: {session_token[:8]}...")
         except JWTError as e:
             # Token invalid, but still clear cookie for security
@@ -318,7 +320,7 @@ async def get_user_sessions(
     """Get current user's active sessions."""
     auth_service = AdminAuthService(db)
     
-    sessions = await auth_service.get_user_sessions(current_user["id"])
+    sessions = auth_service.get_user_sessions(current_user["id"])
     
     return success_response(
         data={"sessions": sessions},
@@ -336,7 +338,7 @@ async def logout_all_sessions(
     auth_service = AdminAuthService(db)
     
     # Logout all sessions
-    count = await auth_service.logout_all_sessions(current_user["id"])
+    count = auth_service.logout_all_sessions(current_user["id"])
     
     # Clear current cookie
     response.delete_cookie(

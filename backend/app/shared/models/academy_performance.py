@@ -66,7 +66,7 @@ class AcademyPerformance(Base):
     performance_rank = Column(Integer, nullable=True)  # Rank among all academies
     
     # Additional data
-    metadata = Column(JSONB, nullable=True)  # Additional metrics
+    performance_metadata = Column(JSONB, nullable=True)  # Additional metrics
     calculated_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     
     # Tracking

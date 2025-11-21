@@ -302,16 +302,26 @@ class BulkTransactionResponse(BaseModel):
 
 
 # Statistics Schemas
+class FinancialPeriod(BaseModel):
+    """Reporting period information."""
+    start: date
+    end: date
+
+
 class FinancialStatsResponse(BaseModel):
-    """Schema for financial statistics response."""
+    """Schema for financial statistics overview aligned with frontend contract."""
+    total_revenue: float
+    total_commission: float
+    net_revenue: float
     total_transactions: int
-    total_transaction_volume: Decimal
-    total_active_wallets: int
-    total_verified_bank_accounts: int
-    avg_wallet_balance: Decimal
-    avg_transaction_amount: Decimal
-    daily_transaction_count: int
-    monthly_growth_rate: float
+    successful_transactions: int
+    pending_transactions: int
+    failed_transactions: int
+    total_refunds: int
+    refund_amount: float
+    average_transaction_value: float
+    currency: str
+    period: FinancialPeriod
 
 
 class WalletStatsResponse(BaseModel):

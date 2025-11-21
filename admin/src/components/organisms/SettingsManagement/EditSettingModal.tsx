@@ -26,7 +26,7 @@ interface SettingUpdateRequest {
   description?: string;
 }
 
-export const EditSettingModal = ({ isOpen, setting, onClose, onSuccess }: EditSettingModalProps) => {
+const EditSettingModal = ({ isOpen, setting, onClose, onSuccess }: EditSettingModalProps) => {
   const [formData, setFormData] = useState<SettingUpdateRequest>({
     value: setting.value,
     description: setting.description
@@ -284,3 +284,6 @@ export const EditSettingModal = ({ isOpen, setting, onClose, onSuccess }: EditSe
     </Modal>
   );
 };
+
+export { EditSettingModal };
+export default EditSettingModal;

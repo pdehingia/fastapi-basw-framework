@@ -9,16 +9,8 @@ from .platform import api as platform_analytics_api
 # Create unified router
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
-# Create sub-routers
-reports_router = APIRouter(prefix="/reports", tags=["Analytics Reports"])
-platform_router = APIRouter(prefix="/platform", tags=["Platform Analytics"])
-
-# Copy routes
-reports_router.routes = analytics_reports_api.router.routes
-platform_router.routes = platform_analytics_api.router.routes
-
-# Include all sub-routers
-router.include_router(reports_router)
-router.include_router(platform_router)
+# Include all sub-routers with proper prefixes
+router.include_router(analytics_reports_api.router)
+router.include_router(platform_analytics_api.router, prefix="/platform", tags=["Platform Analytics"])
 
 __all__ = ["router"]

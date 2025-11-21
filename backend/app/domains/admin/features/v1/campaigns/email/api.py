@@ -4,12 +4,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from math import ceil
 
-from app.domains.admin.features.v1.email_campaigns.dependencies import (
+from app.domains.admin.features.v1.campaigns.email.dependencies import (
     get_email_campaigns_service,
     RequireAuth
 )
-from app.domains.admin.features.v1.email_campaigns.service import EmailCampaignsService
-from app.domains.admin.features.v1.email_campaigns.schemas import (
+from app.domains.admin.features.v1.campaigns.email.service import EmailCampaignsService
+from app.domains.admin.features.v1.campaigns.email.schemas import (
     EmailCampaignCreate,
     EmailCampaignUpdate,
     EmailCampaignResponse,

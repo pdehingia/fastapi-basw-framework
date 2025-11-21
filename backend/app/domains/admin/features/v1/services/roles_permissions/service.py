@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, func
 from datetime import datetime
 
-from app.shared.models.user import Role, Permission, RolePermission
+from app.shared.models.role import Role
+from app.shared.models.permission import Permission
+from app.shared.models.role_permission import RolePermission
 from app.shared.exceptions import NotFoundError, ValidationException, ConflictError
 from app.shared.pagination import PaginationParams
 from .schemas import (

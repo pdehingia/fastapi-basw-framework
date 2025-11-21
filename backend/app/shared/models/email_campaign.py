@@ -5,7 +5,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 
-from app.shared.database import Base
+from app.shared.models.base import Base
 
 
 class EmailCampaign(Base):

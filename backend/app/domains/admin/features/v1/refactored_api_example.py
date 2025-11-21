@@ -86,7 +86,7 @@ async def get_bookings(
 
 @router.get(
     "/{booking_id}",
-    response_model=Dict[str, Any],
+    ,
     status_code=HTTP_STATUS_CODES.OK
 )
 async def get_booking(
@@ -117,7 +117,7 @@ async def get_booking(
 
 @router.post(
     "",
-    response_model=Dict[str, Any],
+    ,
     status_code=HTTP_STATUS_CODES.CREATED  # Instead of 201
 )
 async def create_booking(
@@ -163,7 +163,7 @@ async def create_booking(
 
 @router.put(
     "/{booking_id}",
-    response_model=Dict[str, Any],
+    ,
     status_code=HTTP_STATUS_CODES.OK
 )
 async def update_booking(
@@ -211,7 +211,7 @@ async def update_booking(
 
 @router.post(
     "/{booking_id}" + API_ROUTES.CANCEL,  # "/cancel" from constants
-    response_model=Dict[str, Any],
+    ,
     status_code=HTTP_STATUS_CODES.OK
 )
 async def cancel_booking(
@@ -261,7 +261,7 @@ async def cancel_booking(
 # REFACTORED: Bulk operations using constants
 @router.post(
     API_ROUTES.BULK_UPDATE,  # "/bulk-update" from constants
-    response_model=Dict[str, Any],
+    ,
     status_code=HTTP_STATUS_CODES.OK
 )
 async def bulk_update_bookings(

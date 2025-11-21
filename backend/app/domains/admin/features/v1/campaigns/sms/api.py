@@ -4,12 +4,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from math import ceil
 
-from app.domains.admin.features.v1.sms_campaigns.dependencies import (
+from app.domains.admin.features.v1.campaigns.sms.dependencies import (
     get_sms_campaigns_service,
     RequireAuth
 )
-from app.domains.admin.features.v1.sms_campaigns.service import SMSCampaignsService
-from app.domains.admin.features.v1.sms_campaigns.schemas import (
+from app.domains.admin.features.v1.campaigns.sms.service import SMSCampaignsService
+from app.domains.admin.features.v1.campaigns.sms.schemas import (
     SMSCampaignCreate,
     SMSCampaignUpdate,
     SMSCampaignResponse,

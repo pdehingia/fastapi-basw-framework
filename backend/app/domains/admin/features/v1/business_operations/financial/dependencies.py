@@ -10,7 +10,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.domains.admin.features.v1.financial_management.service import FinancialManagementService
+from app.domains.admin.features.v1.business_operations.financial.service import FinancialManagementService
 
 
 @lru_cache()

@@ -10,7 +10,7 @@ from sqlalchemy import Column, String, Text, Date, Boolean, Integer, ForeignKey,
 from sqlalchemy.dialects.postgresql import UUID as PostgresUUID, JSONB, NUMERIC
 from sqlalchemy.orm import relationship
 
-from app.core.database import Base
+from app.shared.models.base import Base
 
 
 class ProviderBusinessDetail(Base):

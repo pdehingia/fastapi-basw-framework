@@ -5,6 +5,38 @@ from datetime import datetime
 from pydantic import BaseModel, Field, validator
 
 
+# Permission Schemas
+class PermissionBase(BaseModel):
+    """Base permission schema."""
+    permission_name: str = Field(..., min_length=1, max_length=120, description="Permission name")
+    permission_slug: str = Field(..., min_length=1, max_length=120, description="Permission slug")
+    category: str = Field(..., min_length=1, max_length=60, description="Permission category")
+    description: Optional[str] = Field(None, description="Permission description")
+    is_active: bool = Field(True, description="Whether permission is active")
+
+
+class PermissionCreate(PermissionBase):
+    """Schema for creating a permission."""
+    pass
+
+
+class PermissionUpdate(BaseModel):
+    """Schema for updating a permission."""
+    permission_name: Optional[str] = Field(None, min_length=1, max_length=120)
+    category: Optional[str] = Field(None, min_length=1, max_length=60)
+    description: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class PermissionResponse(PermissionBase):
+    """Schema for permission response."""
+    id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
 # Role Schemas
 class RoleBase(BaseModel):
     """Base role schema."""
@@ -43,7 +75,7 @@ class RoleResponse(RoleBase):
 
 class RoleWithPermissions(RoleResponse):
     """Role with associated permissions."""
-    permissions: List['PermissionResponse'] = []
+    permissions: List[PermissionResponse] = []
 
 
 class RoleHierarchyNode(BaseModel):
@@ -53,38 +85,6 @@ class RoleHierarchyNode(BaseModel):
     role_slug: str
     level: int
     children: List['RoleHierarchyNode'] = []
-    
-    class Config:
-        from_attributes = True
-
-
-# Permission Schemas
-class PermissionBase(BaseModel):
-    """Base permission schema."""
-    permission_name: str = Field(..., min_length=1, max_length=120, description="Permission name")
-    permission_slug: str = Field(..., min_length=1, max_length=120, description="Permission slug")
-    category: str = Field(..., min_length=1, max_length=60, description="Permission category")
-    description: Optional[str] = Field(None, description="Permission description")
-    is_active: bool = Field(True, description="Whether permission is active")
-
-
-class PermissionCreate(PermissionBase):
-    """Schema for creating a permission."""
-    pass
-
-
-class PermissionUpdate(BaseModel):
-    """Schema for updating a permission."""
-    permission_name: Optional[str] = Field(None, min_length=1, max_length=120)
-    category: Optional[str] = Field(None, min_length=1, max_length=60)
-    description: Optional[str] = None
-    is_active: Optional[bool] = None
-
-
-class PermissionResponse(PermissionBase):
-    """Schema for permission response."""
-    id: int
-    created_at: datetime
     
     class Config:
         from_attributes = True
@@ -164,4 +164,5 @@ class PermissionStatistics(BaseModel):
 
 
 # Forward references
+RoleWithPermissions.model_rebuild()
 RoleHierarchyNode.model_rebuild()

@@ -4,7 +4,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from app.shared.database import Base
+from app.shared.models.base import Base
 
 
 class RolePermission(Base):

@@ -26,7 +26,7 @@ export class AuthService {
 
     console.log('🔑 [AUTH] Form body prepared:', formBody.toString());
     
-    const response = await apiService.post<LoginResponse>(
+    const data = await apiService.post<LoginResponse>(
       AUTH_ENDPOINTS.LOGIN,
       formBody.toString(),
       {
@@ -37,11 +37,10 @@ export class AuthService {
     );
     
     console.log('🔑 [AUTH] Login response received:', {
-      success: response.success,
-      hasData: !!response.data
+      hasData: !!data
     });
     
-    return response.data;
+    return data;
   }
 
   /**
@@ -49,12 +48,9 @@ export class AuthService {
    */
   async getProfile(): Promise<AdminProfile> {
     console.log('👤 [AUTH] Getting profile...');
-    const response = await apiService.get<AdminProfile>(AUTH_ENDPOINTS.ME);
-    console.log('👤 [AUTH] Profile response:', {
-      success: response.success,
-      hasData: !!response.data
-    });
-    return response.data;
+    const data = await apiService.get<AdminProfile>(AUTH_ENDPOINTS.ME);
+    console.log('👤 [AUTH] Profile response received');
+    return data;
   }
 
   /**

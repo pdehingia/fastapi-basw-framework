@@ -11,8 +11,15 @@ import secrets
 
 from app.core.config import settings
 
-# Password hashing context using bcrypt
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing context using argon2 (modern, secure, Python 3.13+ compatible)
+# Fallback to bcrypt for legacy password support
+pwd_context = CryptContext(
+    schemes=["argon2", "bcrypt"],
+    deprecated="auto",
+    argon2__default_rounds=2,
+    argon2__memory_cost=102400,
+    argon2__parallelism=8
+)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

@@ -357,11 +357,13 @@ class PlatformAnalyticListResponse(BaseSchema):
 
 class PlatformAnalyticSummary(BaseSchema):
     """Platform analytics summary."""
-    total_revenue: float
-    total_bookings: int
+    period: str
+    total_transactions: int
     total_users: int
-    active_providers: int
+    total_revenue: float
     avg_booking_value: float
+    user_retention_rate: float
+    provider_satisfaction: float
 
 
 class TrendDataPoint(BaseSchema):
@@ -375,3 +377,42 @@ class PlatformAnalyticTrends(BaseSchema):
     metric: str
     period: MetricPeriod
     data_points: List[TrendDataPoint]
+
+
+class PlatformOverviewMetrics(BaseModel):
+    """High level platform overview metrics."""
+    total_users: int
+    total_bookings: int
+    total_revenue: float
+    total_providers: int
+    active_users: int
+    growth_rate: float
+
+
+class PlatformTrendPoint(BaseModel):
+    """Time-series point for platform analytics trends."""
+    date: date
+    users: int
+    bookings: int
+    revenue: float
+
+
+class TopMetricItem(BaseModel):
+    """Generic top metric item."""
+    name: str
+    count: Optional[int] = None
+    revenue: Optional[float] = None
+
+
+class PlatformTopMetrics(BaseModel):
+    """Collections of top performing metrics."""
+    most_booked_services: List[TopMetricItem]
+    top_revenue_providers: List[TopMetricItem]
+    popular_locations: List[TopMetricItem]
+
+
+class PlatformAnalyticsDashboardResponse(BaseModel):
+    """Structured response for platform analytics dashboard."""
+    overview: PlatformOverviewMetrics
+    trends: List[PlatformTrendPoint]
+    top_metrics: PlatformTopMetrics

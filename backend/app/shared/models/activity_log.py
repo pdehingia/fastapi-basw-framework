@@ -20,7 +20,7 @@ class UserActivityLog(Base):
     activity_type = Column(String(100), nullable=False)
     activity_category = Column(String(50), nullable=True)
     description = Column(Text, nullable=True)
-    metadata = Column(JSONB, nullable=True)
+    activity_metadata = Column(JSONB, nullable=True)
     ip_address = Column(INET, nullable=True)
     session_id = Column(UUID(as_uuid=True), nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)

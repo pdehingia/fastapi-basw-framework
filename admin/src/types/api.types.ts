@@ -535,6 +535,9 @@ export interface LoginRequest {
 export interface LoginResponse {
   user: AdminProfile;
   login_time: string;
+  access_token: string;
+  token_type: string;
+  expires_in: number;
   session_info: {
     device_type: string;
     device_name: string;

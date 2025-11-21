@@ -72,7 +72,7 @@ class SystemNotification(Base):
     # Additional data
     action_url = Column(String, nullable=True)  # Optional action button URL
     action_label = Column(String(100), nullable=True)  # Action button text
-    metadata = Column(JSONB, nullable=True)  # Additional metadata
+    notification_metadata = Column(JSONB, nullable=True)  # Additional metadata
     
     # Tracking
     created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)

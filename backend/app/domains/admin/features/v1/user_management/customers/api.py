@@ -32,10 +32,10 @@ from app.shared.exceptions import ValidationException, NotFoundError, ConflictEr
 from app.shared.pagination import PaginationParams, PaginatedResponse
 from app.shared.responses import success_response
 
-router = APIRouter(prefix="/customers", tags=[API_TAGS.CUSTOMER_MANAGEMENT])
+router = APIRouter(prefix="", tags=[API_TAGS.CUSTOMER_MANAGEMENT])
 
 
-@router.get("/", response_model=Dict[str, Any])
+@router.get("/", )
 async def get_customers_list(
     # Query parameters for filtering
     search: Optional[str] = Query(None, description="Search in customer name, email, phone"),
@@ -130,7 +130,7 @@ async def get_customers_list(
         )
 
 
-@router.get("/statistics", response_model=Dict[str, Any])
+@router.get("/statistics", )
 async def get_customer_statistics(
     current_user: dict = Depends(require_customer_management_access),
     db: Session = Depends(get_db)
@@ -162,7 +162,7 @@ async def get_customer_statistics(
         )
 
 
-@router.get("/{customer_id}", response_model=Dict[str, Any])
+@router.get("/{customer_id}", )
 async def get_customer_detail(
     customer_id: UUID,
     current_user: dict = Depends(require_customer_management_access),
@@ -207,7 +207,7 @@ async def get_customer_detail(
         )
 
 
-@router.post("/", response_model=Dict[str, Any])
+@router.post("/", )
 async def create_customer(
     customer_data: CustomerUserCreate,
     current_user: dict = Depends(require_customer_management_access),
@@ -251,7 +251,7 @@ async def create_customer(
         )
 
 
-@router.put("/{customer_id}", response_model=Dict[str, Any])
+@router.put("/{customer_id}", )
 async def update_customer(
     customer_id: UUID,
     update_data: CustomerUserUpdate,
@@ -298,7 +298,7 @@ async def update_customer(
         )
 
 
-@router.patch("/{customer_id}/status", response_model=Dict[str, Any])
+@router.patch("/{customer_id}/status", )
 async def update_customer_status(
     customer_id: UUID,
     status_update: CustomerStatusUpdate,
@@ -344,7 +344,7 @@ async def update_customer_status(
         )
 
 
-@router.patch("/{customer_id}/verification", response_model=Dict[str, Any])
+@router.patch("/{customer_id}/verification", )
 async def update_customer_verification(
     customer_id: UUID,
     verification_update: CustomerVerificationUpdate,
@@ -388,7 +388,7 @@ async def update_customer_verification(
         )
 
 
-@router.get("/{customer_id}/sessions", response_model=Dict[str, Any])
+@router.get("/{customer_id}/sessions", )
 async def get_customer_sessions(
     customer_id: UUID,
     current_user: dict = Depends(require_customer_management_access),
@@ -422,7 +422,7 @@ async def get_customer_sessions(
         )
 
 
-@router.get("/{customer_id}/activity", response_model=Dict[str, Any])
+@router.get("/{customer_id}/activity", )
 async def get_customer_activity(
     customer_id: UUID,
     limit: int = Query(50, ge=1, le=200, description="Number of activity records to return"),
@@ -460,7 +460,7 @@ async def get_customer_activity(
         )
 
 
-@router.delete("/{customer_id}", response_model=Dict[str, Any])
+@router.delete("/{customer_id}", )
 async def delete_customer(
     customer_id: UUID,
     current_user: dict = Depends(require_user_management_access),
@@ -493,7 +493,7 @@ async def delete_customer(
         )
 
 
-@router.post("/bulk-action", response_model=Dict[str, Any])
+@router.post("/bulk-action", )
 async def perform_bulk_customer_action(
     bulk_operation: BulkCustomerOperation,
     current_user: dict = Depends(require_customer_management_access),
@@ -576,7 +576,7 @@ async def export_customers_csv(
         )
 
 
-@router.post("/notify", response_model=Dict[str, Any])
+@router.post("/notify", )
 async def send_customer_notification(
     notification: CustomerNotification,
     current_user: dict = Depends(require_customer_management_access),

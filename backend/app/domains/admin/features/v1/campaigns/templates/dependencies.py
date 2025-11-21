@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.shared.database import get_db
+from app.core.database import get_db
 from app.domains.admin.features.v1.email_templates.service import EmailTemplatesService
 from app.domains.admin.features.v1.auth.dependencies import get_current_admin
 

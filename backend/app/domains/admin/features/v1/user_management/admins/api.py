@@ -25,7 +25,7 @@ from app.domains.admin.features.v1.auth.schemas import AdminUserResponse, AdminU
 from app.domains.admin.features.v1.auth.service import AdminAuthService
 from .dependencies import require_user_management_access, require_system_admin_access
 
-router = APIRouter(prefix="/admin-users", tags=[API_TAGS.USER_MANAGEMENT])
+router = APIRouter(prefix="", tags=[API_TAGS.USER_MANAGEMENT])
 
 
 # ========================================
@@ -40,7 +40,7 @@ async def get_dashboard_stats(
 ) -> Dict[str, Any]:
     """Get admin dashboard statistics."""
     auth_service = AdminAuthService(db)
-    stats = await auth_service.get_dashboard_stats()
+    stats = auth_service.get_dashboard_stats()
     
     return success_response(
         data=stats,
@@ -362,7 +362,7 @@ async def get_admin_user_sessions(
             )
     
     auth_service = AdminAuthService(db)
-    sessions = await auth_service.get_user_sessions(admin_user_id)
+    sessions = auth_service.get_user_sessions(admin_user_id)
     
     return success_response(
         data=sessions,
@@ -387,7 +387,7 @@ async def get_admin_user_activity(
             )
     
     auth_service = AdminAuthService(db)
-    activity = await auth_service.get_user_activity(admin_user_id)
+    activity = await auth_service.get_user_activity_logs(admin_user_id)
     
     return success_response(
         data=activity,

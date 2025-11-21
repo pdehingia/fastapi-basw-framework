@@ -12,8 +12,8 @@ from fastapi import APIRouter, HTTPException, Query, Path, Body
 from fastapi.responses import JSONResponse
 
 from app.shared.constants import HTTP_STATUS_CODES, API_TAGS
-from app.domains.admin.features.v1.financial_management.dependencies import FinancialManagementServiceDep
-from app.domains.admin.features.v1.financial_management.schemas import (
+from app.domains.admin.features.v1.business_operations.financial.dependencies import FinancialManagementServiceDep
+from app.domains.admin.features.v1.business_operations.financial.schemas import (
     # Transaction schemas
     TransactionCreate, TransactionUpdate, TransactionResponse, TransactionFilters,
     # Bank account schemas  
@@ -31,7 +31,7 @@ from app.domains.admin.features.v1.financial_management.schemas import (
     UserTypeEnum, TransactionTypeEnum, TransactionStatusEnum, WalletTransactionTypeEnum
 )
 
-router = APIRouter(prefix="/financial-management", tags=[API_TAGS.FINANCIAL_MANAGEMENT])
+router = APIRouter(prefix="", tags=[API_TAGS.FINANCIAL_MANAGEMENT])
 
 
 # Transaction Management Endpoints
@@ -72,7 +72,7 @@ async def delete_transaction(
     return await service.delete_transaction(transaction_id)
 
 
-@router.get("/transactions", response_model=Dict[str, Any])
+@router.get("/transactions")
 async def search_transactions(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(50, ge=1, le=100, description="Page size"),
@@ -204,7 +204,7 @@ async def create_wallet_transaction(
     return await service.create_wallet_transaction(transaction_data)
 
 
-@router.get("/wallets/{wallet_id}/transactions", response_model=Dict[str, Any])
+@router.get("/wallets/{wallet_id}/transactions")
 async def get_wallet_transactions(
     wallet_id: UUID = Path(..., description="Wallet ID"),
     page: int = Query(1, ge=1, description="Page number"),

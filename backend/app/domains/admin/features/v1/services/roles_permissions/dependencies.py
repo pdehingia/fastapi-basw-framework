@@ -6,7 +6,10 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.domains.admin.features.v1.auth.dependencies import get_current_admin_user
-from app.shared.models.user import AdminUser, Role, Permission, RolePermission
+from app.shared.models.user import AdminUser
+from app.shared.models.role import Role
+from app.shared.models.permission import Permission
+from app.shared.models.role_permission import RolePermission
 from app.core.exceptions import UnauthorizedException as UnauthorizedError
 
 

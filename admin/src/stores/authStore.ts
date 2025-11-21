@@ -12,6 +12,40 @@ import type {
   UserRole 
 } from '@/types/auth.types';
 
+// Normalize backend profile response to match AuthUser expectations
+const mapProfileToAuthUser = (profile: Partial<AuthUser> & {
+  can_manage_users?: boolean;
+  can_manage_system?: boolean;
+  can_view_reports?: boolean;
+  is_superuser?: boolean;
+}): AuthUser => {
+  const role: UserRole = profile.role
+    ? profile.role
+    : profile.is_superuser
+    ? 'super_admin'
+    : 'admin';
+
+  const permissions = profile.permissions ?? [
+    ...(profile.can_manage_users
+      ? ['users.view', 'users.create', 'users.edit', 'users.delete']
+      : []),
+    ...(profile.can_manage_system ? ['system.settings', 'system.users'] : []),
+    ...(profile.can_view_reports ? ['analytics.view', 'analytics.export'] : []),
+  ];
+
+  return {
+    ...profile,
+    role,
+    permissions,
+    can_manage_users:
+      profile.can_manage_users ?? permissions.some((permission) => permission.startsWith('users.')),
+    can_manage_system:
+      profile.can_manage_system ?? permissions.some((permission) => permission.startsWith('system.')),
+    can_view_reports:
+      profile.can_view_reports ?? permissions.some((permission) => permission.startsWith('analytics.')),
+  } as AuthUser;
+};
+
 // Initial auth state - NO PERSISTENCE (httpOnly cookies only)
 const initialState = {
   user: null,
@@ -43,14 +77,15 @@ export const useAuthStore = create<AuthStore>()(
         console.log('🏪 [AUTH STORE] Step 2: Fetching user profile...');
         // Step 2: Fetch user profile to get complete user data
         const profileResponse = await authService.getProfile();
+        const user = mapProfileToAuthUser(profileResponse);
         console.log('🏪 [AUTH STORE] Step 2 completed - profile data received:', {
-          userId: profileResponse.id,
-          email: profileResponse.email
+          userId: profileResponse?.id,
+          email: profileResponse?.email
         });
         
         console.log('🏪 [AUTH STORE] Setting authenticated state...');
         set({
-          user: profileResponse,
+          user,
           isAuthenticated: true,
           isInitialized: true,
           isLoading: false,
@@ -96,12 +131,13 @@ export const useAuthStore = create<AuthStore>()(
         
         try {
           await authService.refreshToken();
-          
+
           // After refresh, get fresh profile data
           const profileResponse = await authService.getProfile();
-          
+          const user = mapProfileToAuthUser(profileResponse);
+
           set({
-            user: profileResponse,
+            user,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -188,12 +224,13 @@ export const useAuthStore = create<AuthStore>()(
           console.log('🏪 [AUTH STORE] Attempting to get user profile from existing session...');
           // Try to get user profile - this will work if httpOnly cookies are valid
           const profileResponse = await authService.getProfile();
+          const user = mapProfileToAuthUser(profileResponse);
           console.log('🏪 [AUTH STORE] Profile retrieved successfully:', {
-            userId: profileResponse.id,
-            email: profileResponse.email
+            userId: profileResponse?.id,
+            email: profileResponse?.email
           });
           set({
-            user: profileResponse,
+            user,
             isAuthenticated: true,
             isInitialized: true,
             isLoading: false,

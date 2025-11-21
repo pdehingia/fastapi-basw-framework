@@ -6,7 +6,7 @@ from sqlalchemy import select, func, and_, case
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.models.email_campaign import EmailCampaign
-from app.domains.admin.features.v1.email_campaigns.schemas import (
+from app.domains.admin.features.v1.campaigns.email.schemas import (
     EmailCampaignCreate,
     EmailCampaignUpdate,
     EmailCampaignFilters,

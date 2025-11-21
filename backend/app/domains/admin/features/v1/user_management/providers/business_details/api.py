@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_admin_user
+from app.domains.admin.features.v1.auth.dependencies import get_current_admin_user
 from .dependencies import get_business_details_service
 from .schemas import (
     ProviderBusinessDetailCreate, ProviderBusinessDetailUpdate, ProviderBusinessDetailResponse,

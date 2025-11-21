@@ -25,16 +25,16 @@ class AdminAuthService:
         self.db = db
         self.user_repository = AdminUserRepository(db)
     
-    async def authenticate_user(self, email: str, password: str, client_info: dict = None) -> Optional[AdminUser]:
+    def authenticate_user(self, email: str, password: str, client_info: dict = None) -> Optional[AdminUser]:
         """Authenticate admin user by email and password."""
-        user = await self.get_user_by_email(email)
+        user = self.get_user_by_email(email)
         
         if not user:
             return None
             
         if not verify_password(password, user.hashed_password):
             # Log failed login attempt
-            await self._log_activity(
+            self._log_activity(
                 user_id=user.id,
                 action="login_failed",
                 details={
@@ -51,14 +51,14 @@ class AdminAuthService:
         # Try to create session record with error handling
         session_token = None
         try:
-            session_token = await self.create_session(user.id, client_info or {})
+            session_token = self.create_session(user.id, client_info or {})
             logger.info(f"Session created successfully: {session_token[:8]}...")
         except Exception as e:
             logger.error(f"Failed to create session: {e}")
             # Continue without session tracking for now
         
         # Log successful login with client information
-        await self._log_activity(
+        self._log_activity(
             user_id=user.id,
             action="login_success",
             details=client_info or {"ip_address": "unknown"}
@@ -66,7 +66,7 @@ class AdminAuthService:
         
         return user
     
-    async def create_session(self, user_id: UUID, client_info: dict) -> str:
+    def create_session(self, user_id: UUID, client_info: dict) -> str:
         """Create a new user session."""
         session_token = secrets.token_urlsafe(32)
         
@@ -94,6 +94,8 @@ class AdminAuthService:
         
         # Extract location
         ip_address = client_info.get("ip_address", "Unknown")
+        if ip_address == "Unknown":
+            ip_address = None
         city = client_info.get("city")
         country = client_info.get("country")
         
@@ -146,7 +148,7 @@ class AdminAuthService:
             self.db.commit()
             
             # Log logout activity
-            await self._log_activity(
+            self._log_activity(
                 user_id=session.user_id,
                 action="logout",
                 details={
@@ -172,7 +174,7 @@ class AdminAuthService:
         
         if count > 0:
             self.db.commit()
-            await self._log_activity(
+            self._log_activity(
                 user_id=user_id,
                 action="logout_all_sessions",
                 details={"sessions_count": count}
@@ -197,18 +199,18 @@ class AdminAuthService:
         
         return count
 
-    async def get_user_by_email(self, email: str) -> Optional[AdminUser]:
+    def get_user_by_email(self, email: str) -> Optional[AdminUser]:
         """Get admin user by email."""
         return self.user_repository.get_by_email(email)
     
-    async def get_user_by_id(self, user_id: UUID) -> Optional[AdminUser]:
+    def get_user_by_id(self, user_id: UUID) -> Optional[AdminUser]:
         """Get admin user by ID."""
         return self.user_repository.get(user_id)
     
     async def create_admin_user(self, user_data: AdminRegisterRequest) -> AdminUser:
         """Create new admin user."""
         # Check if email already exists
-        existing_user = await self.get_user_by_email(user_data.email)
+        existing_user = self.get_user_by_email(user_data.email)
         if existing_user:
             raise ValidationException("Email already registered")
         
@@ -225,7 +227,7 @@ class AdminAuthService:
         user = self.user_repository.create(user_dict)
         
         # Log user creation
-        await self._log_activity(
+        self._log_activity(
             user_id=user.id,
             action="user_created",
             details={"email": user.email, "is_superuser": user.is_superuser}
@@ -235,13 +237,13 @@ class AdminAuthService:
     
     async def update_admin_user(self, user_id: UUID, user_data: AdminUserUpdateRequest) -> AdminUser:
         """Update admin user."""
-        user = await self.get_user_by_id(user_id)
+        user = self.get_user_by_id(user_id)
         if not user:
             raise ValidationException("User not found")
         
         # Check email uniqueness if email is being updated
         if user_data.email and user_data.email != user.email:
-            existing_user = await self.get_user_by_email(user_data.email)
+            existing_user = self.get_user_by_email(user_data.email)
             if existing_user:
                 raise ValidationException("Email already in use")
         
@@ -271,7 +273,7 @@ class AdminAuthService:
             raise ValidationException(f"Failed to update user: {str(e)}")
         
         # Log user update
-        await self._log_activity(
+        self._log_activity(
             user_id=user_id,
             action="user_updated",
             details={"updated_fields": list(update_data.keys())}
@@ -281,7 +283,7 @@ class AdminAuthService:
     
     async def change_password(self, user_id: UUID, current_password: str, new_password: str) -> bool:
         """Change admin user password."""
-        user = await self.get_user_by_id(user_id)
+        user = self.get_user_by_id(user_id)
         if not user:
             raise ValidationException("User not found")
         
@@ -294,7 +296,7 @@ class AdminAuthService:
         self.user_repository.update(user_id, {"hashed_password": hashed_password})
         
         # Log password change
-        await self._log_activity(
+        self._log_activity(
             user_id=user_id,
             action="password_changed",
             details={}
@@ -307,7 +309,7 @@ class AdminAuthService:
         user = self.user_repository.update(user_id, {"is_active": False})
         
         # Log deactivation
-        await self._log_activity(
+        self._log_activity(
             user_id=user_id,
             action="user_deactivated",
             details={}
@@ -320,7 +322,7 @@ class AdminAuthService:
         user = self.user_repository.update(user_id, {"is_active": True})
         
         # Log activation
-        await self._log_activity(
+        self._log_activity(
             user_id=user_id,
             action="user_activated",
             details={}
@@ -328,7 +330,7 @@ class AdminAuthService:
         
         return user
     
-    async def get_user_sessions(self, user_id: UUID, limit: int = 10) -> list:
+    def get_user_sessions(self, user_id: UUID, limit: int = 10) -> list:
         """Get admin user active sessions."""
         sessions = self.db.query(AdminUserSession).filter(
             AdminUserSession.user_id == user_id,
@@ -366,7 +368,7 @@ class AdminAuthService:
         result = self.db.execute(query, {"user_id": str(user_id), "limit": limit})
         return [dict(row._mapping) for row in result]
     
-    async def _log_activity(self, user_id: UUID, action: str, details: dict = None):
+    def _log_activity(self, user_id: UUID, action: str, details: dict = None):
         """Log admin user activity."""
         activity_log = AdminAuditLog(
             admin_user_id=user_id,
@@ -382,7 +384,7 @@ class AdminAuthService:
     async def register_admin_user(self, register_data: AdminRegisterRequest) -> AdminUser:
         """Register a new admin user."""
         # Check if user already exists
-        existing_user = await self.get_user_by_email(register_data.email)
+        existing_user = self.get_user_by_email(register_data.email)
         if existing_user:
             raise ValidationException("User with this email already exists")
         
@@ -415,7 +417,7 @@ class AdminAuthService:
         self.db.refresh(user)
         
         # Log user creation
-        await self._log_activity(
+        self._log_activity(
             user_id=user.id,
             action="user_created",
             details={
@@ -430,12 +432,12 @@ class AdminAuthService:
     
     async def delete_admin_user(self, user_id: UUID) -> bool:
         """Delete admin user."""
-        user = await self.get_user_by_id(user_id)
+        user = self.get_user_by_id(user_id)
         if not user:
             return False
         
         # Log user deletion before deleting
-        await self._log_activity(
+        self._log_activity(
             user_id=user_id,
             action="user_deleted",
             details={
@@ -451,7 +453,7 @@ class AdminAuthService:
         
         return True
     
-    async def get_dashboard_stats(self) -> dict:
+    def get_dashboard_stats(self) -> dict:
         """Get admin dashboard statistics."""
         from app.shared.models.user import AdminUser
         
@@ -471,6 +473,10 @@ class AdminAuthService:
         # TODO: Implement activity tracking
         recent_logins_count = 0
         
+        total_users = admin_users_count + provider_users_count + customer_users_count
+        verified_users = admin_users_count  # Placeholder until verification tracking implemented
+        new_users_this_month = 0  # TODO: Calculate actual value from user creation timestamps
+
         return {
             "total_admin_users": admin_users_count,
             "total_provider_users": provider_users_count, 
@@ -478,4 +484,8 @@ class AdminAuthService:
             "active_sessions": active_sessions_count,
             "recent_logins": recent_logins_count,
             "system_alerts": 0,  # TODO: Implement system alerts
+            "total_users": total_users,
+            "active_users": admin_users_count,  # Placeholder until activity tracking is available
+            "new_users_this_month": new_users_this_month,
+            "verified_users": verified_users,
         }

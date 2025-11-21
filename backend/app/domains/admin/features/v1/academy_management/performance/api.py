@@ -1,11 +1,11 @@
 """Academy Performance API endpoints."""
 
-from typing import Optional
+from typing import Optional, List
 from datetime import date
 from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status
 
-from app.domains.admin.features.v1.auth.dependencies import get_current_admin
+from app.domains.admin.features.v1.auth.dependencies import get_current_admin_user
 from .schemas import (
     AcademyPerformanceResponse,
     AcademyPerformanceListResponse,
@@ -24,7 +24,7 @@ router = APIRouter(prefix="/academy-performance", tags=["Academy Performance"])
     summary="List academy performance"
 )
 async def list_academy_performance(
-    current_admin: dict = Depends(get_current_admin),
+    current_admin: dict = Depends(get_current_admin_user),
     page: int = Query(1, ge=1),
     size: int = Query(50, ge=1, le=100),
     from_date: Optional[date] = Query(None),
@@ -49,7 +49,7 @@ async def list_academy_performance(
 )
 async def get_academy_performance(
     academy_id: UUID,
-    current_admin: dict = Depends(get_current_admin),
+    current_admin: dict = Depends(get_current_admin_user),
     from_date: Optional[date] = Query(None),
     to_date: Optional[date] = Query(None)
 ):
@@ -73,7 +73,7 @@ async def get_academy_performance(
 )
 async def get_academy_performance_trends(
     academy_id: UUID,
-    current_admin: dict = Depends(get_current_admin),
+    current_admin: dict = Depends(get_current_admin_user),
     metric: str = Query(..., description="Metric to analyze"),
     from_date: Optional[date] = Query(None),
     to_date: Optional[date] = Query(None)
@@ -94,7 +94,7 @@ async def get_academy_performance_trends(
     summary="Get top performing academies"
 )
 async def get_top_performers(
-    current_admin: dict = Depends(get_current_admin),
+    current_admin: dict = Depends(get_current_admin_user),
     limit: int = Query(10, ge=1, le=50),
     metric: str = Query("quality_score", description="Ranking metric"),
     from_date: Optional[date] = Query(None),
@@ -111,7 +111,7 @@ async def get_top_performers(
     summary="Calculate academy performance"
 )
 async def calculate_academy_performance(
-    current_admin: dict = Depends(get_current_admin),
+    current_admin: dict = Depends(get_current_admin_user),
     target_date: date = Query(...),
     academy_id: Optional[UUID] = Query(None, description="Calculate for specific academy or all")
 ):
@@ -130,7 +130,7 @@ async def calculate_academy_performance(
     summary="Export academy performance"
 )
 async def export_academy_performance(
-    current_admin: dict = Depends(get_current_admin),
+    current_admin: dict = Depends(get_current_admin_user),
     from_date: date = Query(...),
     to_date: date = Query(...),
     academy_id: Optional[UUID] = Query(None),

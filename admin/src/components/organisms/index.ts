@@ -43,8 +43,7 @@ export {
 export { 
   CampaignList,
   CreateCampaignForm,
-  AnalyticsDashboard,
-  CustomerSegmentation
+  AnalyticsDashboard
 } from './MarketingManagement';
 
 // Settings Management Components

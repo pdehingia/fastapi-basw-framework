@@ -148,25 +148,24 @@ services:
   # ==========================================
   # Admin Dashboard (Frontend)
   # ==========================================
-  # Uncomment when admin app is ready
-  # admin:
-  #   build:
-  #     context: ./admin
-  #     dockerfile: Dockerfile
-  #   container_name: monorepo_admin
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - REACT_APP_API_URL=http://localhost:8000
-  #     - NODE_ENV=development
-  #   volumes:
-  #     - ./admin:/app:delegated
-  #     - /app/node_modules
-  #   networks:
-  #     - app_network
-  #   depends_on:
-  #     - backend
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: monorepo_admin
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - NODE_ENV=development
+    volumes:
+      - ./admin:/app:delegated
+      - /app/node_modules
+    networks:
+      - app_network
+    depends_on:
+      - backend
 
   # ==========================================
   # Provider Application (Frontend)

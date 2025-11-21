@@ -15,12 +15,12 @@ from sqlalchemy.orm import Session
 from app.shared.constants import HTTP_STATUS_CODES, API_TAGS
 from app.core.database import get_db
 from app.shared.pagination import PaginationParams, PaginatedResponse
-from app.domains.admin.features.v1.academy_student_management.dependencies import (
+from app.domains.admin.features.v1.academy_management.students.dependencies import (
     require_academy_student_management_access,
     require_academy_management_access
 )
-from app.domains.admin.features.v1.academy_student_management.service import AcademyStudentManagementService
-from app.domains.admin.features.v1.academy_student_management.schemas import (
+from app.domains.admin.features.v1.academy_management.students.service import AcademyStudentManagementService
+from app.domains.admin.features.v1.academy_management.students.schemas import (
     # Student schemas
     AcademyStudentCreate, AcademyStudentUpdate, AcademyStudentResponse, AcademyStudentDetailResponse,
     AcademyStudentFilterParams, AcademyStudentStatistics,
